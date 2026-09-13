@@ -298,6 +298,14 @@ body.mobile-nav-open {
   white-space: nowrap;
 }
 
+/* "Crea la teva taula" no cap còmodament al costat del logo en mòbil
+   petit: s'amaga i es confia en el CTA de l'hero i el menú hamburguesa. */
+@media (max-width: 539px) {
+  .btn.btn-compra {
+    display: none;
+  }
+}
+
 .menu-btn {
   display: inline-flex;
 }
@@ -311,89 +319,220 @@ body.mobile-nav-open {
   }
 }
 
-/* ---- Hero / Personalitza CTA ------------------------------------------- */
+/* ---- Hero (selector d'audiència: Particulars / Tallers / Espais) ------- */
+/* Targeta fosca autocontinguda amb pestanyes que canvien titular, text,
+   CTA, insígnia i taula il·lustrada segons qui visita la Home. */
 
 .hero {
   position: relative;
-  /* El padding vertical marca el límit de la foto a mida completa i
-     dona l'espai (48px) per sobre i per sota de la targeta. */
-  padding: var(--space-6) 0;
+  overflow: hidden;
+  background: linear-gradient(165deg, var(--c-dark) 0%, #262525 100%);
+  border-radius: 28px;
+  padding: var(--space-6) var(--space-5);
+  margin: var(--space-5) 0;
 }
 
-.hero-photo {
-  position: absolute;
-  inset: 0;
-  background-image: url("../images/hero-balance-board.jpg");
-  background-size: cover;
-  background-position: center 30%;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-.hero-card {
-  background: var(--c-dark);
-  color: var(--c-white);
-  border-radius: var(--r-card);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  box-shadow: 0 24px 48px rgba(49, 48, 48, 0.28);
-}
-
-.claim-tag {
-  align-self: flex-start;
-  background: rgba(249, 181, 79, 0.15);
-  color: var(--c-orange);
-  border: 1px solid rgba(249, 181, 79, 0.4);
-  border-radius: var(--r-pill);
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-
-.hero-card h1 {
-  font-size: 24px;
-}
-
-.hero-card .hero-sub {
-  color: var(--c-muted);
-  font-size: 15px;
-  font-weight: 500;
-  max-width: 40ch;
-}
-
-.steps-row {
-  display: flex;
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.85fr;
   gap: var(--space-5);
-}
-
-.step-chip {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-  font-size: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-.step-chip .step-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+.hero-tabs {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: var(--r-pill);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-tabs button {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--c-muted);
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  transition: background 0.18s ease, color 0.18s ease;
+  white-space: nowrap;
+}
+
+.hero-tabs button:hover {
+  color: var(--c-white);
+}
+
+.hero-tabs button[aria-selected="true"] {
+  background: var(--c-orange);
+  color: #262525;
+}
+
+.hero-tabs button:focus-visible {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 2px;
+}
+
+.hero-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-orange);
+  margin: 0 0 12px;
+}
+
+.hero-copy h1 {
+  font-size: clamp(26px, 4vw, 40px);
+  line-height: 1.1;
+  color: var(--c-white);
+  margin: 0 0 var(--space-3);
+  max-width: 15ch;
+}
+
+.hero-subtext {
+  color: var(--c-muted);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0 0 var(--space-5);
+  max-width: 46ch;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--c-orange);
+  color: #262525;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 26px;
+  border-radius: var(--r-pill);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.hero-cta-primary:hover {
+  background: var(--c-orange-dark);
+  transform: translateY(-1px);
+}
+
+.hero-cta-primary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hero-cta-secondary {
+  color: var(--c-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.hero-cta-secondary:hover {
+  color: var(--c-white);
+}
+
+.hero-swap {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.hero-swap.is-changing {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-swap,
+  .hero-cta-primary {
+    transition: none;
+  }
+}
+
+.hero-art {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--c-orange);
+  min-height: 220px;
 }
 
-.hero-actions {
+.hero-blob {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: var(--c-orange);
+  filter: blur(46px);
+  opacity: 0.35;
+  transition: background 0.25s ease;
+}
+
+.hero-illustration {
+  position: relative;
+  width: min(100%, 220px);
+}
+
+.hero-illustration svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.3));
+}
+
+.hero-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--c-orange);
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.hero-badge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.hero-badge-icon {
+  display: none;
+}
+
+.hero-badge-icon.is-active {
+  display: block;
+}
+
+@media (max-width: 859px) {
+  .hero {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .hero-art {
+    order: -1;
+  }
 }
 
 .btn {
@@ -449,13 +588,6 @@ body.mobile-nav-open {
   font-weight: 700;
   color: var(--c-dark);
   opacity: 0.85;
-}
-
-@media (min-width: 860px) {
-  .hero-card {
-    max-width: 460px;
-    padding: var(--space-5) var(--space-5) var(--space-4);
-  }
 }
 
 /* ---- Seccions genèriques ------------------------------------------------ */

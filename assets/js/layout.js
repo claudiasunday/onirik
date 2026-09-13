@@ -35,7 +35,7 @@ function renderHeader() {
         ).join("")}
       </nav>
       <div class="header-actions">
-        <a class="btn btn-primary btn-compra" href="tenda.html">🛒 Compra</a>
+        <a class="btn btn-primary btn-compra" href="personalitza.html">Crea la teva taula</a>
         <button class="icon-btn menu-btn" id="menu-toggle" aria-label="Menú">☰</button>
       </div>
     </header>
