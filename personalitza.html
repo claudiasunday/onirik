@@ -12,22 +12,8 @@
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <a href="index.html" class="logo">
-        <span class="logo-top">ONIRIK</span>
-        <span class="logo-bottom">BOARDS</span>
-      </a>
-      <nav class="main-nav">
-        <a href="index.html#tenda">Tenda</a>
-        <a href="personalitza.html">Balance Board</a>
-        <a href="index.html#qui-som">Qui sóc</a>
-        <a href="index.html#contacte">Contacta'm</a>
-      </nav>
-      <div class="header-actions">
-        <button class="icon-btn" aria-label="Cistella">🛒</button>
-      </div>
-    </header>
+  <body data-page="personalitza">
+    <div id="site-header"></div>
 
     <main class="wizard">
       <div class="wizard-top">
@@ -116,11 +102,10 @@
       </div>
     </main>
 
-    <footer class="site-footer">
-      © <span id="year"></span> Onirik Boards — fetes amb amor.
-    </footer>
+    <div id="site-footer"></div>
 
     <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
     <script src="assets/js/personalitza.js"></script>
   </body>
 </html>

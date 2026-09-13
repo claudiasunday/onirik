@@ -177,5 +177,4 @@ els.btnSave.addEventListener("click", () => {
   els.btnSave.textContent = "Preselecció guardada ✓";
 });
 
-document.getElementById("year").textContent = new Date().getFullYear();
 render();

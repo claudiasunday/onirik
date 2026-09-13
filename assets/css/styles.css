@@ -126,6 +126,34 @@ button {
   font-size: 15px;
 }
 
+.main-nav a.active,
+.mobile-nav a.active {
+  color: var(--c-orange-dark);
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-4) var(--space-3);
+  font-weight: 700;
+}
+
+.mobile-nav[hidden] {
+  display: none;
+}
+
+.mobile-nav a {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid #eee;
+}
+
+@media (min-width: 860px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -381,6 +409,38 @@ section {
   margin-top: auto;
 }
 
+/* ---- Tenda (llistat + filtres) ------------------------------------------- */
+
+.shop-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.shop-toolbar .filters {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.shop-toolbar select {
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid #ddd;
+  background: var(--c-white);
+}
+
+.shop-toolbar .shop-count {
+  font-size: 13px;
+  color: var(--c-muted);
+}
+
 /* ---- Per què un balance board (beneficis) ------------------------------- */
 
 .benefits {
@@ -466,11 +526,273 @@ section {
   gap: var(--space-2);
 }
 
-.site-footer {
-  text-align: center;
-  padding: var(--space-4);
-  font-size: 12px;
+.contact-teaser {
+  background: var(--c-dark);
+  color: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.contact-teaser h2 {
+  font-size: 20px;
+}
+
+.contact-teaser p {
   color: var(--c-muted);
+  font-size: 14px;
+  margin-top: var(--space-1);
+}
+
+.site-footer {
+  padding-top: var(--space-6);
+  font-size: 13px;
+  color: var(--c-muted);
+}
+
+.footer-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid #eee;
+}
+
+@media (min-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+}
+
+.footer-brand .logo-top,
+.footer-brand .logo-bottom {
+  font-family: var(--f-heading);
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.footer-brand p {
+  margin-top: var(--space-2);
+}
+
+.footer-links,
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer-links a,
+.footer-contact a {
+  color: var(--c-dark);
+  font-weight: 600;
+}
+
+.copyright {
+  text-align: center;
+  padding: var(--space-4) 0;
+}
+
+/* ---- Pàgines de contingut (Coneix-nos, Què fem, Família Onirik...) ------- */
+
+.page-hero {
+  padding: var(--space-6) 0 var(--space-4);
+}
+
+.page-hero .eyebrow {
+  color: var(--c-orange-dark);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.page-hero h1 {
+  font-size: 30px;
+  margin-top: var(--space-2);
+  max-width: 20ch;
+}
+
+.page-hero .lede {
+  font-size: 16px;
+  color: var(--c-dark);
+  opacity: 0.8;
+  max-width: 60ch;
+  margin-top: var(--space-3);
+}
+
+.prose {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.prose h2 {
+  font-size: 20px;
+  margin-top: var(--space-2);
+}
+
+.prose blockquote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--c-orange);
+  background: var(--c-cream-2);
+  border-radius: 0 var(--r-swatch) var(--r-swatch) 0;
+  font-style: italic;
+}
+
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+.subnav a {
+  border: 1px solid var(--c-dark);
+  border-radius: var(--r-pill);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.subnav a.active {
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+.card-row {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .card-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.info-card {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.info-card h3 {
+  font-size: 16px;
+}
+
+.info-card p {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+/* ---- Contacte ------------------------------------------------------------ */
+
+.contact-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .contact-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+}
+
+.contact-info-item .ci-icon {
+  font-size: 20px;
+}
+
+.contact-info-item h3 {
+  font-size: 14px;
+}
+
+.contact-info-item p,
+.contact-info-item a {
+  font-size: 13px;
+  color: var(--c-dark);
+  opacity: 0.75;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+}
+
+.contact-form label {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: var(--f-body);
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  resize: vertical;
+}
+
+.contact-form .consent {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.contact-form .consent input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.form-success {
+  display: none;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 /* ==========================================================================

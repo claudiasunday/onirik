@@ -138,6 +138,52 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
   `;
 }
 
+// Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
+const CATALOG = [
+  { id: "p1", shapeId: "trik", designId: "tigre", colorId: null, discount: null },
+  { id: "p2", shapeId: "lasai", designId: "natural", colorId: null, discount: null },
+  { id: "p3", shapeId: "keki", designId: "ratlla-fosca", colorId: null, discount: 20 },
+  { id: "p4", shapeId: "trik", designId: "ratlla-taronja", colorId: null, discount: null },
+  { id: "p5", shapeId: "lasai", designId: "natural-fosc", colorId: null, discount: null },
+  { id: "p6", shapeId: "keki", designId: "bloc-negre", colorId: null, discount: 15 },
+  { id: "p7", shapeId: "trik", designId: "natural", colorId: "taronja", discount: null },
+  { id: "p8", shapeId: "lasai", designId: "ratlla-fosca", colorId: "teal", discount: null },
+];
+
+const SHAPE_TYPE_LABEL = {
+  trik: "fish",
+  lasai: "evolutive",
+  keki: "fish",
+};
+
+function buildProductCard(entry, { onClick } = {}) {
+  const shape = SHAPES.find((s) => s.id === entry.shapeId);
+  const price = entry.discount
+    ? Math.round(shape.price * (1 - entry.discount / 100))
+    : shape.price;
+
+  const card = document.createElement("div");
+  card.className = "product-card";
+  card.innerHTML = `
+    ${entry.discount ? `<span class="badge">-${entry.discount}%</span>` : ""}
+    <div class="thumb">${renderBoardSVG({
+      shapeId: entry.shapeId,
+      designId: entry.designId,
+      colorId: entry.colorId,
+    })}</div>
+    <h3>${shape.name}</h3>
+    <p class="p-type">Board tipo ${SHAPE_TYPE_LABEL[entry.shapeId]}</p>
+    <p class="p-price">${price}€${
+    entry.discount ? ` <s style="color:var(--c-muted);font-weight:400;">${shape.price}€</s>` : ""
+  }</p>
+  `;
+  card.addEventListener("click", () => {
+    if (onClick) onClick(entry);
+    else window.location.href = "personalitza.html";
+  });
+  return card;
+}
+
 function activityIcon(key) {
   const icons = {
     surf: "🏄",

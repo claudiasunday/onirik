@@ -12,23 +12,8 @@
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <a href="index.html" class="logo">
-        <span class="logo-top">ONIRIK</span>
-        <span class="logo-bottom">BOARDS</span>
-      </a>
-      <nav class="main-nav">
-        <a href="#tenda">Tenda</a>
-        <a href="personalitza.html">Balance Board</a>
-        <a href="#qui-som">Qui sóc</a>
-        <a href="#contacte">Contacta'm</a>
-      </nav>
-      <div class="header-actions">
-        <button class="icon-btn" aria-label="Cistella">🛒</button>
-        <button class="icon-btn menu-btn" aria-label="Menú">☰</button>
-      </div>
-    </header>
+  <body data-page="home">
+    <div id="site-header"></div>
 
     <main>
       <section class="hero">
@@ -54,17 +39,17 @@
             </div>
             <div class="hero-actions">
               <a class="btn btn-primary" href="personalitza.html">Personalitza'm</a>
-              <a class="btn btn-outline" href="#tenda">Veure totes les taules</a>
+              <a class="btn btn-outline" href="tenda.html">Veure totes les taules</a>
             </div>
           </div>
           <div class="hero-image" aria-hidden="true"></div>
         </div>
       </section>
 
-      <section id="tenda" class="container">
+      <section class="container">
         <div class="section-head">
           <h2>Edició limitada</h2>
-          <a class="link-pill" href="#tenda">Veure més</a>
+          <a class="link-pill" href="tenda.html">Veure més</a>
         </div>
         <div class="product-grid" id="product-grid-1"></div>
       </section>
@@ -72,7 +57,7 @@
       <section class="container">
         <div class="section-head">
           <h2>Edició limitada</h2>
-          <a class="link-underline" href="#tenda">Veure més</a>
+          <a class="link-underline" href="tenda.html">Veure més</a>
         </div>
         <div class="product-grid" id="product-grid-2"></div>
       </section>
@@ -108,30 +93,20 @@
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="qui-som" class="container">
-        <div class="contact-band" id="contacte">
-          <h2>Contacta'm</h2>
-          <p>
-            Vols alguna cosa personalitzada que no trobes a la tenda? Podem
-            fer-ho sota comanda — explica'm la teva idea.
-          </p>
-          <div class="contact-links">
-            <a href="mailto:info@onirikboards.com">✉️ info@onirikboards.com</a>
-            <a href="https://wa.me/34625579914">💬 +34 625 57 99 14</a>
+            <p style="margin-top: 8px;">
+              <a class="link-underline" href="que-fem-balanceboard.html"
+                >Per què el balanceboard és un estil de vida →</a
+              >
+            </p>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      © <span id="year"></span> Onirik Boards — fetes amb amor.
-    </footer>
+    <div id="site-footer"></div>
 
     <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
     <script src="assets/js/home.js"></script>
   </body>
 </html>

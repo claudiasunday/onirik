@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tenda — Onirik Boards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body data-page="tenda">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="page-hero container">
+        <span class="eyebrow">Tenda</span>
+        <h1>Taules a punt per portar-te'n a casa</h1>
+        <p class="lede">
+          Edicions limitades ja acabades. Si prefereixes triar tu la forma, el
+          disseny i el color, millor
+          <a class="link-underline" href="personalitza.html">personalitza la teva</a>.
+        </p>
+      </section>
+
+      <section class="container">
+        <div class="shop-toolbar">
+          <div class="filters">
+            <select id="filter-shape" aria-label="Filtra per forma">
+              <option value="all">Totes les formes</option>
+              <option value="trik">TRIK</option>
+              <option value="lasai">LASAI</option>
+              <option value="keki">KEKI</option>
+            </select>
+            <select id="sort-select" aria-label="Ordena per preu">
+              <option value="default">Ordenar per</option>
+              <option value="price-asc">Preu: de menys a més</option>
+              <option value="price-desc">Preu: de més a menys</option>
+            </select>
+          </div>
+          <span class="shop-count" id="shop-count"></span>
+        </div>
+        <div class="product-grid" id="shop-grid"></div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/tenda.js"></script>
+  </body>
+</html>
