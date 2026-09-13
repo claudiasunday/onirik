@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personalitza la teva taula — Onirik Boards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="index.html" class="logo">
+        <span class="logo-top">ONIRIK</span>
+        <span class="logo-bottom">BOARDS</span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html#tenda">Tenda</a>
+        <a href="personalitza.html">Balance Board</a>
+        <a href="index.html#qui-som">Qui sóc</a>
+        <a href="index.html#contacte">Contacta'm</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Cistella">🛒</button>
+      </div>
+    </header>
+
+    <main class="wizard">
+      <div class="wizard-top">
+        <button class="back-btn" id="back-btn" aria-label="Enrere">←</button>
+        <h1 id="wizard-title">Dissenya la teva taula</h1>
+      </div>
+
+      <div class="step-indicator">
+        <div class="step-dot" data-step="1">
+          <span class="num">1</span>
+          <span>forma</span>
+        </div>
+        <div class="step-dot" data-step="2">
+          <span class="num">2</span>
+          <span>disseny</span>
+        </div>
+        <div class="step-dot" data-step="3">
+          <span class="num">3</span>
+          <span>color</span>
+        </div>
+      </div>
+
+      <div class="wizard-grid">
+        <div class="board-stage">
+          <div class="board-preview" id="board-preview"></div>
+          <div class="carousel-row" id="shape-carousel">
+            <button class="carousel-arrow" id="shape-prev" aria-label="Forma anterior">←</button>
+            <div class="carousel-dots" id="shape-dots"></div>
+            <button class="carousel-arrow" id="shape-next" aria-label="Forma següent">→</button>
+          </div>
+        </div>
+
+        <div class="option-panel">
+          <!-- Pas 1: forma -->
+          <div id="panel-shape" class="step-panel">
+            <div class="option-head">
+              <h2 id="shape-name">TRIK</h2>
+              <span class="tag" id="shape-tag">PRO</span>
+            </div>
+            <p style="font-size:13px;color:var(--c-muted);margin:0;">ideal per:</p>
+            <div class="activity-row" id="shape-activities"></div>
+            <div class="wizard-actions">
+              <button class="btn btn-dark" id="btn-step1">Escull forma</button>
+            </div>
+          </div>
+
+          <!-- Pas 2: disseny -->
+          <div id="panel-design" class="step-panel" hidden>
+            <div class="option-head">
+              <h2>Tria el disseny</h2>
+            </div>
+            <div class="swatch-grid" id="design-grid"></div>
+            <div class="wizard-actions">
+              <button class="btn btn-dark" id="btn-step2" disabled>Tria disseny</button>
+            </div>
+          </div>
+
+          <!-- Pas 3: color -->
+          <div id="panel-color" class="step-panel" hidden>
+            <div class="option-head">
+              <h2>Tria el color</h2>
+            </div>
+            <div class="swatch-grid" id="color-grid"></div>
+            <div class="wizard-actions">
+              <button class="btn btn-dark" id="btn-step3" disabled>Tria el color</button>
+            </div>
+          </div>
+
+          <!-- Pas 4: resum -->
+          <div id="panel-summary" class="step-panel" hidden>
+            <div class="option-head">
+              <h2>Dissenyat per tu</h2>
+            </div>
+            <div class="summary-box">
+              <div class="row"><span>Forma</span><strong id="sum-shape"></strong></div>
+              <div class="row"><span>Disseny</span><strong id="sum-design"></strong></div>
+              <div class="row"><span>Color</span><strong id="sum-color"></strong></div>
+              <div class="row price"><span>Preu</span><span id="sum-price"></span></div>
+            </div>
+            <div class="wizard-actions">
+              <button class="btn btn-dark" id="btn-add-cart">Afegir a la cistella</button>
+              <button class="btn btn-secondary-outline" id="btn-save">Guardar preselecció</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      © <span id="year"></span> Onirik Boards — fetes amb amor.
+    </footer>
+
+    <script src="assets/js/board.js"></script>
+    <script src="assets/js/personalitza.js"></script>
+  </body>
+</html>
