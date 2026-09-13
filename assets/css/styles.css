@@ -129,10 +129,91 @@ main {
   font-family: var(--f-heading);
 }
 
-.logo img {
-  height: 34px;
-  width: auto;
+/* ---- Logo animat de la capçalera --------------------------------------- */
+/* Es reprodueix una sola vegada en carregar la pàgina i es queda fix en
+   l'estat final (favicon aturat + wordmark visible). */
+
+.onirik-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.onirik-logo__icon-wrap {
+  position: relative;
+  width: 42px;
+  height: 37px;
+  flex: none;
+}
+
+.onirik-logo__favicon {
   display: block;
+  width: 42px;
+  height: 37px;
+  transform-origin: 50% 50%;
+}
+
+.onirik-logo__wordmark {
+  display: block;
+  height: 30px;
+  width: auto;
+  /* Per defecte (pàgines secundàries) el logo es mostra ja assentat,
+     sense animació — només s'anima a la Home (veure --animated). */
+  opacity: 1;
+}
+
+/* Modificador afegit per JS només quan és la Home: allà sí que es
+   reprodueix l'animació (icona girant + wordmark apareixent). */
+.onirik-logo--animated .onirik-logo__wordmark {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .onirik-logo--animated .onirik-logo__favicon {
+    animation: onirik-spin-settle 1.5s cubic-bezier(0.2, 0, 0, 1) 1 both;
+  }
+  .onirik-logo--animated .onirik-logo__wordmark {
+    animation: onirik-wordmark-reveal 0.6s ease-out 1.05s 1 both;
+  }
+}
+
+/* si l'usuari prefereix menys moviment, es mostra ja assentat */
+@media (prefers-reduced-motion: reduce) {
+  .onirik-logo--animated .onirik-logo__wordmark {
+    opacity: 1;
+  }
+}
+
+@keyframes onirik-spin-settle {
+  0% {
+    transform: rotate(0deg) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.12, 1);
+  }
+  72% {
+    transform: rotate(1080deg) scale(1);
+    animation-timing-function: ease-out;
+  }
+  82% {
+    transform: rotate(1080deg) scale(1.1);
+    animation-timing-function: ease-in-out;
+  }
+  91% {
+    transform: rotate(1080deg) scale(0.96);
+  }
+  100% {
+    transform: rotate(1080deg) scale(1);
+  }
+}
+
+@keyframes onirik-wordmark-reveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .main-nav {

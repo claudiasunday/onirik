@@ -22,8 +22,11 @@ function renderHeader() {
   if (!mount) return;
   mount.innerHTML = `
     <header class="site-header">
-      <a href="index.html" class="logo">
-        <img src="assets/images/logo.png" alt="Onirik Boards" />
+      <a href="index.html" class="logo onirik-logo${current === "home" ? " onirik-logo--animated" : ""}">
+        <div class="onirik-logo__icon-wrap">
+          <img class="onirik-logo__favicon" src="assets/images/logo-icon.png" alt="" />
+        </div>
+        <img class="onirik-logo__wordmark" src="assets/images/logo-wordmark.png" alt="Onirik Boards" />
       </a>
       <nav class="main-nav">
         ${NAV_ITEMS.map(
