@@ -1,3 +1,6 @@
 .DS_Store
-.DS_Store
-.DS_Store
+node_modules/
+*.log
+
+# Captures/arxius que l'app de Claude deixa a la carpeta connectada
+Claude outputs/

@@ -23,8 +23,7 @@ function renderHeader() {
   mount.innerHTML = `
     <header class="site-header">
       <a href="index.html" class="logo">
-        <span class="logo-top">ONIRIK</span>
-        <span class="logo-bottom">BOARDS</span>
+        <img src="assets/images/logo.png" alt="Onirik Boards" />
       </a>
       <nav class="main-nav">
         ${NAV_ITEMS.map(
@@ -33,7 +32,7 @@ function renderHeader() {
         ).join("")}
       </nav>
       <div class="header-actions">
-        <button class="icon-btn" aria-label="Cistella">🛒</button>
+        <a class="btn btn-primary btn-compra" href="tenda.html">🛒 Compra</a>
         <button class="icon-btn menu-btn" id="menu-toggle" aria-label="Menú">☰</button>
       </div>
     </header>
@@ -49,6 +48,21 @@ function renderHeader() {
   toggle.addEventListener("click", () => {
     mobileNav.hidden = !mobileNav.hidden;
   });
+}
+
+/**
+ * Navbar fixa: comença transparent i passa a fons blanc en fer scroll
+ * (mateix comportament que claudiasunday.com).
+ */
+function initHeaderScroll() {
+  const mount = document.getElementById("site-header");
+  if (!mount) return;
+  const SCROLL_THRESHOLD = 8;
+  const onScroll = () => {
+    mount.classList.toggle("scrolled", window.scrollY > SCROLL_THRESHOLD);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 }
 
 function renderFooter() {
@@ -74,8 +88,9 @@ function renderFooter() {
     <footer class="site-footer">
       <div class="footer-grid container">
         <div class="footer-brand">
-          <span class="logo-top">ONIRIK</span><span class="logo-bottom"> BOARDS</span>
-          <p>Balance boards fetes amb amor, taller a taller.</p>
+          <img src="assets/images/logo.png" alt="Onirik Boards" class="footer-logo" />
+          <p class="footer-claim">🤟🏾 Balance as an attitude</p>
+          <p>Balance boards fetes a mà, taller a taller.</p>
         </div>
         <div class="footer-links">
           ${NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}
@@ -94,3 +109,4 @@ function renderFooter() {
 
 renderHeader();
 renderFooter();
+initHeaderScroll();

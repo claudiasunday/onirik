@@ -24,10 +24,18 @@ index.html
 personalitza.html
 assets/
   css/styles.css   — tokens de marca (color, tipografia, radis) i estils
+  images/          — fotografia del hero (veure "Crèdits d'imatge")
   js/board.js      — dades de producte (formes, dissenys, colors) + render SVG
   js/home.js       — targetes de producte de la Home
   js/personalitza.js — lògica del configurador de 3 passos
 ```
+
+## Crèdits d'imatge
+
+- `assets/images/hero-balance-board.jpg` — foto de Gustavo Torres a Unsplash
+  (llicència Unsplash, ús lliure comercial):
+  https://unsplash.com/photos/rBLTWS3WsQ8. Substitueix-la per fotografia
+  pròpia de producte quan en tinguis.
 
 ## Marca
 

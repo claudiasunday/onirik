@@ -33,6 +33,7 @@
   --space-6: 48px;
 
   --shadow-card: 0 8px 24px rgba(49, 48, 48, 0.08);
+  --header-h: 84px;
 }
 
 * {
@@ -88,7 +89,24 @@ button {
   padding: 0 var(--space-4);
 }
 
-/* ---- Header ------------------------------------------------------------ */
+/* ---- Header ------------------------------------------------------------- */
+/* Navbar fixa: transparent a dalt de tot, fons blanc en fer scroll
+   (mateix comportament que claudiasunday.com). */
+
+#site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: transparent;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+#site-header.scrolled {
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
+}
 
 .site-header {
   display: flex;
@@ -97,26 +115,28 @@ button {
   padding: var(--space-4);
   max-width: 1152px;
   margin: 0 auto;
+  min-height: var(--header-h);
+}
+
+main {
+  padding-top: var(--header-h);
+}
+
+body[data-page="home"] main {
+  padding-top: 0;
 }
 
 .logo {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   line-height: 1;
   font-family: var(--f-heading);
 }
 
-.logo .logo-top {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.logo .logo-bottom {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--c-orange-dark);
+.logo img {
+  height: 34px;
+  width: auto;
+  display: block;
 }
 
 .main-nav {
@@ -137,6 +157,8 @@ button {
   gap: var(--space-1);
   padding: 0 var(--space-4) var(--space-3);
   font-weight: 700;
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
 }
 
 .mobile-nav[hidden] {
@@ -169,6 +191,12 @@ button {
   color: var(--c-dark);
 }
 
+.btn-compra {
+  padding: 10px 20px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .menu-btn {
   display: inline-flex;
 }
@@ -185,15 +213,24 @@ button {
 /* ---- Hero / Personalitza CTA ------------------------------------------- */
 
 .hero {
-  padding: 0 var(--space-4) var(--space-6);
-  max-width: 1152px;
-  margin: 0 auto;
+  position: relative;
+  padding-bottom: var(--space-6);
 }
 
-.hero-grid {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: 1fr;
+/* La foto trenca l'amplada del container i ocupa tot el viewport. */
+.hero-photo {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background-image: url("../images/hero-balance-board.jpg");
+  background-size: cover;
+  background-position: center 30%;
+  height: 420px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  margin-top: -260px;
 }
 
 .hero-card {
@@ -204,6 +241,19 @@ button {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  box-shadow: 0 24px 48px rgba(49, 48, 48, 0.28);
+}
+
+.claim-tag {
+  align-self: flex-start;
+  background: rgba(249, 181, 79, 0.15);
+  color: var(--c-orange);
+  border: 1px solid rgba(249, 181, 79, 0.4);
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
 .hero-card h1 {
@@ -289,22 +339,28 @@ button {
   cursor: not-allowed;
 }
 
-.hero-image {
-  display: none;
+.claim-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: center;
+  padding: var(--space-4) 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-dark);
+  opacity: 0.85;
 }
 
 @media (min-width: 860px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 520px) 1fr;
-    align-items: stretch;
+  .hero-photo {
+    height: 620px;
   }
-  .hero-image {
-    display: block;
-    border-radius: var(--r-card);
-    background: linear-gradient(135deg, var(--c-cream), var(--c-orange) 140%);
-    position: relative;
-    overflow: hidden;
-    min-height: 360px;
+  .hero-content {
+    margin-top: -420px;
+  }
+  .hero-card {
+    max-width: 460px;
+    padding: var(--space-5) var(--space-5) var(--space-4);
   }
 }
 
@@ -368,6 +424,34 @@ section {
   gap: var(--space-2);
   position: relative;
   box-shadow: var(--shadow-card);
+}
+
+/* Fila única amb scroll horitzontal (Home — "Edició limitada"). */
+.product-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: var(--space-2);
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-row .product-card {
+  flex: 0 0 auto;
+  width: 200px;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .product-row .product-card {
+    width: 220px;
+  }
+}
+
+@media (min-width: 860px) {
+  .product-row .product-card {
+    width: 232px;
+  }
 }
 
 .product-card .badge {
@@ -568,15 +652,20 @@ section {
   }
 }
 
-.footer-brand .logo-top,
-.footer-brand .logo-bottom {
-  font-family: var(--f-heading);
-  font-weight: 700;
-  color: var(--c-dark);
+.footer-brand .footer-logo {
+  height: 30px;
+  width: auto;
+  display: block;
 }
 
 .footer-brand p {
   margin-top: var(--space-2);
+}
+
+.footer-brand .footer-claim {
+  color: var(--c-orange-dark);
+  font-weight: 700;
+  margin-top: var(--space-3);
 }
 
 .footer-links,
@@ -803,6 +892,7 @@ section {
   max-width: 1152px;
   margin: 0 auto;
   padding: var(--space-4) var(--space-4) var(--space-6);
+  padding-top: calc(var(--header-h) + var(--space-4));
 }
 
 .wizard-top {

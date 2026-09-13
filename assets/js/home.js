@@ -1,12 +1,11 @@
 /**
- * Home — mostra les 4 primeres peces del catàleg com a "Edició limitada".
+ * Home — mostra les peces del catàleg com a "Edició limitada" en una sola
+ * fila (scroll horitzontal en pantalles petites).
  */
 
 function mountProducts() {
-  const grid1 = document.getElementById("product-grid-1");
-  const grid2 = document.getElementById("product-grid-2");
-  CATALOG.slice(0, 2).forEach((p) => grid1.appendChild(buildProductCard(p)));
-  CATALOG.slice(2, 4).forEach((p) => grid2.appendChild(buildProductCard(p)));
+  const grid = document.getElementById("product-grid-1");
+  CATALOG.slice(0, 5).forEach((p) => grid.appendChild(buildProductCard(p)));
 }
 
 mountProducts();
