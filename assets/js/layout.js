@@ -48,8 +48,28 @@ function renderHeader() {
   `;
   const toggle = document.getElementById("menu-toggle");
   const mobileNav = document.getElementById("mobile-nav");
-  toggle.addEventListener("click", () => {
-    mobileNav.hidden = !mobileNav.hidden;
+  let backdrop = document.getElementById("mobile-nav-backdrop");
+  if (!backdrop) {
+    backdrop = document.createElement("div");
+    backdrop.id = "mobile-nav-backdrop";
+    backdrop.className = "mobile-nav-backdrop";
+    backdrop.hidden = true;
+    document.body.appendChild(backdrop);
+  }
+
+  const setMenuOpen = (open) => {
+    mobileNav.hidden = !open;
+    backdrop.hidden = !open;
+    toggle.textContent = open ? "✕" : "☰";
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.classList.toggle("mobile-nav-open", open);
+  };
+
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.addEventListener("click", () => setMenuOpen(mobileNav.hidden));
+  backdrop.addEventListener("click", () => setMenuOpen(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !mobileNav.hidden) setMenuOpen(false);
   });
 }
 

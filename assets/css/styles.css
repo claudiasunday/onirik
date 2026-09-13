@@ -253,6 +253,29 @@ main {
   }
 }
 
+/* Fons semitransparent darrere el menú mòbil desplegat, perquè no
+   quedi tallat directament sobre el contingut de la pàgina. */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(49, 48, 48, 0.32);
+  z-index: 90;
+}
+
+.mobile-nav-backdrop[hidden] {
+  display: none;
+}
+
+body.mobile-nav-open {
+  overflow: hidden;
+}
+
+@media (min-width: 860px) {
+  .mobile-nav-backdrop {
+    display: none !important;
+  }
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -1048,11 +1071,33 @@ section {
 
 .board-preview {
   width: 100%;
-  max-width: 320px;
+  max-width: 240px;
   aspect-ratio: 320 / 420;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .board-preview {
+    max-width: 320px;
+  }
+}
+
+/* Mòbil: apropem el CTA principal ("Escull forma") a la part visible
+   sense scroll, retallant una mica els marges verticals del wizard. */
+@media (max-width: 639px) {
+  .wizard-top {
+    margin-bottom: var(--space-4);
+  }
+
+  .step-indicator {
+    margin-bottom: var(--space-4);
+  }
+
+  .board-stage {
+    gap: var(--space-3);
+  }
 }
 
 .carousel-row {
