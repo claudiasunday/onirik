@@ -90,8 +90,8 @@ button {
 }
 
 /* ---- Header ------------------------------------------------------------- */
-/* Navbar fixa: transparent a dalt de tot, fons blanc en fer scroll
-   (mateix comportament que claudiasunday.com). */
+/* Navbar fixa, sempre amb fons blanc; l'ombra apareix en fer scroll
+   (mateix comportament que claudiasunday.com, però sense transparència). */
 
 #site-header {
   position: fixed;
@@ -99,12 +99,12 @@ button {
   left: 0;
   right: 0;
   z-index: 100;
-  background: transparent;
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.08);
+  transition: box-shadow 0.25s ease;
 }
 
 #site-header.scrolled {
-  background: var(--c-white);
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
 }
 
@@ -120,10 +120,6 @@ button {
 
 main {
   padding-top: var(--header-h);
-}
-
-body[data-page="home"] main {
-  padding-top: 0;
 }
 
 .logo {
@@ -214,23 +210,22 @@ body[data-page="home"] main {
 
 .hero {
   position: relative;
-  padding-bottom: var(--space-6);
+  /* El padding vertical marca el límit de la foto a mida completa i
+     dona l'espai (48px) per sobre i per sota de la targeta. */
+  padding: var(--space-6) 0;
 }
 
-/* La foto trenca l'amplada del container i ocupa tot el viewport. */
 .hero-photo {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  position: absolute;
+  inset: 0;
   background-image: url("../images/hero-balance-board.jpg");
   background-size: cover;
   background-position: center 30%;
-  height: 420px;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  margin-top: -260px;
 }
 
 .hero-card {
@@ -352,12 +347,6 @@ body[data-page="home"] main {
 }
 
 @media (min-width: 860px) {
-  .hero-photo {
-    height: 620px;
-  }
-  .hero-content {
-    margin-top: -420px;
-  }
   .hero-card {
     max-width: 460px;
     padding: var(--space-5) var(--space-5) var(--space-4);
