@@ -292,7 +292,7 @@ body.mobile-nav-open {
   color: var(--c-dark);
 }
 
-.btn-compra {
+.btn.btn-compra {
   padding: 10px 20px;
   font-size: 14px;
   white-space: nowrap;
@@ -316,6 +316,37 @@ body.mobile-nav-open {
   }
   .menu-btn {
     display: none;
+  }
+}
+
+/* En mòbil/tablet (sense el nav complet) la capçalera es veu petita:
+   agrandim el logo i el botó de menú perquè tinguin més presència i
+   una àrea de tap còmoda, i pugem l'alçada de la capçalera en
+   conseqüència perquè el contingut no quedi tallat. */
+@media (max-width: 859px) {
+  :root {
+    --header-h: 92px;
+  }
+
+  .onirik-logo__icon-wrap {
+    width: 50px;
+    height: 44px;
+  }
+
+  .onirik-logo__favicon {
+    width: 50px;
+    height: 44px;
+  }
+
+  .onirik-logo__wordmark {
+    height: 34px;
+  }
+
+  .menu-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 22px;
   }
 }
 
