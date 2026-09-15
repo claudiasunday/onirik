@@ -48,14 +48,24 @@ const ACTIVITY_LABELS = {
 };
 
 // "Disseny" — patrons / acabats aplicats a la superfície de la taula.
+// Cada patró (`kind`) defineix quina part de la taula és "de color": la
+// resta és sempre fusta o un to fix propi del disseny. El pas 3 (color)
+// només pinta aquesta zona concreta — mai substitueix tot el disseny.
 const DESIGNS = [
-  { id: "natural", name: "Natural clar", stops: ["#e7c9a0", "#c98a4b"] },
-  { id: "natural-fosc", name: "Natural fosc", stops: ["#a9723f", "#6b3d1f"] },
-  { id: "bloc-negre", name: "Bloc negre", stops: ["#3a3a3a", "#161616"] },
-  { id: "ratlla-taronja", name: "Ratlla central", stops: ["#e7c9a0", "#c98a4b"], stripe: "#f9b54f" },
-  { id: "ratlla-fosca", name: "Ratlla fosca", stops: ["#e7c9a0", "#c98a4b"], stripe: "#232323" },
-  { id: "tigre", name: "Tigre", stops: ["#f9b54f", "#232B4d"], zigzag: true },
+  { id: "fusta-natural", name: "Fusta amb vernis", kind: "wood", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "fusta-teca", name: "Fusta amb vernis teca", kind: "wood", wood: ["#a9723f", "#6b3d1f"] },
+  { id: "solid", name: "Fullcolor sòlid", kind: "solid", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "franja-dreta", name: "Franja al mig-dret", kind: "franja-dreta", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "franges-centre", name: "Franja gran i franges petites", kind: "franges-centre", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "diagonal", name: "Diagonal amb franja", kind: "diagonal", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "meitat", name: "Meitat de color", kind: "meitat", wood: ["#e7c9a0", "#c98a4b"] },
 ];
+
+// To neutre que marca, abans de triar color, quina zona d'un disseny és
+// "de color" (la resta del disseny ja es veu amb el seu aspecte final).
+const COLOR_PLACEHOLDER = "#cfcfcf";
+// To fix (no editable) que usen els blocs foscos d'alguns dissenys.
+const DESIGN_DARK = "#313030";
 
 // "Color" — a l'estil del disseny original, s'aplica a la meitat de la taula.
 const COLORS = [
@@ -76,7 +86,7 @@ let __uid = 0;
  * @param {Object} opts
  * @param {string} opts.shapeId
  * @param {string} [opts.designId]
- * @param {string} [opts.colorId] - si es passa, pinta la meitat dreta de la taula
+ * @param {string} [opts.colorId] - pinta només la zona "de color" del disseny triat
  * @param {boolean} [opts.showLogo]
  */
 function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
@@ -86,46 +96,76 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
   const uid = `b${__uid++}`;
   const gradId = `grad-${uid}`;
   const clipId = `clip-${uid}`;
+  const [woodA, woodB] = design.wood;
+  // Zona "de color" del disseny: mentre no se'n triï cap, es marca amb un
+  // to neutre perquè es vegi on s'aplicarà, sense donar-la per definitiva.
+  const accent = color ? color.hex : COLOR_PLACEHOLDER;
 
-  let stripeMarkup = "";
-  if (design.stripe) {
-    stripeMarkup = `<rect x="92" y="4" width="16" height="292" fill="${design.stripe}" />`;
+  let layers;
+  switch (design.kind) {
+    case "solid":
+      // Tot el disseny és la zona de color.
+      layers = `<rect x="0" y="0" width="200" height="300" fill="${accent}" />`;
+      break;
+
+    case "franja-dreta":
+      // Bloc fosc a l'esquerra + franja de color + fusta a la dreta.
+      layers = `
+        <rect x="0" y="0" width="200" height="300" fill="url(#${gradId})" />
+        <rect x="0" y="0" width="110" height="300" fill="${DESIGN_DARK}" />
+        <rect x="110" y="0" width="14" height="300" fill="${accent}" />
+      `;
+      break;
+
+    case "franges-centre":
+      // Fusta a l'esquerra, dues franges petites al centre (una fixa,
+      // una de color) i un bloc fosc gran a la dreta.
+      layers = `
+        <rect x="0" y="0" width="200" height="300" fill="url(#${gradId})" />
+        <rect x="92" y="0" width="108" height="300" fill="${DESIGN_DARK}" />
+        <rect x="76" y="0" width="8" height="300" fill="${DESIGN_DARK}" />
+        <rect x="84" y="0" width="8" height="300" fill="${accent}" />
+      `;
+      break;
+
+    case "diagonal":
+      // Meitat fosca / meitat fusta partides en diagonal, amb una franja
+      // de color seguint el tall.
+      layers = `
+        <polygon points="0,0 0,300 200,300" fill="url(#${gradId})" />
+        <polygon points="0,0 200,0 200,300" fill="${DESIGN_DARK}" />
+        <line x1="0" y1="0" x2="200" y2="300" stroke="${accent}" stroke-width="16" />
+      `;
+      break;
+
+    case "meitat":
+      // Meitat fusta, meitat de color.
+      layers = `
+        <rect x="0" y="0" width="200" height="300" fill="url(#${gradId})" />
+        <rect x="100" y="0" width="100" height="300" fill="${accent}" />
+      `;
+      break;
+
+    case "wood":
+    default:
+      // Fusta massissa: el color no hi té cap efecte.
+      layers = `<rect x="0" y="0" width="200" height="300" fill="url(#${gradId})" />`;
+      break;
   }
-
-  let zigzagMarkup = "";
-  if (design.zigzag) {
-    const [a, b] = design.stops;
-    const stripes = [];
-    for (let i = -2; i < 14; i++) {
-      stripes.push(
-        `<rect x="${i * 20 - 40}" y="-20" width="12" height="360" fill="${
-          i % 2 === 0 ? a : b
-        }" transform="rotate(20 100 150)" />`
-      );
-    }
-    zigzagMarkup = stripes.join("");
-  }
-
-  const colorMarkup = color
-    ? `<rect x="100" y="0" width="100" height="300" fill="${color.hex}" />`
-    : "";
 
   return `
     <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${shape.name}">
       <defs>
         <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="${design.stops[0]}" />
-          <stop offset="100%" stop-color="${design.stops[1]}" />
+          <stop offset="0%" stop-color="${woodA}" />
+          <stop offset="100%" stop-color="${woodB}" />
         </linearGradient>
         <clipPath id="${clipId}">
           <path d="${shape.path}" />
         </clipPath>
       </defs>
       <g clip-path="url(#${clipId})">
-        <rect x="0" y="0" width="200" height="300" fill="url(#${gradId})" />
-        ${design.zigzag ? zigzagMarkup : ""}
-        ${stripeMarkup}
-        ${colorMarkup}
+        ${layers}
       </g>
       <path d="${shape.path}" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2" />
       ${
@@ -140,14 +180,14 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
 
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
-  { id: "p1", shapeId: "trik", designId: "tigre", colorId: null, discount: null },
-  { id: "p2", shapeId: "lasai", designId: "natural", colorId: null, discount: null },
-  { id: "p3", shapeId: "keki", designId: "ratlla-fosca", colorId: null, discount: 20 },
-  { id: "p4", shapeId: "trik", designId: "ratlla-taronja", colorId: null, discount: null },
-  { id: "p5", shapeId: "lasai", designId: "natural-fosc", colorId: null, discount: null },
-  { id: "p6", shapeId: "keki", designId: "bloc-negre", colorId: null, discount: 15 },
-  { id: "p7", shapeId: "trik", designId: "natural", colorId: "taronja", discount: null },
-  { id: "p8", shapeId: "lasai", designId: "ratlla-fosca", colorId: "teal", discount: null },
+  { id: "p1", shapeId: "trik", designId: "diagonal", colorId: "taronja", discount: null },
+  { id: "p2", shapeId: "lasai", designId: "fusta-natural", colorId: null, discount: null },
+  { id: "p3", shapeId: "keki", designId: "franja-dreta", colorId: "negre", discount: 20 },
+  { id: "p4", shapeId: "trik", designId: "franja-dreta", colorId: "taronja", discount: null },
+  { id: "p5", shapeId: "lasai", designId: "fusta-teca", colorId: null, discount: null },
+  { id: "p6", shapeId: "keki", designId: "solid", colorId: "negre", discount: 15 },
+  { id: "p7", shapeId: "trik", designId: "meitat", colorId: "taronja", discount: null },
+  { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
 ];
 
 const SHAPE_TYPE_LABEL = {

@@ -17,7 +17,7 @@ const HERO_DATA = {
     secondaryHref: "tenda.html",
     icon: "bag",
     blob: "var(--c-orange)",
-    board: { shapeId: "trik", designId: "ratlla-taronja", colorId: null },
+    board: { shapeId: "trik", designId: "franja-dreta", colorId: "taronja" },
   },
   tallers: {
     eyebrow: "Aprèn a mantenir l'equilibri",
@@ -30,7 +30,7 @@ const HERO_DATA = {
     secondaryHref: "contacte.html",
     icon: "group",
     blob: "var(--c-wood)",
-    board: { shapeId: "lasai", designId: "natural", colorId: null },
+    board: { shapeId: "lasai", designId: "fusta-natural", colorId: null },
   },
   espais: {
     eyebrow: "Porta Onirik al teu espai",
@@ -43,7 +43,7 @@ const HERO_DATA = {
     secondaryHref: "familia-onirik.html",
     icon: "building",
     blob: "var(--c-muted)",
-    board: { shapeId: "keki", designId: "bloc-negre", colorId: "blanc" },
+    board: { shapeId: "keki", designId: "meitat", colorId: "negre" },
   },
 };
 

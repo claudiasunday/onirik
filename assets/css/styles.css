@@ -1187,6 +1187,15 @@ section {
   color: var(--c-muted);
 }
 
+/* Pas ja visitat: es pot clicar per tornar-hi (o saltar-hi de nou). */
+.step-dot.reachable {
+  cursor: pointer;
+}
+
+.step-dot.reachable:hover .num {
+  box-shadow: 0 0 0 3px rgba(249, 181, 79, 0.3);
+}
+
 .step-dot .num {
   width: 32px;
   height: 32px;
@@ -1292,8 +1301,12 @@ section {
 }
 
 .carousel-dots .dot {
-  width: 8px;
-  height: 8px;
+  /* Caixa de 24x24 per a un objectiu tàctil còmode, amb el punt visible
+     de 8x8 centrat via padding + background-clip (box-sizing: border-box). */
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  background-clip: content-box;
   border-radius: 50%;
   background: #d9d9d9;
 }
@@ -1306,6 +1319,19 @@ section {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+/* Cada pas (forma/disseny/color/resum) és un sol fill visible de
+   .option-panel: sense aquest gap intern, la capçalera, la graella de
+   mostres i el botó d'acció quedaven enganxats entre ells. */
+.step-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.step-panel[hidden] {
+  display: none;
 }
 
 .option-head {
