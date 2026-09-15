@@ -24,8 +24,7 @@ const els = {
   shapeName: document.getElementById("shape-name"),
   shapeTag: document.getElementById("shape-tag"),
   shapeActivities: document.getElementById("shape-activities"),
-  shapeDots: document.getElementById("shape-dots"),
-  shapeCarousel: document.getElementById("shape-carousel"),
+  shapeGrid: document.getElementById("shape-grid"),
   designGrid: document.getElementById("design-grid"),
   colorGrid: document.getElementById("color-grid"),
   btnStep1: document.getElementById("btn-step1"),
@@ -59,10 +58,14 @@ function renderShapeStep() {
   els.shapeActivities.innerHTML = shape.activities
     .map((a) => `<span>${activityIcon(a)} ${ACTIVITY_LABELS[a]}</span>`)
     .join("");
-  els.shapeDots.innerHTML = SHAPES.map(
-    (s, i) =>
-      `<button type="button" class="dot${i === state.shapeIndex ? " active" : ""}" data-index="${i}" aria-label="${s.name}"></button>`
-  ).join("");
+  // Miniatures de cada forma (mateix patró que la graella de dissenys):
+  // es poden triar directament clicant-hi, sense passar per fletxes.
+  els.shapeGrid.innerHTML = SHAPES.map((s, i) => {
+    const selected = i === state.shapeIndex ? " selected" : "";
+    return `<button type="button" class="swatch swatch-shape${selected}" data-index="${i}" title="${s.name}">${renderBoardSVG(
+      { shapeId: s.id, designId: "fusta-natural", colorId: null, showLogo: false }
+    )}</button>`;
+  }).join("");
 }
 
 // Genera el fons pla (CSS) de cada swatch del selector de disseny, seguint
@@ -130,9 +133,6 @@ function render() {
     panel.hidden = Number(step) !== state.step;
   });
 
-  // shape carousel only visible on step 1
-  els.shapeCarousel.style.visibility = state.step === 1 ? "visible" : "hidden";
-
   if (state.step === 1) renderShapeStep();
   if (state.step === 2) renderDesignStep();
   if (state.step === 3) renderColorStep();
@@ -177,18 +177,9 @@ els.backBtn.addEventListener("click", () => {
   render();
 });
 
-// Fletxes del carrusel: avancen/retrocedeixen entre les formes.
-document.getElementById("shape-prev").addEventListener("click", () => {
-  state.shapeIndex = (state.shapeIndex - 1 + SHAPES.length) % SHAPES.length;
-  render();
-});
-document.getElementById("shape-next").addEventListener("click", () => {
-  state.shapeIndex = (state.shapeIndex + 1) % SHAPES.length;
-  render();
-});
-// Punts del carrusel: seleccionen directament la forma corresponent.
-els.shapeDots.addEventListener("click", (e) => {
-  const btn = e.target.closest(".dot");
+// Graella de miniatures de formes: se selecciona directament clicant-hi.
+els.shapeGrid.addEventListener("click", (e) => {
+  const btn = e.target.closest(".swatch");
   if (!btn) return;
   state.shapeIndex = Number(btn.dataset.index);
   render();

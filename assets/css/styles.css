@@ -1281,48 +1281,6 @@ section {
   }
 }
 
-.carousel-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.carousel-arrow {
-  background: none;
-  color: var(--c-dark);
-  font-size: 18px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-arrow:hover {
-  background: #f2f2f2;
-}
-
-.carousel-dots {
-  display: flex;
-  gap: 8px;
-}
-
-.carousel-dots .dot {
-  /* Caixa de 24x24 per a un objectiu tàctil còmode, amb el punt visible
-     de 8x8 centrat via padding + background-clip (box-sizing: border-box). */
-  width: 24px;
-  height: 24px;
-  padding: 8px;
-  background-clip: content-box;
-  border-radius: 50%;
-  background: #d9d9d9;
-}
-
-.carousel-dots .dot.active {
-  background: var(--c-orange);
-}
-
 .option-panel {
   display: flex;
   flex-direction: column;
@@ -1397,6 +1355,22 @@ section {
 
 .swatch-color {
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Miniatures de forma (pas 1): mateixa graella que els dissenys/colors,
+   però amb una vista prèvia SVG real en comptes d'un simple color pla. */
+.swatch-shape {
+  background: var(--c-cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+}
+
+.swatch-shape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .summary-box {
