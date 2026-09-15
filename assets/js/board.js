@@ -11,6 +11,9 @@ const SHAPES = [
     name: "PEIX",
     tag: "PRO",
     price: 149,
+    tagline: "Rendiment i control per a nivells avançats.",
+    description:
+      "Pensada per a qui ja domina l'equilibri i busca precisió: la cua notada dona un control extra en gir i frenada, tant a l'aigua com a la neu.",
     activities: ["surf", "snow", "skim"],
     path:
       "M100,6 C132,6 160,58 164,148 C167,206 158,244 142,272 " +
@@ -24,6 +27,9 @@ const SHAPES = [
     name: "LASAI",
     tag: "INICIACIÓ",
     price: 129,
+    tagline: "Calma i estabilitat per començar.",
+    description:
+      "Base àmplia i estable, ideal per iniciar-se en l'equilibri, fer ioga o tonificar sense pressa. \"Lasai\" significa calma en euskera.",
     activities: ["yoga", "tonificacio"],
     path:
       "M100,6 C140,36 172,94 172,150 C172,206 140,262 100,294 " +
@@ -36,6 +42,9 @@ const SHAPES = [
     name: "LA FREE",
     tag: "FREESTYLE",
     price: 139,
+    tagline: "Agilitat i estil per a moviments lliures.",
+    description:
+      "Nas apuntat i cantells facetats per a qui busca maniobrabilitat i un toc freestyle, tant al surf com a l'skim.",
     activities: ["surf", "skim"],
     path:
       "M100,6 C130,6 155,48 158,118 L158,228 L134,268 L100,286 " +
@@ -48,6 +57,9 @@ const SHAPES = [
     name: "KEKI",
     tag: "+KIDS",
     price: 119,
+    tagline: "Estable, versàtil i divertida.",
+    description:
+      "Perfecta per a qui busca una taula que s'adapta a diferents condicions i nivells. La seva forma arrodonida dona estabilitat sense renunciar a la diversió.",
     activities: ["skim", "tonificacio"],
     path:
       "M100,6 C136,6 160,58 162,148 C164,214 150,262 122,286 " +

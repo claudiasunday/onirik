@@ -23,14 +23,16 @@ const els = {
   },
   shapeName: document.getElementById("shape-name"),
   shapeTag: document.getElementById("shape-tag"),
+  shapeTagline: document.getElementById("shape-tagline"),
+  shapeDescription: document.getElementById("shape-description"),
   shapeActivities: document.getElementById("shape-activities"),
   shapeGrid: document.getElementById("shape-grid"),
   designGrid: document.getElementById("design-grid"),
   colorGrid: document.getElementById("color-grid"),
   btnStep1: document.getElementById("btn-step1"),
+  btnStep1Label: document.getElementById("btn-step1-label"),
   btnStep2: document.getElementById("btn-step2"),
   btnStep3: document.getElementById("btn-step3"),
-  backBtn: document.getElementById("back-btn"),
   sumShape: document.getElementById("sum-shape"),
   sumDesign: document.getElementById("sum-design"),
   sumColor: document.getElementById("sum-color"),
@@ -55,16 +57,30 @@ function renderShapeStep() {
   const shape = currentShape();
   els.shapeName.textContent = shape.name;
   els.shapeTag.textContent = shape.tag;
+  els.shapeTagline.textContent = shape.tagline;
+  els.shapeDescription.textContent = shape.description;
   els.shapeActivities.innerHTML = shape.activities
-    .map((a) => `<span>${activityIcon(a)} ${ACTIVITY_LABELS[a]}</span>`)
+    .map(
+      (a) =>
+        `<div class="activity-chip"><span class="activity-chip-icon">${activityIcon(
+          a
+        )}</span><span class="activity-chip-label">${ACTIVITY_LABELS[a]}</span></div>`
+    )
     .join("");
-  // Miniatures de cada forma (mateix patró que la graella de dissenys):
-  // es poden triar directament clicant-hi, sense passar per fletxes.
+  els.btnStep1Label.textContent = `Escollir ${shape.name}`;
+  // Targetes de cada forma (nom a sota + marca de selecció): es poden
+  // triar directament clicant-hi, sense passar per fletxes.
   els.shapeGrid.innerHTML = SHAPES.map((s, i) => {
     const selected = i === state.shapeIndex ? " selected" : "";
-    return `<button type="button" class="swatch swatch-shape${selected}" data-index="${i}" title="${s.name}">${renderBoardSVG(
-      { shapeId: s.id, designId: "fusta-natural", colorId: null, showLogo: false }
-    )}</button>`;
+    return `<button type="button" class="shape-card${selected}" data-index="${i}" title="${s.name}">
+      <span class="swatch swatch-shape">
+        ${renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", colorId: null, showLogo: false })}
+        <span class="shape-check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        </span>
+      </span>
+      <span class="shape-card-name">${s.name}</span>
+    </button>`;
   }).join("");
 }
 
@@ -119,6 +135,12 @@ function renderSummary() {
 }
 
 function render() {
+  // Marca el pas actual al <main>: el pas 1 (forma) ja mostra la imatge
+  // de la taula a cada targeta i a la fitxa de detall, així que la vista
+  // prèvia gran de dalt hi és redundant i es pot encongir en mòbil
+  // (vegeu CSS [data-step="1"] .board-preview) per no tapar el CTA.
+  document.querySelector(".wizard").dataset.step = state.step;
+
   // step indicator — els punts ja visitats (<= maxStep) es poden clicar
   // per tornar-hi o saltar-hi de nou, sense perdre les tries fetes.
   els.dots.forEach((dot) => {
@@ -168,18 +190,10 @@ els.dots.forEach((dot) => {
   });
 });
 
-els.backBtn.addEventListener("click", () => {
-  if (state.step === 1) {
-    window.location.href = "index.html";
-    return;
-  }
-  state.step -= 1;
-  render();
-});
-
-// Graella de miniatures de formes: se selecciona directament clicant-hi.
+// Graella de targetes de formes: se selecciona directament clicant-hi
+// (la navegació cap enrere es fa amb els punts de pas, ja clicables).
 els.shapeGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".swatch");
+  const btn = e.target.closest(".shape-card");
   if (!btn) return;
   state.shapeIndex = Number(btn.dataset.index);
   render();

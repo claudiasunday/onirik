@@ -1195,13 +1195,6 @@ section {
   margin-bottom: var(--space-5);
 }
 
-.back-btn {
-  background: none;
-  color: var(--c-orange-dark);
-  display: inline-flex;
-  font-size: 20px;
-}
-
 .wizard-top h1 {
   font-size: 20px;
 }
@@ -1355,6 +1348,153 @@ section {
   gap: 6px;
 }
 
+/* Pas 1 (forma): capçalera "eyebrow + pregunta" en lloc d'un simple
+   títol petit, seguint el disseny de referència. */
+.shape-intro .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.shape-intro h2 {
+  font-size: 26px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.shape-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.shape-detail .option-head h3 {
+  font-size: 24px;
+}
+
+.shape-tagline {
+  font-weight: 700;
+  margin: 0;
+}
+
+.shape-description {
+  color: #6b6a68;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.shape-activities-label {
+  font-size: 13px;
+  color: var(--c-muted);
+  margin: var(--space-1) 0 0;
+}
+
+.activity-chips {
+  align-items: flex-start;
+}
+
+.activity-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-4);
+  border-right: 1px solid rgba(49, 48, 48, 0.1);
+}
+
+.activity-chip:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.activity-chip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.activity-chip-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+/* Targetes de forma: imatge + nom a sota + marca de selecció, en lloc
+   d'un simple swatch sense etiquetar. */
+.shape-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.shape-card .swatch-shape {
+  width: 100%;
+}
+
+.shape-card.selected .swatch-shape {
+  border-color: var(--c-orange);
+}
+
+.shape-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--c-muted);
+}
+
+.shape-card.selected .shape-card-name {
+  color: var(--c-dark);
+}
+
+.shape-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.shape-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+.shape-card.selected .shape-check {
+  display: flex;
+}
+
+.btn-wizard-cta {
+  width: 100%;
+}
+
+.btn-wizard-cta svg {
+  width: 18px;
+  height: 18px;
+}
+
 .swatch-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1466,7 +1606,7 @@ section {
   }
 
   .wizard-grid {
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 
   .board-stage {
@@ -1482,12 +1622,43 @@ section {
     max-width: 175px;
   }
 
+  /* El pas 1 (forma) ja mostra la imatge de la taula a cada targeta i a
+     la fitxa de detall (nom, tagline, descripció, activitats...): amb
+     tot aquest contingut afegit, la vista prèvia gran de dalt (redundant
+     aquí) s'amaga per no tapar el CTA. Als altres passos (disseny/color)
+     segueix sent la única referència visual, així que hi queda gran. */
+  .wizard[data-step="1"] .board-stage {
+    display: none;
+  }
+
   /* Cada pas del wizard apila 5-6 blocs (títol, graella, nom+tag,
      "ideal per:", activitats, botó): amb el gap d'escriptori (24px)
      entre cadascun, només aquests espais ja sumaven ~120px i tapaven
      el CTA. En mòbil n'hi ha prou amb un gap més petit. */
   .step-panel {
     gap: var(--space-2);
+  }
+
+  .shape-intro h2 {
+    font-size: 21px;
+  }
+
+  .shape-detail {
+    gap: var(--space-1);
+  }
+
+  .shape-detail .option-head h3 {
+    font-size: 20px;
+  }
+
+  .shape-description {
+    font-size: 13px;
+  }
+
+  .activity-chip-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
   }
 
   .option-head h2 {
@@ -1512,6 +1683,14 @@ section {
   }
 
   .swatch-grid .swatch {
+    flex: 0 0 76px;
+    width: 76px;
+    scroll-snap-align: start;
+  }
+
+  /* La graella de formes té un fill extra (.shape-card, imatge+nom): cal
+     donar la mida de l'ítem del carousel a la targeta, no al swatch intern. */
+  .swatch-grid > .shape-card {
     flex: 0 0 76px;
     width: 76px;
     scroll-snap-align: start;
