@@ -44,6 +44,7 @@ function renderHeader() {
         (item) =>
           `<a href="${item.href}"${item.id === current ? ' class="active"' : ""}>${item.label}</a>`
       ).join("")}
+      <a class="btn btn-primary btn-compra mobile-nav-cta" href="personalitza.html">Crea la teva taula</a>
     </nav>
   `;
   const toggle = document.getElementById("menu-toggle");

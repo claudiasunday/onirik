@@ -248,6 +248,15 @@ main {
   border-bottom: 1px solid #eee;
 }
 
+/* El CTA "Crea la teva taula" s'amaga a la capçalera en mòbil petit
+   (regla més amunt), però ha de seguir visible aquí dins del menú
+   desplegable — si no, en mòbil petit desapareixia del tot. */
+.mobile-nav .btn.btn-compra {
+  display: inline-flex;
+  width: 100%;
+  margin-top: var(--space-3);
+}
+
 @media (min-width: 860px) {
   .mobile-nav {
     display: none !important;
@@ -949,6 +958,8 @@ section {
 
 .page-hero {
   padding: var(--space-6) 0 var(--space-4);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
 
 .page-hero .eyebrow {
