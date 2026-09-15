@@ -154,7 +154,7 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
   }
 
   return `
-    <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${shape.name}">
+    <svg viewBox="0 0 200 300" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${shape.name}">
       <defs>
         <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="${woodA}" />
