@@ -1199,14 +1199,33 @@ section {
   font-size: 20px;
 }
 
+/* "Progress bar" navegable: els 3 punts es reparteixen a partes iguals
+   sobre tot l'ample (flex:1 a cada .step-dot) perquè el seu centre
+   horitzontal caigui exactament a 1/6, 1/2 i 5/6 de l'ample total —
+   així la línia connectora (.step-connector) es pot posicionar amb
+   percentatges fixos sense necessitat de mesurar-ho amb JS. */
 .step-indicator {
+  position: relative;
   display: flex;
-  justify-content: center;
-  gap: var(--space-6);
+  justify-content: space-between;
   margin-bottom: var(--space-5);
 }
 
+/* En escriptori, si s'estén per tot l'ample del wizard (~1104px) els
+   punts queden massa separats entre si. Es limita a l'equivalent de
+   2fr d'un 1fr-2fr-1fr (és a dir, el 50% central) i es centra. */
+@media (min-width: 860px) {
+  .step-indicator {
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .step-dot {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1214,6 +1233,10 @@ section {
   font-size: 12px;
   font-weight: 700;
   color: var(--c-muted);
+}
+
+.step-dot span:not(.num) {
+  text-transform: capitalize;
 }
 
 /* Pas ja visitat: es pot clicar per tornar-hi (o saltar-hi de nou). */
@@ -1249,6 +1272,40 @@ section {
 .step-dot.done .num {
   background: var(--c-dark);
   color: var(--c-white);
+}
+
+/* Línia que uneix el centre de cada cercle amb el següent, per sota
+   (z-index) dels punts perquè aquests la "tapin" allà on es toquen.
+   Pendent: gris. active: mig taronja (vas cap al següent pas). done:
+   tot taronja (pas ja completat). */
+.step-connector {
+  position: absolute;
+  top: 15px;
+  height: 2px;
+  background: #e7e7e7;
+  z-index: 1;
+}
+
+.step-connector[data-connector="1"] {
+  left: 16.6667%;
+  right: 50%;
+}
+
+.step-connector[data-connector="2"] {
+  left: 50%;
+  right: 16.6667%;
+}
+
+.step-connector.active {
+  background: linear-gradient(
+    to right,
+    var(--c-orange) 0 50%,
+    #e7e7e7 50% 100%
+  );
+}
+
+.step-connector.done {
+  background: var(--c-orange);
 }
 
 .wizard-grid {
@@ -1591,7 +1648,6 @@ section {
   }
 
   .step-indicator {
-    gap: var(--space-4);
     margin-bottom: var(--space-1);
   }
 
@@ -1603,6 +1659,11 @@ section {
   .step-dot .num {
     width: 24px;
     height: 24px;
+  }
+
+  /* Centrat sobre el cercle de 24px (en lloc dels 32px d'escriptori). */
+  .step-connector {
+    top: 11px;
   }
 
   .wizard-grid {
