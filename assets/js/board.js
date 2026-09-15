@@ -6,8 +6,9 @@
 
 const SHAPES = [
   {
-    id: "trik",
-    name: "TRIK",
+    // Cua notada/fishtail ("Peix — la que tiene cola" a les fotos reals).
+    id: "peix",
+    name: "PEIX",
     tag: "PRO",
     price: 149,
     activities: ["surf", "snow", "skim"],
@@ -17,16 +18,32 @@ const SHAPES = [
       "C42,244 33,206 36,148 C40,58 68,6 100,6 Z",
   },
   {
+    // Forma "ull"/fulla, punta al nas i a la cua (com al producte real:
+    // "Lasai significa Calma en Euskera").
     id: "lasai",
     name: "LASAI",
     tag: "INICIACIÓ",
     price: 129,
     activities: ["yoga", "tonificacio"],
     path:
-      "M100,10 C142,10 172,64 172,150 C172,238 142,290 100,290 " +
-      "C58,290 28,238 28,150 C28,64 58,10 100,10 Z",
+      "M100,6 C140,36 172,94 172,150 C172,206 140,262 100,294 " +
+      "C60,262 28,206 28,150 C28,94 60,36 100,6 Z",
   },
   {
+    // Nas apuntat + cantell pla/facetat (tall angular, no arrodonit), com
+    // a les fotos reals de "La free".
+    id: "la-free",
+    name: "LA FREE",
+    tag: "FREESTYLE",
+    price: 139,
+    activities: ["surf", "skim"],
+    path:
+      "M100,6 C130,6 155,48 158,118 L158,228 L134,268 L100,286 " +
+      "L66,268 L42,228 L42,118 C45,48 70,6 100,6 Z",
+  },
+  {
+    // Forma arrodonida clàssica (encara no tenim foto real de la Keki:
+    // es manté tal com estava).
     id: "keki",
     name: "KEKI",
     tag: "+KIDS",
@@ -180,19 +197,21 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
 
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
-  { id: "p1", shapeId: "trik", designId: "diagonal", colorId: "taronja", discount: null },
+  { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null },
   { id: "p2", shapeId: "lasai", designId: "fusta-natural", colorId: null, discount: null },
   { id: "p3", shapeId: "keki", designId: "franja-dreta", colorId: "negre", discount: 20 },
-  { id: "p4", shapeId: "trik", designId: "franja-dreta", colorId: "taronja", discount: null },
+  { id: "p4", shapeId: "peix", designId: "franja-dreta", colorId: "taronja", discount: null },
   { id: "p5", shapeId: "lasai", designId: "fusta-teca", colorId: null, discount: null },
   { id: "p6", shapeId: "keki", designId: "solid", colorId: "negre", discount: 15 },
-  { id: "p7", shapeId: "trik", designId: "meitat", colorId: "taronja", discount: null },
+  { id: "p7", shapeId: "la-free", designId: "meitat", colorId: "taronja", discount: null },
   { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
+  { id: "p9", shapeId: "la-free", designId: "fusta-natural", colorId: null, discount: null },
 ];
 
 const SHAPE_TYPE_LABEL = {
-  trik: "fish",
+  peix: "fish",
   lasai: "evolutive",
+  "la-free": "freestyle",
   keki: "fish",
 };
 

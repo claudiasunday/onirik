@@ -1000,7 +1000,10 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin: var(--space-4) 0 var(--space-5);
+  /* La secció que l'envolta ja aporta el seu propi padding superior
+     (regla genèrica `section`); un marge extra aquí duplicava l'espai
+     i deixava un buit excessiu sota el text d'introducció. */
+  margin: 0 0 var(--space-5);
 }
 
 .subnav a {

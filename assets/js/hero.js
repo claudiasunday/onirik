@@ -17,7 +17,7 @@ const HERO_DATA = {
     secondaryHref: "tenda.html",
     icon: "bag",
     blob: "var(--c-orange)",
-    board: { shapeId: "trik", designId: "franja-dreta", colorId: "taronja" },
+    board: { shapeId: "peix", designId: "franja-dreta", colorId: "taronja" },
   },
   tallers: {
     eyebrow: "Aprèn a mantenir l'equilibri",
