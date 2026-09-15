@@ -976,6 +976,81 @@ section {
 
 /* ---- Pàgines de contingut (Coneix-nos, Què fem, Família Onirik...) ------- */
 
+/* Cinta animada de col·laboradors (pàgina família-onirik): dues còpies
+   idèntiques del mateix grup de logos/enllaços una al costat de l'altra
+   dins una única pista que es desplaça -50% del seu propi ample —
+   com la segona còpia és idèntica a la primera, el bucle és continu i
+   sense salt. La segona còpia és aria-hidden i amb tabindex="-1" perquè
+   el teclat/lector de pantalla no la trobi duplicada. */
+.partners-ribbon {
+  height: 88px;
+  max-height: 88px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--c-cream-2);
+  border-bottom: 1px solid rgba(49, 48, 48, 0.08);
+}
+
+.partners-ribbon-track {
+  display: flex;
+  width: max-content;
+  animation: partners-ribbon-scroll 24s linear infinite;
+}
+
+.partners-ribbon:hover .partners-ribbon-track {
+  animation-play-state: paused;
+}
+
+.partners-ribbon-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+  flex-shrink: 0;
+}
+
+.partners-ribbon-track a {
+  font-family: var(--f-heading);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--c-dark);
+  opacity: 0.72;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.partners-ribbon-track a:hover {
+  opacity: 1;
+  color: var(--c-orange-dark);
+}
+
+.partners-ribbon-dot {
+  color: var(--c-orange);
+  font-size: 18px;
+}
+
+@keyframes partners-ribbon-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-ribbon-track {
+    animation: none;
+  }
+
+  .partners-ribbon {
+    overflow-x: auto;
+  }
+}
+
 .page-hero {
   padding: var(--space-6) 0 var(--space-4);
   padding-left: var(--space-4);
