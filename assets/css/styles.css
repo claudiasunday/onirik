@@ -1637,10 +1637,16 @@ section {
 @media (max-width: 639px) {
   .wizard {
     padding-top: calc(var(--header-h) + var(--space-2));
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
+  /* L'espai entre wizard-top/step-indicator/wizard-grid ara el dona el
+     gap de 16px de .wizard: sense això, el margin-bottom d'escriptori
+     (32px) s'hi sumaria i tornaria a allunyar el CTA del plec. */
   .wizard-top {
-    margin-bottom: var(--space-1);
+    margin-bottom: 0;
   }
 
   .wizard-top h1 {
@@ -1648,7 +1654,7 @@ section {
   }
 
   .step-indicator {
-    margin-bottom: var(--space-1);
+    margin-bottom: 0;
   }
 
   .step-dot {
@@ -1697,7 +1703,11 @@ section {
      entre cadascun, només aquests espais ja sumaven ~120px i tapaven
      el CTA. En mòbil n'hi ha prou amb un gap més petit. */
   .step-panel {
-    gap: var(--space-2);
+    gap: var(--space-1);
+  }
+
+  .shape-intro .eyebrow {
+    margin-bottom: var(--space-1);
   }
 
   .shape-intro h2 {
@@ -1720,6 +1730,13 @@ section {
     width: 32px;
     height: 32px;
     font-size: 14px;
+  }
+
+  /* Amb el gap de 16px afegit a .wizard, calia recuperar una mica més
+     d'espai vertical al pas 1: el separador entre activitats no cal
+     tan ample en mòbil. */
+  .activity-chip {
+    padding-right: var(--space-3);
   }
 
   .option-head h2 {
