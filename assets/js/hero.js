@@ -10,7 +10,7 @@ const HERO_DATA = {
     eyebrow: "Personalitza la teva taula",
     headline: "Troba el teu equilibri, a la teva mida",
     subtext:
-      "Balance boards fetes a mà, taller a taller. Tria la forma, el disseny i el color en tres passos i emporta't una taula única.",
+      "Balance boards fetes a mà, una a una. Tria la forma, el disseny i el color en tres passos i emporta't una taula única.",
     cta: "Personalitza la teva taula",
     ctaHref: "personalitza.html",
     secondary: "Veure totes les taules",

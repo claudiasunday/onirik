@@ -1627,6 +1627,118 @@ section {
   width: 100%;
 }
 
+/* Popup "Personalitza la taula encara més" (des del resum del wizard) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(49, 48, 48, 0.45);
+  z-index: 200;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.custom-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 420px);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  z-index: 201;
+  box-shadow: 0 20px 60px rgba(49, 48, 48, 0.25);
+}
+
+.custom-modal[hidden] {
+  display: none;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  color: var(--c-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.custom-modal h3 {
+  font-size: 22px;
+  margin: 0 0 var(--space-2);
+  padding-right: var(--space-6);
+}
+
+.custom-modal-intro {
+  color: #6b6a68;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+#custom-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.custom-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.custom-modal-field input,
+.custom-modal-field textarea {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--c-dark);
+  padding: 10px 14px;
+  border: 1.5px solid rgba(49, 48, 48, 0.15);
+  border-radius: var(--r-swatch);
+  resize: vertical;
+}
+
+.custom-modal-field input:focus,
+.custom-modal-field textarea:focus {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 1px;
+}
+
+#custom-modal-form .btn {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.custom-modal-success p {
+  font-size: 14px;
+  color: #6b6a68;
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+.custom-modal-success .btn {
+  width: 100%;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
 /* Mòbil: apropem el CTA principal ("Escull forma"/"Tria disseny"/"Tria
    el color") a la part visible sense scroll. Aquest bloc es col·loca
    deliberadament al final del full (tot i que altres regles .step-panel/
@@ -1739,6 +1851,12 @@ section {
     padding-right: var(--space-3);
   }
 
+  /* Separació entre la graella/carousel de mostres i el botó d'acció:
+     amb el gap ajustat quedaven massa enganxats. */
+  .wizard-actions {
+    margin-top: var(--space-2);
+  }
+
   .option-head h2 {
     font-size: 17px;
   }
@@ -1755,9 +1873,16 @@ section {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
-    padding-bottom: var(--space-1);
-    margin-bottom: calc(-1 * var(--space-1));
     -webkit-overflow-scrolling: touch;
+    /* Amaguem la barra de desplaçament nativa (només visible en alguns
+       navegadors d'escriptori/emulació mòbil): sense això quedava com
+       una barra grisa enganxada al botó de sota. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .swatch-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .swatch-grid .swatch {

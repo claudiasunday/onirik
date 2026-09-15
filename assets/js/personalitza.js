@@ -15,6 +15,7 @@ const els = {
   preview: document.getElementById("board-preview"),
   title: document.getElementById("wizard-title"),
   dots: document.querySelectorAll(".step-dot"),
+  connectors: document.querySelectorAll(".step-connector"),
   panels: {
     1: document.getElementById("panel-shape"),
     2: document.getElementById("panel-design"),
@@ -38,7 +39,15 @@ const els = {
   sumColor: document.getElementById("sum-color"),
   sumPrice: document.getElementById("sum-price"),
   btnAddCart: document.getElementById("btn-add-cart"),
-  btnSave: document.getElementById("btn-save"),
+  btnMoreCustom: document.getElementById("btn-more-custom"),
+  customModalBackdrop: document.getElementById("custom-modal-backdrop"),
+  customModal: document.getElementById("custom-modal"),
+  customModalClose: document.getElementById("custom-modal-close"),
+  customModalBody: document.getElementById("custom-modal-body"),
+  customModalForm: document.getElementById("custom-modal-form"),
+  customModalEmail: document.getElementById("custom-modal-email"),
+  customModalMessage: document.getElementById("custom-modal-message"),
+  customModalSuccess: document.getElementById("custom-modal-success"),
 };
 
 function currentShape() {
@@ -150,6 +159,15 @@ function render() {
     dot.classList.toggle("reachable", n <= state.maxStep);
   });
 
+  // Línia entre els punts: tota taronja si el pas ja s'ha completat,
+  // mig taronja mentre s'hi és (indica progrés cap al següent) i grisa
+  // si encara no s'hi ha arribat.
+  els.connectors.forEach((line) => {
+    const n = Number(line.dataset.connector);
+    line.classList.toggle("done", n < state.step);
+    line.classList.toggle("active", n === state.step);
+  });
+
   // panels
   Object.entries(els.panels).forEach(([step, panel]) => {
     panel.hidden = Number(step) !== state.step;
@@ -238,8 +256,43 @@ els.btnAddCart.addEventListener("click", () => {
   els.btnAddCart.disabled = true;
 });
 
-els.btnSave.addEventListener("click", () => {
-  els.btnSave.textContent = "Preselecció guardada ✓";
+// --- Popup "Personalitza la taula encara més" --------------------------
+
+function openCustomModal() {
+  // Cada vegada que s'obre, comença de nou pel formulari (per si la
+  // vegada anterior es va arribar a enviar la petició).
+  els.customModalForm.reset();
+  els.customModalBody.hidden = false;
+  els.customModalSuccess.hidden = true;
+  els.customModal.hidden = false;
+  els.customModalBackdrop.hidden = false;
+  document.body.classList.add("modal-open");
+  els.customModalEmail.focus();
+}
+
+function closeCustomModal() {
+  els.customModal.hidden = true;
+  els.customModalBackdrop.hidden = true;
+  document.body.classList.remove("modal-open");
+}
+
+els.btnMoreCustom.addEventListener("click", openCustomModal);
+els.customModalClose.addEventListener("click", closeCustomModal);
+els.customModalBackdrop.addEventListener("click", closeCustomModal);
+els.customModalDone = document.getElementById("custom-modal-done");
+els.customModalDone.addEventListener("click", closeCustomModal);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !els.customModal.hidden) closeCustomModal();
+});
+
+els.customModalForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // Sense backend real: simulem l'enviament de la petició (nom, email
+  // i missatge) i mostrem la confirmació, seguint el mateix patró que
+  // "Afegit a la cistella".
+  els.customModalBody.hidden = true;
+  els.customModalSuccess.hidden = false;
 });
 
 render();

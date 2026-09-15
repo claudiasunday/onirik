@@ -114,7 +114,7 @@ function renderFooter() {
         <div class="footer-brand">
           <img src="assets/images/logo.png" alt="Onirik Boards" class="footer-logo" />
           <p class="footer-claim">🤟🏾 Balance as an attitude</p>
-          <p>Balance boards fetes a mà, taller a taller.</p>
+          <p>Balance boards fetes a mà, una a una.</p>
         </div>
         <div class="footer-links">
           ${NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}

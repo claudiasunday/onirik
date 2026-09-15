@@ -26,10 +26,12 @@
           <span class="num">1</span>
           <span>forma</span>
         </div>
+        <div class="step-connector" data-connector="1"></div>
         <div class="step-dot" data-step="2" role="button" tabindex="0">
           <span class="num">2</span>
           <span>disseny</span>
         </div>
+        <div class="step-connector" data-connector="2"></div>
         <div class="step-dot" data-step="3" role="button" tabindex="0">
           <span class="num">3</span>
           <span>color</span>
@@ -102,12 +104,52 @@
             </div>
             <div class="wizard-actions">
               <button class="btn btn-dark" id="btn-add-cart">Afegir a la cistella</button>
-              <button class="btn btn-secondary-outline" id="btn-save">Guardar preselecció</button>
+              <button class="btn btn-secondary-outline" id="btn-more-custom">Personalitza la taula encara més</button>
             </div>
           </div>
         </div>
       </div>
     </main>
+
+    <div class="modal-backdrop" id="custom-modal-backdrop" hidden></div>
+    <div
+      class="custom-modal"
+      id="custom-modal"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="custom-modal-title"
+    >
+      <button type="button" class="modal-close" id="custom-modal-close" aria-label="Tancar">✕</button>
+      <div id="custom-modal-body">
+        <h3 id="custom-modal-title">Personalitza la taula encara més</h3>
+        <p class="custom-modal-intro">
+          Explica'ns què t'agradaria afegir o canviar (un gravat, unes mides
+          diferents, un altre acabat...) i t'ajudem a fer-ho realitat.
+        </p>
+        <form id="custom-modal-form">
+          <label class="custom-modal-field">
+            <span>El teu email</span>
+            <input type="email" id="custom-modal-email" required placeholder="nom@email.com" />
+          </label>
+          <label class="custom-modal-field">
+            <span>Què t'agradaria personalitzar?</span>
+            <textarea
+              id="custom-modal-message"
+              rows="4"
+              required
+              placeholder="Explica'ns la teva idea..."
+            ></textarea>
+          </label>
+          <button type="submit" class="btn btn-dark">Enviar petició</button>
+        </form>
+      </div>
+      <div class="custom-modal-success" id="custom-modal-success" hidden>
+        <h3>Petició enviada</h3>
+        <p>Gràcies! Hem rebut la teva petició i et contactarem aviat a l'email indicat.</p>
+        <button type="button" class="btn btn-dark" id="custom-modal-done">Tancar</button>
+      </div>
+    </div>
 
     <div id="site-footer"></div>
 
