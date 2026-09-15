@@ -334,7 +334,9 @@ body.mobile-nav-open {
    conseqüència perquè el contingut no quedi tallat. */
 @media (max-width: 859px) {
   :root {
-    --header-h: 92px;
+    /* .site-header té padding var(--space-4)=24px dalt/baix (border-box):
+       48px de padding + els 48px del menu-btn = 96px. */
+    --header-h: 96px;
   }
 
   .onirik-logo__icon-wrap {
@@ -352,10 +354,11 @@ body.mobile-nav-open {
   }
 
   .menu-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     padding: 0;
-    font-size: 22px;
+    font-size: 32px;
+    line-height: 1;
   }
 }
 
@@ -570,8 +573,25 @@ body.mobile-nav-open {
     gap: var(--space-4);
   }
 
+  /* El titular i el CTA van primer (ordre natural del DOM): la taula
+     il·lustrada anava abans i, en mòbil, empenyia el CTA fora de la
+     part visible sense fer scroll. */
   .hero-art {
-    order: -1;
+    min-height: 160px;
+  }
+
+  .hero-illustration {
+    width: min(100%, 150px);
+  }
+
+  .hero-badge {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero-badge svg {
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -1279,26 +1299,14 @@ section {
   }
 }
 
-/* Mòbil: apropem el CTA principal ("Escull forma") a la part visible
-   sense scroll, retallant una mica els marges verticals del wizard. */
-@media (max-width: 639px) {
-  .wizard-top {
-    margin-bottom: var(--space-4);
-  }
-
-  .step-indicator {
-    margin-bottom: var(--space-4);
-  }
-
-  .board-stage {
-    gap: var(--space-3);
-  }
-}
-
 .option-panel {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  /* Sense min-width:0 un fill amb overflow-x:auto (el carousel mòbil de
+     .swatch-grid) fa que aquest ítem de grid/flex creixi fins al seu
+     contingut i empenyi tot el wizard fora de l'ample de la pantalla. */
+  min-width: 0;
 }
 
 /* Cada pas (forma/disseny/color/resum) és un sol fill visible de
@@ -1308,6 +1316,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .step-panel[hidden] {
@@ -1419,4 +1428,92 @@ section {
   border: 1.5px solid var(--c-dark);
   color: var(--c-dark);
   width: 100%;
+}
+
+/* Mòbil: apropem el CTA principal ("Escull forma"/"Tria disseny"/"Tria
+   el color") a la part visible sense scroll. Aquest bloc es col·loca
+   deliberadament al final del full (tot i que altres regles .step-panel/
+   .swatch-grid/.option-head estan definides sense media query més amunt)
+   perquè, en tenir la mateixa especificitat, guanyi sempre l'última regla
+   en ordre del document — si aquest bloc quedava abans, les regles base
+   el sobreescrivien igualment en mòbil i els ajustos no s'aplicaven. */
+@media (max-width: 639px) {
+  .wizard {
+    padding-top: calc(var(--header-h) + var(--space-2));
+  }
+
+  .wizard-top {
+    margin-bottom: var(--space-1);
+  }
+
+  .wizard-top h1 {
+    font-size: 17px;
+  }
+
+  .step-indicator {
+    gap: var(--space-4);
+    margin-bottom: var(--space-1);
+  }
+
+  .step-dot {
+    gap: var(--space-1);
+    font-size: 11px;
+  }
+
+  .step-dot .num {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wizard-grid {
+    gap: var(--space-2);
+  }
+
+  .board-stage {
+    gap: var(--space-2);
+  }
+
+  /* La taula es manté gran (com al disseny de referència): l'espai
+     vertical que abans li retallàvem ara es guanya convertint la
+     graella de mostres en un carousel d'una sola línia (vegeu
+     .swatch-grid més avall), que ocupa molta menys alçada que una
+     graella de 2 files quan hi ha 7-8 opcions (disseny/color). */
+  .board-preview {
+    max-width: 175px;
+  }
+
+  /* Cada pas del wizard apila 5-6 blocs (títol, graella, nom+tag,
+     "ideal per:", activitats, botó): amb el gap d'escriptori (24px)
+     entre cadascun, només aquests espais ja sumaven ~120px i tapaven
+     el CTA. En mòbil n'hi ha prou amb un gap més petit. */
+  .step-panel {
+    gap: var(--space-2);
+  }
+
+  .option-head h2 {
+    font-size: 17px;
+  }
+
+  /* Mostres com a carousel horitzontal d'una sola línia (en lloc de
+     graella de 4 columnes): així es veuen totes les opcions (fins a
+     7-8 a disseny/color) sense afegir files ni alçada extra, i la
+     següent mostra queda parcialment visible per suggerir que es pot
+     desplaçar, tal com al disseny de referència. */
+  .swatch-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: var(--space-3);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding-bottom: var(--space-1);
+    margin-bottom: calc(-1 * var(--space-1));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .swatch-grid .swatch {
+    flex: 0 0 76px;
+    width: 76px;
+    scroll-snap-align: start;
+  }
 }
