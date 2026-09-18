@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
@@ -19,15 +19,40 @@
     <main>
       <section class="page-hero container">
         <span class="eyebrow">🏄 Tenda</span>
-        <h1>Taules a punt per portar-te'n a casa</h1>
+        <h1>Taules, packs i edicions especials</h1>
         <p class="lede">
-          Edicions limitades ja acabades. Si prefereixes triar tu la forma, el
+          Edicions limitades ja acabades, packs amb roller de suro inclòs i
+          peces d'edició especial. Si prefereixes triar tu la forma, el
           disseny i el color, millor
           <a class="link-underline" href="personalitza.html">personalitza la teva</a>.
         </p>
       </section>
 
       <section class="container">
+        <div class="card-row">
+          <div class="info-card">
+            <h3>1. Fas la comanda</h3>
+            <p>Tria la peça i envia'ns la comanda des d'aquí o per WhatsApp.</p>
+          </div>
+          <div class="info-card">
+            <h3>2. Confirmem l'estoc</h3>
+            <p>Fabriquem amb calma i en sèries curtes: et confirmem en pocs dies si la tenim llesta.</p>
+          </div>
+          <div class="info-card">
+            <h3>3. Pagues en rebre-la</h3>
+            <p>Quan la reps a casa, pagues contra reemborsament. Sense sorpreses.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="container">
+        <div class="subnav" role="tablist" aria-label="Filtra per categoria">
+          <button type="button" class="active" data-category="all">Totes</button>
+          <button type="button" data-category="board">Taules</button>
+          <button type="button" data-category="pack">Packs</button>
+          <button type="button" data-category="edition">Edicions especials</button>
+          <button type="button" data-category="accessori">Accessoris</button>
+        </div>
         <div class="shop-toolbar">
           <div class="filters">
             <select id="filter-shape" aria-label="Filtra per forma">

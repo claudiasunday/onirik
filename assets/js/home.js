@@ -8,4 +8,11 @@ function mountProducts() {
   CATALOG.slice(0, 5).forEach((p) => grid.appendChild(buildProductCard(p)));
 }
 
+function mountFeatured() {
+  const grid = document.getElementById("product-grid-2");
+  if (!grid) return;
+  [...PACKS, ...EDITIONS].forEach((entry) => grid.appendChild(buildCatalogCard(entry)));
+}
+
 mountProducts();
+mountFeatured();

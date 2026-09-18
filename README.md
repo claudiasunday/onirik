@@ -40,7 +40,7 @@ assets/
 ## Marca
 
 - Taronja `#f9b54f` / fosc `#313030` / crema `#f2e5d5`.
-- Tipografia: Space Grotesk (títols, substitut de "PP Telegraf") + Inter (cos).
+- Tipografia: Unbounded (títols/display) + Onest (cos), totes dues de Google Fonts.
 
 ## Com veure-ho en local
 
@@ -52,10 +52,29 @@ python3 -m http.server 8000
 
 i obre `http://localhost:8000/`.
 
+## Packs i edicions especials (Tenda)
+
+La Tenda (`tenda.html`) ja no només llista taules soltes: té un filtre de
+categoria (Totes / Taules / Packs / Edicions especials / Accessoris) definit
+a `assets/js/board.js`:
+
+- `ROLLER` — el roller de suro com a accessori independent.
+- `PACKS` — combinacions taula + roller amb preu conjunt (estalvi fix
+  respecte comprar-ho per separat).
+- `EDITIONS` — peces d'edició especial amb nom propi i unitats limitades
+  (p. ex. "Muntanya Còsmica"), inspirades en les edicions reals de la tenda
+  d'Onirik.
+
+La Home (`index.html`) mostra una segona fila "Packs i edicions especials"
+sota l'"Edició limitada". El filtre de categoria de la Tenda es pot
+preseleccionar per URL (`tenda.html?cat=pack`).
+
 ## Pendent / següents passos
 
-- Substituir les il·lustracions SVG de les taules per fotografia real de producte.
-- Connectar el configurador a un backend/carret real (ara `Afegir a la cistella`
-  és només d'interfície).
-- Decidir si es manté "Space Grotesk" o es compra/instal·la "PP Telegraf".
+- Substituir les il·lustracions SVG de les taules i el roller per fotografia
+  real de producte.
+- Connectar el configurador i la tenda a un backend/carret real (ara
+  `Afegir a la cistella` és només d'interfície).
 - Ampliar el catàleg de formes/dissenys/colors més enllà dels exemples inicials.
+- Crear una fitxa de producte pròpia per a packs i edicions especials (ara
+  el clic porta al configurador, com la resta de targetes).

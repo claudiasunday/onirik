@@ -1,37 +1,64 @@
 /**
- * Tenda — llistat complet del catàleg amb filtre per forma i ordenació
- * per preu (versió senzilla del "Filtrar per" que hi havia al Figma).
+ * Tenda — llistat complet del catàleg: taules, packs (taula + roller) i
+ * edicions especials, amb filtre per categoria, forma i ordenació per preu.
  */
 
+const categoryTabs = document.querySelectorAll("[data-category]");
 const shapeFilter = document.getElementById("filter-shape");
 const sortSelect = document.getElementById("sort-select");
 const grid = document.getElementById("shop-grid");
 const countEl = document.getElementById("shop-count");
 
-function priceOf(entry) {
-  const shape = SHAPES.find((s) => s.id === entry.shapeId);
-  return entry.discount ? Math.round(shape.price * (1 - entry.discount / 100)) : shape.price;
+const CATEGORY_LABEL = {
+  all: "peces",
+  board: "taules",
+  pack: "packs",
+  edition: "edicions especials",
+  accessori: "accessoris",
+};
+
+// Un únic llistat amb totes les categories, marcant les taules "normals"
+// amb kind: "board" perquè el filtre de categoria les pugui distingir.
+const ALL_ITEMS = [
+  ...CATALOG.map((e) => ({ ...e, kind: e.kind || "board" })),
+  ...PACKS,
+  ...EDITIONS,
+  { ...ROLLER, kind: "accessori" },
+];
+
+let activeCategory = new URLSearchParams(location.search).get("cat") || "all";
+if (!CATEGORY_LABEL[activeCategory]) activeCategory = "all";
+
+function setActiveCategory(cat) {
+  activeCategory = cat;
+  categoryTabs.forEach((btn) => btn.classList.toggle("active", btn.dataset.category === cat));
+  renderShop();
 }
 
 function renderShop() {
-  let items = [...CATALOG];
+  let items =
+    activeCategory === "all" ? [...ALL_ITEMS] : ALL_ITEMS.filter((e) => e.kind === activeCategory);
 
   if (shapeFilter.value !== "all") {
     items = items.filter((e) => e.shapeId === shapeFilter.value);
   }
 
   if (sortSelect.value === "price-asc") {
-    items.sort((a, b) => priceOf(a) - priceOf(b));
+    items.sort((a, b) => getEntryPrice(a) - getEntryPrice(b));
   } else if (sortSelect.value === "price-desc") {
-    items.sort((a, b) => priceOf(b) - priceOf(a));
+    items.sort((a, b) => getEntryPrice(b) - getEntryPrice(a));
   }
 
   grid.innerHTML = "";
-  items.forEach((entry) => grid.appendChild(buildProductCard(entry)));
-  countEl.textContent = `${items.length} ${items.length === 1 ? "taula" : "taules"}`;
+  items.forEach((entry) => grid.appendChild(buildCatalogCard(entry)));
+  const label = CATEGORY_LABEL[activeCategory] || "peces";
+  countEl.textContent = `${items.length} ${label}`;
 }
 
+categoryTabs.forEach((btn) =>
+  btn.addEventListener("click", () => setActiveCategory(btn.dataset.category))
+);
 shapeFilter.addEventListener("change", renderShop);
 sortSelect.addEventListener("change", renderShop);
 
-renderShop();
+setActiveCategory(activeCategory);

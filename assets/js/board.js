@@ -108,6 +108,16 @@ const COLORS = [
   { id: "negre", name: "Negre", hex: "#141414" },
 ];
 
+// Roller de suro — accessori que es ven sol o en pack amb una taula.
+const ROLLER = {
+  id: "roller-suro",
+  name: "Roller de suro",
+  price: 39,
+  tagline: "Suro massís, 11 cm de diàmetre.",
+  description:
+    "El complement natural de la teva balance board: suro massís, lleuger i amb el grip just per practicar a qualsevol superfície, dins o fora de casa.",
+};
+
 let __uid = 0;
 
 /**
@@ -207,6 +217,27 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
   `;
 }
 
+/**
+ * Genera el markup SVG del roller de suro (accessori i packs).
+ */
+function renderRollerSVG() {
+  const uid = `r${__uid++}`;
+  const gradId = `cork-grad-${uid}`;
+  return `
+    <svg viewBox="0 0 200 220" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${ROLLER.name}">
+      <defs>
+        <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#d9b98a" />
+          <stop offset="100%" stop-color="#a97b45" />
+        </linearGradient>
+      </defs>
+      <rect x="52" y="34" width="96" height="158" rx="22" fill="url(#${gradId})" />
+      <ellipse cx="100" cy="34" rx="48" ry="17" fill="#e6c9a0" stroke="rgba(0,0,0,0.12)" stroke-width="2" />
+      <image href="assets/images/logo-icon.png" x="76" y="17" width="48" height="34" opacity="0.85" />
+    </svg>
+  `;
+}
+
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
   { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null },
@@ -218,6 +249,55 @@ const CATALOG = [
   { id: "p7", shapeId: "la-free", designId: "meitat", colorId: "taronja", discount: null },
   { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
   { id: "p9", shapeId: "la-free", designId: "fusta-natural", colorId: null, discount: null },
+];
+
+// Packs — taula + roller de suro amb preu conjunt (estalvi respecte
+// comprar-ho per separat). Un pack per forma, per mantenir la simetria
+// amb el catàleg de taules.
+const PACKS = [
+  { id: "pk1", kind: "pack", shapeId: "peix", designId: "franja-dreta", colorId: "vermell", packPrice: 169 },
+  { id: "pk2", kind: "pack", shapeId: "lasai", designId: "franges-centre", colorId: "lavanda", packPrice: 149 },
+  { id: "pk3", kind: "pack", shapeId: "keki", designId: "fusta-teca", colorId: null, packPrice: 139 },
+  { id: "pk4", kind: "pack", shapeId: "la-free", designId: "diagonal", colorId: "blau", packPrice: 159 },
+];
+
+// Edicions especials — peces amb nom propi i tirada limitada (no es
+// repeteixen quan s'esgoten). Inspirades en peces reals com "Muntanya
+// Còsmica" de la tenda d'Onirik.
+const EDITIONS = [
+  {
+    id: "ed1",
+    kind: "edition",
+    editionName: "Muntanya Còsmica",
+    shapeId: "lasai",
+    designId: "diagonal",
+    colorId: "lavanda",
+    price: 179,
+    units: 5,
+    story: "Inspirada en les nits d'estiu al Pirineu: una franja còsmica sobre fusta natural.",
+  },
+  {
+    id: "ed2",
+    kind: "edition",
+    editionName: "Marea Salvatge",
+    shapeId: "peix",
+    designId: "meitat",
+    colorId: "teal",
+    price: 199,
+    units: 4,
+    story: "Mig fusta, mig mar: per a qui no vol perdre l'onatge de vista.",
+  },
+  {
+    id: "ed3",
+    kind: "edition",
+    editionName: "Bosc Daurat",
+    shapeId: "la-free",
+    designId: "fusta-teca",
+    colorId: null,
+    price: 159,
+    units: 6,
+    story: "Vernís de teca calent, de vetes profundes: fusta i prou.",
+  },
 ];
 
 const SHAPE_TYPE_LABEL = {
@@ -253,6 +333,87 @@ function buildProductCard(entry, { onClick } = {}) {
     else window.location.href = "personalitza.html";
   });
   return card;
+}
+
+/**
+ * Preu efectiu d'una entrada del catàleg (taula normal, pack, edició o accessori).
+ */
+function getEntryPrice(entry) {
+  if (entry.kind === "pack") return entry.packPrice;
+  if (entry.kind === "edition") return entry.price;
+  if (entry.kind === "accessori") return entry.price;
+  const shape = SHAPES.find((s) => s.id === entry.shapeId);
+  return entry.discount ? Math.round(shape.price * (1 - entry.discount / 100)) : shape.price;
+}
+
+function buildPackCard(entry) {
+  const shape = SHAPES.find((s) => s.id === entry.shapeId);
+  const separatePrice = shape.price + ROLLER.price;
+  const save = separatePrice - entry.packPrice;
+
+  const card = document.createElement("div");
+  card.className = "product-card pack-card";
+  card.innerHTML = `
+    <span class="badge badge-pack">Pack</span>
+    <div class="thumb pack-thumb">
+      <div class="pack-thumb-board">${renderBoardSVG({
+        shapeId: entry.shapeId,
+        designId: entry.designId,
+        colorId: entry.colorId,
+      })}</div>
+      <div class="pack-thumb-roller">${renderRollerSVG()}</div>
+    </div>
+    <h3>${shape.name} + Roller</h3>
+    <p class="p-type">Taula i roller de suro</p>
+    <p class="p-price">${entry.packPrice}€ <s style="color:var(--c-muted);font-weight:400;">${separatePrice}€</s></p>
+    <p class="p-save">Estalvia ${save}€</p>
+  `;
+  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  return card;
+}
+
+function buildEditionCard(entry) {
+  const shape = SHAPES.find((s) => s.id === entry.shapeId);
+
+  const card = document.createElement("div");
+  card.className = "product-card edition-card";
+  card.innerHTML = `
+    <span class="badge badge-edition">Edició especial</span>
+    <div class="thumb">${renderBoardSVG({
+      shapeId: entry.shapeId,
+      designId: entry.designId,
+      colorId: entry.colorId,
+    })}</div>
+    <h3>${entry.editionName}</h3>
+    <p class="p-type">${shape.name} · Queden ${entry.units} unitats</p>
+    <p class="p-price">${entry.price}€</p>
+  `;
+  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  return card;
+}
+
+function buildAccessoryCard(entry) {
+  const card = document.createElement("div");
+  card.className = "product-card accessory-card";
+  card.innerHTML = `
+    <div class="thumb">${renderRollerSVG()}</div>
+    <h3>${entry.name}</h3>
+    <p class="p-type">${entry.tagline}</p>
+    <p class="p-price">${entry.price}€</p>
+  `;
+  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  return card;
+}
+
+/**
+ * Punt d'entrada únic per pintar qualsevol targeta del catàleg (taula,
+ * pack, edició especial o accessori), segons `entry.kind`.
+ */
+function buildCatalogCard(entry) {
+  if (entry.kind === "pack") return buildPackCard(entry);
+  if (entry.kind === "edition") return buildEditionCard(entry);
+  if (entry.kind === "accessori") return buildAccessoryCard(entry);
+  return buildProductCard(entry);
 }
 
 function activityIcon(key) {
