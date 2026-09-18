@@ -238,6 +238,14 @@ function renderRollerSVG() {
   `;
 }
 
+/**
+ * Foto real del roller de suro (substitueix el render SVG on hi ha espai
+ * per a una imatge de producte real).
+ */
+function renderRollerPhoto() {
+  return `<img class="roller-photo" src="assets/images/roller-suro.png" alt="${ROLLER.name}" loading="lazy" />`;
+}
+
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
   { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null },
@@ -361,7 +369,7 @@ function buildPackCard(entry) {
         designId: entry.designId,
         colorId: entry.colorId,
       })}</div>
-      <div class="pack-thumb-roller">${renderRollerSVG()}</div>
+      <div class="pack-thumb-roller">${renderRollerPhoto()}</div>
     </div>
     <h3>${shape.name} + Roller</h3>
     <p class="p-type">Taula i roller de suro</p>
@@ -396,7 +404,7 @@ function buildAccessoryCard(entry) {
   const card = document.createElement("div");
   card.className = "product-card accessory-card";
   card.innerHTML = `
-    <div class="thumb">${renderRollerSVG()}</div>
+    <div class="thumb roller-thumb">${renderRollerPhoto()}</div>
     <h3>${entry.name}</h3>
     <p class="p-type">${entry.tagline}</p>
     <p class="p-price">${entry.price}€</p>

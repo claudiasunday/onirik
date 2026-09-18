@@ -18,8 +18,9 @@
   --c-cork: #b98a52;
   --c-cork-dark: #8a6238;
 
-  /* Tipografia de marca: Unbounded per a títols/display, Onest per al cos. */
-  --f-heading: "Unbounded", "Onest", sans-serif;
+  /* Tipografia de marca: Darker Grotesque (pes 750) per a títols de nivell 1-2,
+     Onest per al cos (Regular/Medium) i per als subtítols h3 (SemiBold). */
+  --f-heading: "Darker Grotesque", "Onest", sans-serif;
   --f-body: "Onest", sans-serif;
 
   /* Radis i espais */
@@ -65,10 +66,16 @@ a {
 }
 
 h1,
-h2,
-h3 {
+h2 {
   font-family: var(--f-heading);
-  font-weight: 700;
+  font-weight: 750; /* Darker Grotesque és variable: pes exacte demanat */
+  margin: 0;
+  line-height: 1.15;
+}
+
+h3 {
+  font-family: var(--f-body);
+  font-weight: 600; /* Onest SemiBold per a subtítols (targetes, info-cards...) */
   margin: 0;
   line-height: 1.15;
 }
@@ -853,6 +860,17 @@ section {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.roller-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.roller-thumb {
+  padding: var(--space-1);
 }
 
 .p-save {

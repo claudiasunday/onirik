@@ -40,7 +40,7 @@ assets/
 ## Marca
 
 - Taronja `#f9b54f` / fosc `#313030` / crema `#f2e5d5`.
-- Tipografia: Unbounded (títols/display) + Onest (cos), totes dues de Google Fonts.
+- Tipografia: Darker Grotesque a pes 750 (h1/h2, títols de nivell principal) + Onest (h3/subtítols en SemiBold, cos en Regular/Medium), totes dues de Google Fonts.
 
 ## Com veure-ho en local
 
