@@ -40,7 +40,16 @@ assets/
 ## Marca
 
 - Taronja `#f9b54f` / fosc `#313030` / crema `#f2e5d5`.
-- Tipografia: Darker Grotesque a pes 750 (h1/h2, títols de nivell principal) + Onest (h3/subtítols en SemiBold, cos en Regular/Medium), totes dues de Google Fonts.
+- Tipografia: Unbounded Black (900) (h1/h2, títols de nivell principal) + Onest (h3/subtítols en SemiBold, cos en Regular/Medium), totes dues de Google Fonts, carregades com a variable font (`wght@300..900`) perquè coincideixi amb el specimen de Google Fonts.
+- Escala tipogràfica dels títols: tokens `--fs-*` a `:root` (`assets/css/styles.css`)
+  perquè cada mida es defineixi un sol cop:
+  - `--fs-h1-hero: clamp(34px, 5.5vw, 40px)` — títol del hero (Home).
+  - `--fs-h1: 30px` — títol de pàgina (`.page-hero h1`).
+  - `--fs-h2-lg` / `--fs-h2-lg-mobile` (26px / 21px) — intro de pas al configurador.
+  - `--fs-h3-lg` / `--fs-h3-lg-mobile` (24px / 20px) — subtítol gran dins d'un pas.
+  - `--fs-h2: 22px` — títol de secció (`.section-head h2`).
+  - `--fs-h2-sm` / `--fs-h2-sm-mobile` (20px / 17px) — títols petits (contacte, wizard, prose...).
+  Els h3 de mida de component (targetes, info-cards) queden fora d'aquesta escala.
 
 ## Com veure-ho en local
 

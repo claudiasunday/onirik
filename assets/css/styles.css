@@ -18,10 +18,23 @@
   --c-cork: #b98a52;
   --c-cork-dark: #8a6238;
 
-  /* Tipografia de marca: Darker Grotesque (pes 750) per a títols de nivell 1-2,
+  /* Tipografia de marca: Unbounded Black (900) per a títols de nivell 1-2,
      Onest per al cos (Regular/Medium) i per als subtítols h3 (SemiBold). */
-  --f-heading: "Darker Grotesque", "Onest", sans-serif;
+  --f-heading: "Unbounded", "Onest", sans-serif;
   --f-body: "Onest", sans-serif;
+
+  /* Escala tipogràfica dels títols (h1/h2), de més gran a més petita.
+     Cada selector de títol hi apunta en lloc de portar un valor solt,
+     perquè la jerarquia es pugui llegir i ajustar des d'un sol lloc. */
+  --fs-h1-hero: clamp(34px, 5.5vw, 40px); /* Home: "Troba el teu equilibri..." */
+  --fs-h1: 30px;                          /* Títol de pàgina (.page-hero h1) */
+  --fs-h2-lg: 26px;                       /* Intro de pas al configurador */
+  --fs-h2-lg-mobile: 21px;
+  --fs-h3-lg: 24px;                       /* Subtítol gran dins d'un pas del configurador */
+  --fs-h3-lg-mobile: 20px;
+  --fs-h2: 22px;                          /* Títol de secció (.section-head h2) */
+  --fs-h2-sm: 20px;                       /* Títols petits (contacte, prose, wizard...) */
+  --fs-h2-sm-mobile: 17px;
 
   /* Radis i espais */
   --r-card: 16px;
@@ -68,7 +81,7 @@ a {
 h1,
 h2 {
   font-family: var(--f-heading);
-  font-weight: 750; /* Darker Grotesque és variable: pes exacte demanat */
+  font-weight: 700; /* Unbounded Bold */
   margin: 0;
   line-height: 1.15;
 }
@@ -439,8 +452,8 @@ body.mobile-nav-open {
 }
 
 .hero-copy h1 {
-  font-size: clamp(26px, 4vw, 40px);
-  line-height: 1.1;
+  font-size: var(--fs-h1-hero);
+  line-height: 1.05;
   color: var(--c-white);
   margin: 0 0 var(--space-3);
   max-width: 15ch;
@@ -675,7 +688,7 @@ section {
 }
 
 .section-head h2 {
-  font-size: 22px;
+  font-size: var(--fs-h2);
 }
 
 .link-pill {
@@ -947,7 +960,7 @@ section {
 }
 
 .contact-band h2 {
-  font-size: 20px;
+  font-size: var(--fs-h2-sm);
 }
 
 .contact-band p {
@@ -982,7 +995,7 @@ section {
 }
 
 .contact-teaser h2 {
-  font-size: 20px;
+  font-size: var(--fs-h2-sm);
 }
 
 .contact-teaser p {
@@ -1137,7 +1150,7 @@ section {
 }
 
 .page-hero h1 {
-  font-size: 30px;
+  font-size: var(--fs-h1);
   margin-top: var(--space-2);
   max-width: 20ch;
 }
@@ -1160,7 +1173,7 @@ section {
 }
 
 .prose h2 {
-  font-size: 20px;
+  font-size: var(--fs-h2-sm);
   margin-top: var(--space-2);
 }
 
@@ -1348,7 +1361,7 @@ section {
 }
 
 .wizard-top h1 {
-  font-size: 20px;
+  font-size: var(--fs-h2-sm);
 }
 
 /* "Progress bar" navegable: els 3 punts es reparteixen a partes iguals
@@ -1532,7 +1545,7 @@ section {
 }
 
 .option-head h2 {
-  font-size: 20px;
+  font-size: var(--fs-h2-sm);
 }
 
 .tag {
@@ -1569,7 +1582,7 @@ section {
 }
 
 .shape-intro h2 {
-  font-size: 26px;
+  font-size: var(--fs-h2-lg);
   line-height: 1.15;
   margin: 0;
 }
@@ -1581,7 +1594,7 @@ section {
 }
 
 .shape-detail .option-head h3 {
-  font-size: 24px;
+  font-size: var(--fs-h3-lg);
 }
 
 .shape-tagline {
@@ -1914,7 +1927,7 @@ body.modal-open {
   }
 
   .wizard-top h1 {
-    font-size: 17px;
+    font-size: var(--fs-h2-sm-mobile);
   }
 
   .step-indicator {
@@ -1975,7 +1988,7 @@ body.modal-open {
   }
 
   .shape-intro h2 {
-    font-size: 21px;
+    font-size: var(--fs-h2-lg-mobile);
   }
 
   .shape-detail {
@@ -1983,7 +1996,7 @@ body.modal-open {
   }
 
   .shape-detail .option-head h3 {
-    font-size: 20px;
+    font-size: var(--fs-h3-lg-mobile);
   }
 
   .shape-description {
@@ -2010,7 +2023,7 @@ body.modal-open {
   }
 
   .option-head h2 {
-    font-size: 17px;
+    font-size: var(--fs-h2-sm-mobile);
   }
 
   /* Mostres com a carousel horitzontal d'una sola línia (en lloc de
