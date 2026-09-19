@@ -27,6 +27,7 @@
      Cada selector de títol hi apunta en lloc de portar un valor solt,
      perquè la jerarquia es pugui llegir i ajustar des d'un sol lloc. */
   --fs-h1-hero: clamp(34px, 5.5vw, 40px); /* Home: "Troba el teu equilibri..." */
+  --fs-h1-hero-mobile: 28px;
   --fs-h1: 30px;                          /* Títol de pàgina (.page-hero h1) */
   --fs-h2-lg: 26px;                       /* Intro de pas al configurador */
   --fs-h2-lg-mobile: 21px;
@@ -1006,6 +1007,57 @@ section {
   margin-top: var(--space-1);
 }
 
+/* ---- Pròxim esdeveniment (calendari de tallers) -------------------------- */
+
+.event-teaser {
+  background: var(--c-dark);
+  color: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.event-teaser-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 56ch;
+}
+
+.badge-open {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+}
+
+.event-date {
+  color: var(--c-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.event-teaser h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.event-desc {
+  color: var(--c-muted);
+  font-size: 14px;
+}
+
 .site-footer {
   padding-top: var(--space-6);
   font-size: 13px;
@@ -1177,6 +1229,14 @@ section {
 .prose h2 {
   font-size: var(--fs-h2-sm);
   margin-top: var(--space-2);
+}
+
+.prose a {
+  color: var(--c-orange-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
 }
 
 .prose blockquote {
@@ -1926,6 +1986,10 @@ body.modal-open {
      (32px) s'hi sumaria i tornaria a allunyar el CTA del plec. */
   .wizard-top {
     margin-bottom: 0;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--fs-h1-hero-mobile);
   }
 
   .wizard-top h1 {
