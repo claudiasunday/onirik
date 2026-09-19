@@ -21,7 +21,7 @@ const HERO_DATA = {
   },
   tallers: {
     eyebrow: "Aprèn a mantenir l'equilibri",
-    headline: "Viu l'experiència Onirik en un taller",
+    headline: "Viu l'experiència ONIRIK en un taller",
     subtext:
       "Tallers d'equilibri i de fabricació pensats per a totes les edats, amb les nostres taules o amb la que ja tinguis a casa.",
     cta: "Descobreix els tallers",
@@ -33,10 +33,10 @@ const HERO_DATA = {
     board: { shapeId: "lasai", designId: "fusta-natural", colorId: null },
   },
   espais: {
-    eyebrow: "Porta Onirik al teu espai",
-    headline: "Col·labora amb Onirik",
+    eyebrow: "Porta ONIRIK al teu espai",
+    headline: "ONIRIK al teu espai",
     subtext:
-      "Estudis de ioga, gimnasos, hotels i espais de benestar: incorpora tallers o taules Onirik personalitzades per als vostres clients o equip.",
+      "Estudis de ioga, gimnasos, hotels i espais de benestar: incorpora tallers o taules ONIRIK personalitzades per als vostres clients o equip.",
     cta: "Parla'ns del teu espai",
     ctaHref: "contacte.html",
     secondary: "Veure col·laboracions",

@@ -246,6 +246,23 @@ function renderRollerPhoto() {
   return `<img class="roller-photo" src="assets/images/roller-suro.png" alt="${ROLLER.name}" loading="lazy" />`;
 }
 
+/**
+ * Miniatura d'una taula del catàleg: fa servir la foto real del producte
+ * quan n'hi ha (camp `photo` a l'entrada), i si no cau al render SVG
+ * dinàmic (necessari per a packs/edicions on el color es tria en viu).
+ */
+function renderBoardThumb(entry) {
+  if (entry.photo) {
+    const shape = SHAPES.find((s) => s.id === entry.shapeId);
+    return `<img class="board-photo" src="${entry.photo}" alt="${shape ? shape.name : ""}" loading="lazy" />`;
+  }
+  return renderBoardSVG({
+    shapeId: entry.shapeId,
+    designId: entry.designId,
+    colorId: entry.colorId,
+  });
+}
+
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
   { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null },
@@ -253,7 +270,7 @@ const CATALOG = [
   { id: "p3", shapeId: "keki", designId: "franja-dreta", colorId: "negre", discount: 20 },
   { id: "p4", shapeId: "peix", designId: "franja-dreta", colorId: "taronja", discount: null },
   { id: "p5", shapeId: "lasai", designId: "fusta-teca", colorId: null, discount: null },
-  { id: "p6", shapeId: "keki", designId: "solid", colorId: "negre", discount: 15 },
+  { id: "p6", shapeId: "keki", designId: "solid", colorId: "negre", discount: 15, photo: "assets/images/board-keki-negre.png" },
   { id: "p7", shapeId: "la-free", designId: "meitat", colorId: "taronja", discount: null },
   { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
   { id: "p9", shapeId: "la-free", designId: "fusta-natural", colorId: null, discount: null },
@@ -325,11 +342,7 @@ function buildProductCard(entry, { onClick } = {}) {
   card.className = "product-card";
   card.innerHTML = `
     ${entry.discount ? `<span class="badge">-${entry.discount}%</span>` : ""}
-    <div class="thumb">${renderBoardSVG({
-      shapeId: entry.shapeId,
-      designId: entry.designId,
-      colorId: entry.colorId,
-    })}</div>
+    <div class="thumb">${renderBoardThumb(entry)}</div>
     <h3>${shape.name}</h3>
     <p class="p-type">Board tipo ${SHAPE_TYPE_LABEL[entry.shapeId]}</p>
     <p class="p-price">${price}€${

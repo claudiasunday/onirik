@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { id: "coneix-nos", href: "coneix-nos.html", label: "Coneix-nos" },
   { id: "que-fem", href: "que-fem.html", label: "Què fem" },
   { id: "tenda", href: "tenda.html", label: "Tenda" },
-  { id: "familia", href: "familia-onirik.html", label: "Família Onirik" },
+  { id: "familia", href: "familia-onirik.html", label: "Família ONIRIK" },
   { id: "contacte", href: "contacte.html", label: "Contacta'm" },
 ];
 
@@ -26,7 +26,7 @@ function renderHeader() {
         <div class="onirik-logo__icon-wrap">
           <img class="onirik-logo__favicon" src="assets/images/logo-icon.png" alt="" />
         </div>
-        <img class="onirik-logo__wordmark" src="assets/images/logo-wordmark.png" alt="Onirik Boards" />
+        <img class="onirik-logo__wordmark" src="assets/images/logo-wordmark.png" alt="ONIRIK BOARDS" />
       </a>
       <nav class="main-nav">
         ${NAV_ITEMS.map(
@@ -112,7 +112,7 @@ function renderFooter() {
     <footer class="site-footer">
       <div class="footer-grid container">
         <div class="footer-brand">
-          <img src="assets/images/logo.png" alt="Onirik Boards" class="footer-logo" />
+          <img src="assets/images/logo.png" alt="ONIRIK BOARDS" class="footer-logo" />
           <p class="footer-claim">🤟🏾 Balance as an attitude</p>
           <p>Balance boards fetes a mà, una a una.</p>
         </div>
@@ -125,7 +125,7 @@ function renderFooter() {
           <a href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener">📷 @onirikboards</a>
         </div>
       </div>
-      <p class="copyright">© <span id="year"></span> Onirik Boards — tots els drets reservats.</p>
+      <p class="copyright">© <span id="year"></span> ONIRIK BOARDS — tots els drets reservats.</p>
     </footer>
   `;
   document.getElementById("year").textContent = new Date().getFullYear();

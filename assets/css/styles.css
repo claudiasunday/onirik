@@ -785,10 +785,12 @@ section {
   padding: var(--space-2);
 }
 
-.product-card .thumb svg {
+.product-card .thumb svg,
+.product-card .thumb .board-photo {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .product-card h3 {
