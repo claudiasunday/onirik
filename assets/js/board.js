@@ -332,6 +332,24 @@ const SHAPE_TYPE_LABEL = {
   keki: "fish",
 };
 
+/**
+ * Fa que una targeta de producte (div, no <a>) sigui operable amb
+ * teclat: focusable (tabindex) i activable amb Enter/Espai, a més del
+ * clic de ratolí. Sense això les targetes eren invisibles per a
+ * navegació amb teclat/lector de pantalla.
+ */
+function makeCardInteractive(card, onActivate) {
+  card.setAttribute("role", "link");
+  card.tabIndex = 0;
+  card.addEventListener("click", onActivate);
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onActivate();
+    }
+  });
+}
+
 function buildProductCard(entry, { onClick } = {}) {
   const shape = SHAPES.find((s) => s.id === entry.shapeId);
   const price = entry.discount
@@ -346,10 +364,10 @@ function buildProductCard(entry, { onClick } = {}) {
     <h3>${shape.name}</h3>
     <p class="p-type">Board tipo ${SHAPE_TYPE_LABEL[entry.shapeId]}</p>
     <p class="p-price">${price}€${
-    entry.discount ? ` <s style="color:var(--c-muted);font-weight:400;">${shape.price}€</s>` : ""
+    entry.discount ? ` <s style="color:var(--c-muted-light);font-weight:400;">${shape.price}€</s>` : ""
   }</p>
   `;
-  card.addEventListener("click", () => {
+  makeCardInteractive(card, () => {
     if (onClick) onClick(entry);
     else window.location.href = "personalitza.html";
   });
@@ -386,10 +404,10 @@ function buildPackCard(entry) {
     </div>
     <h3>${shape.name} + Roller</h3>
     <p class="p-type">Taula i roller de suro</p>
-    <p class="p-price">${entry.packPrice}€ <s style="color:var(--c-muted);font-weight:400;">${separatePrice}€</s></p>
+    <p class="p-price">${entry.packPrice}€ <s style="color:var(--c-muted-light);font-weight:400;">${separatePrice}€</s></p>
     <p class="p-save">Estalvia ${save}€</p>
   `;
-  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
   return card;
 }
 
@@ -409,7 +427,7 @@ function buildEditionCard(entry) {
     <p class="p-type">${shape.name} · Queden ${entry.units} unitats</p>
     <p class="p-price">${entry.price}€</p>
   `;
-  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
   return card;
 }
 
@@ -422,7 +440,7 @@ function buildAccessoryCard(entry) {
     <p class="p-type">${entry.tagline}</p>
     <p class="p-price">${entry.price}€</p>
   `;
-  card.addEventListener("click", () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
   return card;
 }
 

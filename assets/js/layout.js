@@ -25,8 +25,12 @@ function renderHeader() {
       <a href="index.html" class="logo onirik-logo${current === "home" ? " onirik-logo--animated" : ""}">
         <div class="onirik-logo__icon-wrap">
           <img class="onirik-logo__favicon" src="assets/images/logo-icon.png" alt="" />
+          <img class="onirik-logo__favicon-overlay" src="assets/images/logo-icon-mono-white.png" alt="" aria-hidden="true" />
         </div>
-        <img class="onirik-logo__wordmark" src="assets/images/logo-wordmark.png" alt="ONIRIK BOARDS" />
+        <span class="onirik-logo__wordmark-box">
+          <img class="onirik-logo__wordmark" src="assets/images/logo-wordmark.png" alt="ONIRIK BOARDS" />
+          <img class="onirik-logo__wordmark-overlay" src="assets/images/logo-wordmark.png" alt="" aria-hidden="true" />
+        </span>
       </a>
       <nav class="main-nav">
         ${NAV_ITEMS.map(
@@ -103,7 +107,7 @@ function renderFooter() {
           <h2>Vols alguna cosa personalitzada?</h2>
           <p>Escriu-nos i t'ajudem a trobar la teva balance board ideal.</p>
         </div>
-        <a class="btn btn-dark" href="contacte.html">Contacta'm</a>
+        <a class="btn btn-primary" href="contacte.html">Contacta'm</a>
       </div>
     </section>
   `;

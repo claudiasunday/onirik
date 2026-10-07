@@ -17,10 +17,6 @@
     <div id="site-header"></div>
 
     <main class="wizard">
-      <div class="wizard-top">
-        <h1 id="wizard-title">Dissenya la teva taula</h1>
-      </div>
-
       <div class="step-indicator">
         <div class="step-dot" data-step="1" role="button" tabindex="0">
           <span class="num">1</span>
@@ -38,6 +34,28 @@
         </div>
       </div>
 
+      <!-- La pregunta de cada pas es llegeix UN SOL COP, a tot l'ample,
+           abans de repartir la mirada entre la taula (esquerra) i les
+           opcions (dreta): si vivia dins de .option-panel (només a la
+           dreta), calia saltar steps→pregunta(dreta)→taula(esquerra),
+           un zig-zag. Un bloc per pas, sincronitzats amb .step-panel
+           via JS (render() a personalitza.js). -->
+      <div class="step-intro" id="intro-shape">
+        <p class="eyebrow">Tria la forma</p>
+        <h2>Quina taula s'adapta a tu?</h2>
+      </div>
+      <div class="step-intro" id="intro-design" hidden>
+        <p class="eyebrow">Tria el disseny</p>
+        <h2>Quin acabat t'agrada més?</h2>
+      </div>
+      <div class="step-intro" id="intro-color" hidden>
+        <p class="eyebrow">Tria el color</p>
+        <h2>Quin color el fa teu?</h2>
+      </div>
+      <div class="step-intro" id="intro-summary" hidden>
+        <h2>Dissenyat per tu</h2>
+      </div>
+
       <div class="wizard-grid">
         <div class="board-stage">
           <div class="board-preview" id="board-preview"></div>
@@ -46,10 +64,6 @@
         <div class="option-panel">
           <!-- Pas 1: forma -->
           <div id="panel-shape" class="step-panel step-panel-shape">
-            <div class="shape-intro">
-              <p class="eyebrow">Tria la forma</p>
-              <h2>Quina taula s'adapta a tu?</h2>
-            </div>
             <div class="swatch-grid swatch-grid-shapes" id="shape-grid"></div>
             <div class="shape-detail">
               <div class="option-head">
@@ -71,31 +85,34 @@
 
           <!-- Pas 2: disseny -->
           <div id="panel-design" class="step-panel" hidden>
-            <div class="option-head">
-              <h2>Tria el disseny</h2>
-            </div>
             <div class="swatch-grid" id="design-grid"></div>
+            <p class="option-selected" id="design-selected" hidden>
+              Has triat <strong id="design-selected-name"></strong>
+            </p>
             <div class="wizard-actions">
-              <button class="btn btn-dark" id="btn-step2" disabled>Tria disseny</button>
+              <button class="btn btn-dark btn-wizard-cta" id="btn-step2" disabled>
+                <span>Tria aquest disseny</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
             </div>
           </div>
 
           <!-- Pas 3: color -->
           <div id="panel-color" class="step-panel" hidden>
-            <div class="option-head">
-              <h2>Tria el color</h2>
-            </div>
             <div class="swatch-grid" id="color-grid"></div>
+            <p class="option-selected" id="color-selected" hidden>
+              Has triat <strong id="color-selected-name"></strong>
+            </p>
             <div class="wizard-actions">
-              <button class="btn btn-dark" id="btn-step3" disabled>Tria el color</button>
+              <button class="btn btn-dark btn-wizard-cta" id="btn-step3" disabled>
+                <span>Tria aquest color</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
             </div>
           </div>
 
           <!-- Pas 4: resum -->
           <div id="panel-summary" class="step-panel" hidden>
-            <div class="option-head">
-              <h2>Dissenyat per tu</h2>
-            </div>
             <div class="summary-box">
               <div class="row"><span>Forma</span><strong id="sum-shape"></strong></div>
               <div class="row"><span>Disseny</span><strong id="sum-design"></strong></div>

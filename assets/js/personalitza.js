@@ -11,9 +11,14 @@ const state = {
   colorId: null,
 };
 
+// Marca de selecció (check) compartida per les targetes d'opció de
+// forma/disseny/color — .option-card.selected la mostra via CSS.
+const OPTION_CHECK = `<span class="option-check" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+</span>`;
+
 const els = {
   preview: document.getElementById("board-preview"),
-  title: document.getElementById("wizard-title"),
   dots: document.querySelectorAll(".step-dot"),
   connectors: document.querySelectorAll(".step-connector"),
   panels: {
@@ -21,6 +26,12 @@ const els = {
     2: document.getElementById("panel-design"),
     3: document.getElementById("panel-color"),
     4: document.getElementById("panel-summary"),
+  },
+  intros: {
+    1: document.getElementById("intro-shape"),
+    2: document.getElementById("intro-design"),
+    3: document.getElementById("intro-color"),
+    4: document.getElementById("intro-summary"),
   },
   shapeName: document.getElementById("shape-name"),
   shapeTag: document.getElementById("shape-tag"),
@@ -30,6 +41,10 @@ const els = {
   shapeGrid: document.getElementById("shape-grid"),
   designGrid: document.getElementById("design-grid"),
   colorGrid: document.getElementById("color-grid"),
+  designSelected: document.getElementById("design-selected"),
+  designSelectedName: document.getElementById("design-selected-name"),
+  colorSelected: document.getElementById("color-selected"),
+  colorSelectedName: document.getElementById("color-selected-name"),
   btnStep1: document.getElementById("btn-step1"),
   btnStep1Label: document.getElementById("btn-step1-label"),
   btnStep2: document.getElementById("btn-step2"),
@@ -81,14 +96,12 @@ function renderShapeStep() {
   // triar directament clicant-hi, sense passar per fletxes.
   els.shapeGrid.innerHTML = SHAPES.map((s, i) => {
     const selected = i === state.shapeIndex ? " selected" : "";
-    return `<button type="button" class="shape-card${selected}" data-index="${i}" title="${s.name}">
+    return `<button type="button" class="option-card${selected}" data-index="${i}" title="${s.name}">
       <span class="swatch swatch-shape">
         ${renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", colorId: null, showLogo: false })}
-        <span class="shape-check" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
-        </span>
+        ${OPTION_CHECK}
       </span>
-      <span class="shape-card-name">${s.name}</span>
+      <span class="option-card-name">${s.name}</span>
     </button>`;
   }).join("");
 }
@@ -120,17 +133,27 @@ function designSwatchBackground(d) {
 function renderDesignStep() {
   els.designGrid.innerHTML = DESIGNS.map((d) => {
     const selected = state.designId === d.id ? " selected" : "";
-    return `<button class="swatch${selected}" data-id="${d.id}" title="${d.name}" style="background:${designSwatchBackground(
-      d
-    )}"></button>`;
+    return `<button type="button" class="option-card${selected}" data-id="${d.id}" title="${d.name}">
+      <span class="swatch" style="background:${designSwatchBackground(d)}">${OPTION_CHECK}</span>
+      <span class="option-card-name">${d.name}</span>
+    </button>`;
   }).join("");
+  const design = DESIGNS.find((d) => d.id === state.designId);
+  els.designSelected.hidden = !design;
+  if (design) els.designSelectedName.textContent = design.name;
 }
 
 function renderColorStep() {
   els.colorGrid.innerHTML = COLORS.map((c) => {
     const selected = state.colorId === c.id ? " selected" : "";
-    return `<button class="swatch swatch-color${selected}" data-id="${c.id}" title="${c.name}" style="background:${c.hex}"></button>`;
+    return `<button type="button" class="option-card${selected}" data-id="${c.id}" title="${c.name}">
+      <span class="swatch swatch-color" style="background:${c.hex}">${OPTION_CHECK}</span>
+      <span class="option-card-name">${c.name}</span>
+    </button>`;
   }).join("");
+  const color = COLORS.find((c) => c.id === state.colorId);
+  els.colorSelected.hidden = !color;
+  if (color) els.colorSelectedName.textContent = color.name;
 }
 
 function renderSummary() {
@@ -173,6 +196,12 @@ function render() {
     panel.hidden = Number(step) !== state.step;
   });
 
+  // intro (eyebrow + pregunta), ara a fora de .option-panel i sincronitzat
+  // igual que els panells.
+  Object.entries(els.intros).forEach(([step, intro]) => {
+    intro.hidden = Number(step) !== state.step;
+  });
+
   if (state.step === 1) renderShapeStep();
   if (state.step === 2) renderDesignStep();
   if (state.step === 3) renderColorStep();
@@ -211,7 +240,7 @@ els.dots.forEach((dot) => {
 // Graella de targetes de formes: se selecciona directament clicant-hi
 // (la navegació cap enrere es fa amb els punts de pas, ja clicables).
 els.shapeGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".shape-card");
+  const btn = e.target.closest(".option-card");
   if (!btn) return;
   state.shapeIndex = Number(btn.dataset.index);
   render();
@@ -224,7 +253,7 @@ els.btnStep1.addEventListener("click", () => {
 });
 
 els.designGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".swatch");
+  const btn = e.target.closest(".option-card");
   if (!btn) return;
   state.designId = btn.dataset.id;
   render();
@@ -238,7 +267,7 @@ els.btnStep2.addEventListener("click", () => {
 });
 
 els.colorGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".swatch");
+  const btn = e.target.closest(".option-card");
   if (!btn) return;
   state.colorId = btn.dataset.id;
   render();

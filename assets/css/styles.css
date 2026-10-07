@@ -11,6 +11,12 @@
   --c-cream: #f2e5d5;
   --c-cream-2: #fbf3ea;
   --c-muted: #b1b2b4;
+  /* Mateix rol de "text secundari" que --c-muted, però per a fons clars:
+     b1b2b4 sobre blanc/crema només fa ~2.1:1 de contrast (il·legible per
+     a text normal, WCAG AA exigeix 4.5:1). --c-muted es manté tal qual
+     allà on ja funciona bé (text secundari sobre fons fosc: hero, event
+     teaser, contact teaser). */
+  --c-muted-light: #6b6a68;
   --c-white: #ffffff;
   --c-black: #000000;
   --c-wood: #c98a4b;
@@ -79,6 +85,21 @@ a {
   text-decoration: none;
 }
 
+/* Anell de focus de marca per a navegació amb teclat. Regles més
+   específiques (hero-tabs, camps del modal...) ja en defineixen un de
+   propi i continuen guanyant per especificitat; aquesta és la xarxa de
+   seguretat perquè la resta d'enllaços/botons/targetes clicables
+   (nav, footer, subnav, targetes de producte...) també en tinguin un. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--c-orange-dark);
+  outline-offset: 2px;
+}
+
 h1,
 h2 {
   font-family: var(--f-heading);
@@ -124,11 +145,67 @@ button {
   z-index: 100;
   background: var(--c-white);
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0.08);
-  transition: box-shadow 0.25s ease;
+  transition: background-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
 }
 
 #site-header.scrolled {
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
+}
+
+/* A la Home, mentre el hero (amb foto de fons) ocupa la part de dalt,
+   la capçalera flota del tot transparent (es veu la fotografia darrere)
+   i el text/icones passen a blanc perquè es llegeixin sobre la foto. En
+   fer scroll recupera el fons blanc i els colors originals (.scrolled,
+   ja gestionat per initHeaderScroll a layout.js). "rgba(255,255,255,0)"
+   en lloc de "transparent": totes dues són invisibles, però transparent
+   equival a negre amb alpha 0, així que interpolar-la cap a blanc feia
+   una barreja fosca/bruta a mig camí en lloc d'un fos net (mateix color,
+   només canvia l'opacitat — l'equivalent a un "smart animate" de Figma). */
+body[data-page="home"] #site-header:not(.scrolled) {
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .main-nav a,
+body[data-page="home"] #site-header:not(.scrolled) .icon-btn {
+  color: var(--c-white);
+}
+
+body[data-page="home"] .main-nav a,
+body[data-page="home"] .icon-btn {
+  transition: color 0.45s ease-in-out;
+}
+
+/* El wordmark és un PNG amb "ONIRIK" taronja + "BOARDS" negre: el negre
+   és il·legible sobre la foto, però volem mantenir el taronja d'"ONIRIK"
+   (no blanquejar-ho tot). Una imatge no es pot recolorir parcialment amb
+   `color`/`filter`, així que hi ha una segona còpia de la mateixa imatge
+   a sobre (.onirik-logo__wordmark-overlay), retallada amb clip-path
+   perquè només es vegi la seva meitat inferior ("BOARDS", filtrada a
+   blanc) i apareix/desapareix amb un fos (opacity), no amb filter — més
+   net i consistent amb la resta de transicions de la capçalera. */
+.onirik-logo__wordmark-box {
+  position: relative;
+  display: block;
+  height: 30px;
+}
+
+.onirik-logo__wordmark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: auto;
+  /* 35/58 ≈ el límit real entre "ONIRIK" i "BOARDS" dins del PNG. */
+  clip-path: inset(60% 0 0 0);
+  filter: brightness(0) invert(1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease-in-out;
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .onirik-logo__wordmark-overlay {
+  opacity: 1;
 }
 
 .site-header {
@@ -143,6 +220,16 @@ button {
 
 main {
   padding-top: var(--header-h);
+}
+
+/* A la Home el primer element de main és el hero a sang (veure més
+   avall): ell mateix s'encarrega del seu propi espai de dalt amb
+   padding-top perquè la capçalera transparent flota per sobre. Sense
+   aquest reset, main tornava a afegir el mateix espai per fora i
+   deixava una franja blanca (el fons de la pàgina) just darrere de la
+   capçalera, abans de la fotografia del hero. */
+body[data-page="home"] main {
+  padding-top: 0;
 }
 
 .logo {
@@ -176,6 +263,28 @@ main {
   transform-origin: 50% 50%;
 }
 
+/* La icona (ull: arcs negres + anell taronja) és massa fosca per
+   llegir-se sobre la foto del hero amb la capçalera transparent, però
+   volem conservar el taronja de l'anell (no blanquejar-ho tot). Com
+   amb el wordmark: una segona imatge a sobre (logo-icon-mono-white.png,
+   generada a partir de l'original deixant només les zones negres com a
+   silueta blanca, i la resta transparent) que apareix/desapareix amb un
+   fos. */
+.onirik-logo__favicon-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 37px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease-in-out;
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .onirik-logo__favicon-overlay {
+  opacity: 1;
+}
+
 .onirik-logo__wordmark {
   display: block;
   height: 30px;
@@ -192,7 +301,11 @@ main {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .onirik-logo--animated .onirik-logo__favicon {
+  /* L'overlay blanc (silueta de les zones negres) és una imatge a part
+     superposada a sobre: sense aquesta regla es quedava quieta mentre
+     la icona de sota girava per sota seu. */
+  .onirik-logo--animated .onirik-logo__favicon,
+  .onirik-logo--animated .onirik-logo__favicon-overlay {
     animation: onirik-spin-settle 1.5s cubic-bezier(0.2, 0, 0, 1) 1 both;
   }
   .onirik-logo--animated .onirik-logo__wordmark {
@@ -366,12 +479,15 @@ body.mobile-nav-open {
     height: 44px;
   }
 
-  .onirik-logo__favicon {
+  .onirik-logo__favicon,
+  .onirik-logo__favicon-overlay {
     width: 50px;
     height: 44px;
   }
 
-  .onirik-logo__wordmark {
+  .onirik-logo__wordmark-box,
+  .onirik-logo__wordmark,
+  .onirik-logo__wordmark-overlay {
     height: 34px;
   }
 
@@ -397,11 +513,51 @@ body.mobile-nav-open {
   margin: var(--space-5) 0;
 }
 
+/* Hero de la Home a sang (ample complet de finestra, no limitat al
+   .container) i enganxat a dalt de tot, perquè hi hagi fotografia real
+   darrere de la capçalera transparent. El truc width:100vw +
+   margin de -50vw és l'idioma habitual per "escapar" d'un contenidor
+   centrat sense tocar l'HTML. */
+body[data-page="home"] .hero {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0;
+  margin-bottom: var(--space-6);
+  border-radius: 0 0 28px 28px;
+  background-image: linear-gradient(
+      165deg,
+      rgba(49, 48, 48, 0.88) 0%,
+      rgb(0 0 0 / 77%) 100%
+    ),
+    url("../images/hero-balance-board.jpg");
+  background-size: cover;
+  background-position: center;
+  padding-top: calc(var(--header-h) + var(--space-6));
+}
+
+@media (min-width: 860px) {
+  body[data-page="home"] .hero {
+    height: 72vh;
+  }
+}
+
+body[data-page="home"] .hero-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
 .hero-inner {
   display: grid;
   grid-template-columns: 1.05fr 0.85fr;
   gap: var(--space-5);
-  align-items: center;
+  /* "start" (no "center"): el titular/subtext canvia de llargada entre
+     pestanyes (Boards/Tallers/Col·labora), i amb align-items:center tot
+     el bloc "ballava" amunt i avall en recentrar-se cada cop. Alineat a
+     dalt, les pestanyes i el titular es queden fixos en el mateix lloc
+     sigui quin sigui el contingut. */
+  align-items: start;
+  padding-top: var(--space-2);
   position: relative;
   z-index: 1;
 }
@@ -666,19 +822,93 @@ body.mobile-nav-open {
 .claim-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
+  gap: var(--space-2);
   justify-content: center;
   padding: var(--space-4) 0 0;
   font-size: 13px;
   font-weight: 700;
   color: var(--c-dark);
+}
+
+.claim-pill {
+  background: var(--c-cream-2);
+  border-radius: var(--r-pill);
+  padding: 9px 16px;
   opacity: 0.85;
+}
+
+/* Franja de logos de col·laboradors, a l'estil "trusted by" (p.ex.
+   v7labs.com/pricing): etiqueta discreta + fila de marques en gris,
+   que es realcen una mica en passar-hi per sobre. */
+.partner-logos {
+  text-align: center;
+  padding-top: var(--space-5);
+}
+
+.partner-logos-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted-light);
+  margin: 0 0 var(--space-4);
+}
+
+.partner-logos-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5) var(--space-6);
+}
+
+.partner-logos-row img {
+  height: 26px;
+  width: auto;
+  max-width: 110px;
+  object-fit: contain;
+  opacity: 0.45;
+  transition: opacity 0.18s ease;
+}
+
+.partner-logos-row img:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 639px) {
+  .partner-logos-row {
+    gap: var(--space-4) var(--space-5);
+  }
+
+  .partner-logos-row img {
+    height: 22px;
+    max-width: 88px;
+  }
 }
 
 /* ---- Seccions genèriques ------------------------------------------------ */
 
 section {
   padding: var(--space-6) 0;
+}
+
+/* Modificadors per escurçar el padding d'una secció puntual (p.ex. la
+   Tenda: entre el hero i la graella de productes hi havia dues seccions
+   amb el padding genèric de 48px cadascuna — massa desplaçament de
+   scroll abans d'arribar al contingut real de la pàgina). */
+.section-tight {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+}
+
+.section-tight-top {
+  padding-top: var(--space-4);
+}
+
+/* Quan la secció va enganxada just sota el .page-hero (que ja aporta el
+   seu propi padding-bottom de 24px), no cal cap padding-top addicional. */
+.section-no-top {
+  padding-top: 0;
 }
 
 .section-head {
@@ -717,7 +947,7 @@ section {
 
 @media (min-width: 640px) {
   .product-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -736,33 +966,22 @@ section {
   gap: var(--space-2);
   position: relative;
   box-shadow: var(--shadow-card);
+  /* Les targetes són clicables (JS les porta al configurador): calia
+     cursor i un hover/focus perquè es llegissin com a interactives, no
+     només com a fitxes informatives. */
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Fila única amb scroll horitzontal (Home — "Edició limitada"). */
-.product-row {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  padding-bottom: var(--space-2);
-  -webkit-overflow-scrolling: touch;
+.product-card:hover,
+.product-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(49, 48, 48, 0.16);
 }
 
-.product-row .product-card {
-  flex: 0 0 auto;
-  width: 200px;
-  scroll-snap-align: start;
-}
-
-@media (min-width: 640px) {
-  .product-row .product-card {
-    width: 220px;
-  }
-}
-
-@media (min-width: 860px) {
-  .product-row .product-card {
-    width: 232px;
+@media (prefers-reduced-motion: reduce) {
+  .product-card {
+    transition: none;
   }
 }
 
@@ -799,7 +1018,7 @@ section {
 }
 
 .product-card .p-type {
-  color: var(--c-muted);
+  color: var(--c-muted-light);
   font-size: 12px;
 }
 
@@ -838,7 +1057,7 @@ section {
 
 .shop-toolbar .shop-count {
   font-size: 13px;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
 }
 
 /* ---- Packs i edicions especials ------------------------------------------ */
@@ -920,7 +1139,7 @@ section {
 
 @media (min-width: 640px) {
   .benefit-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1061,7 +1280,7 @@ section {
 .site-footer {
   padding-top: var(--space-6);
   font-size: 13px;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
 }
 
 .footer-grid {
@@ -1217,8 +1436,59 @@ section {
   margin-top: var(--space-3);
 }
 
+/* Columna de text (.prose) + espais reservats per a fotografia real
+   (.prose-media, de moment gris) en pàgines de contingut llargues com
+   Coneix-nos. En mòbil els placeholders passen a sota del text en una
+   mini-graella de 2 columnes en lloc d'ocupar una columna sencera. */
+.prose-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 860px) {
+  .prose-layout {
+    grid-template-columns: minmax(0, 720px) 1fr;
+    align-items: start;
+  }
+}
+
+.prose-media {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (min-width: 860px) {
+  .prose-media {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-4));
+  }
+}
+
+.img-placeholder {
+  background: #e7e7e7;
+  border-radius: var(--r-card);
+  aspect-ratio: 4 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-muted-light);
+}
+
+.img-placeholder svg {
+  width: 28px;
+  height: 28px;
+}
+
 .prose {
   max-width: 720px;
+  /* Sense això, el .card-row de 3 columnes de dins forçava aquest ítem
+     de grid (dins .prose-layout) a créixer per sobre del seu propi
+     max-width i se solapava amb .prose-media del costat. */
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1237,6 +1507,17 @@ section {
   text-decoration: underline;
   text-underline-offset: 3px;
   white-space: nowrap;
+}
+
+/* .info-card també és un <a>: quan està dins de .prose (Coneix-nos,
+   Què fem...) heretava el nowrap pensat per als enllaços de text
+   inline, i el seu paràgraf es desbordava fora de la targeta en lloc
+   de fer salt de línia. */
+.prose .info-card {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+  white-space: normal;
 }
 
 .prose blockquote {
@@ -1286,7 +1567,7 @@ section {
 
 @media (min-width: 640px) {
   .card-row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1297,6 +1578,9 @@ section {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  /* Com a ítem de la graella de .card-row: sense això no s'encongia per
+     sota de l'ample del seu text i es sortia de la seva columna. */
+  min-width: 0;
 }
 
 .info-card h3 {
@@ -1415,17 +1699,6 @@ section {
   padding-top: calc(var(--header-h) + var(--space-4));
 }
 
-.wizard-top {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
-
-.wizard-top h1 {
-  font-size: var(--fs-h2-sm);
-}
-
 /* "Progress bar" navegable: els 3 punts es reparteixen a partes iguals
    sobre tot l'ample (flex:1 a cada .step-dot) perquè el seu centre
    horitzontal caigui exactament a 1/6, 1/2 i 5/6 de l'ample total —
@@ -1459,7 +1732,7 @@ section {
   gap: var(--space-2);
   font-size: 12px;
   font-weight: 700;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
 }
 
 .step-dot span:not(.num) {
@@ -1480,7 +1753,7 @@ section {
   height: 32px;
   border-radius: 50%;
   background: #e7e7e7;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1632,18 +1905,24 @@ section {
   gap: 6px;
 }
 
-/* Pas 1 (forma): capçalera "eyebrow + pregunta" en lloc d'un simple
-   títol petit, seguint el disseny de referència. */
-.shape-intro .eyebrow {
+/* Capçalera "eyebrow + pregunta" de cada pas del wizard. Viu a fora de
+   .wizard-grid (a tot l'ample, abans de la columna taula/opcions) perquè
+   es llegeixi un sol cop abans de repartir la mirada entre les dues
+   columnes — veure el comentari a personalitza.html. */
+.step-intro {
+  margin-bottom: var(--space-5);
+}
+
+.step-intro .eyebrow {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
   margin: 0 0 var(--space-2);
 }
 
-.shape-intro h2 {
+.step-intro h2 {
   font-size: var(--fs-h2-lg);
   line-height: 1.15;
   margin: 0;
@@ -1665,7 +1944,7 @@ section {
 }
 
 .shape-description {
-  color: #6b6a68;
+  color: var(--c-muted-light);
   font-size: 14px;
   line-height: 1.5;
   margin: 0;
@@ -1673,7 +1952,7 @@ section {
 
 .shape-activities-label {
   font-size: 13px;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
   margin: var(--space-1) 0 0;
 }
 
@@ -1711,12 +1990,13 @@ section {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
 }
 
-/* Targetes de forma: imatge + nom a sota + marca de selecció, en lloc
-   d'un simple swatch sense etiquetar. */
-.shape-card {
+/* Targetes d'opció (forma/disseny/color): imatge + nom a sota + marca
+   de selecció, en lloc d'un simple swatch sense etiquetar. Genèric per
+   als 3 passos del configurador, no només la forma. */
+.option-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1728,26 +2008,29 @@ section {
   min-width: 0;
 }
 
-.shape-card .swatch-shape {
+.option-card .swatch-shape,
+.option-card .swatch {
   width: 100%;
 }
 
-.shape-card.selected .swatch-shape {
+.option-card.selected .swatch-shape,
+.option-card.selected .swatch {
   border-color: var(--c-orange);
 }
 
-.shape-card-name {
+.option-card-name {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--c-muted);
+  color: var(--c-muted-light);
+  text-align: center;
 }
 
-.shape-card.selected .shape-card-name {
+.option-card.selected .option-card-name {
   color: var(--c-dark);
 }
 
-.shape-check {
+.option-check {
   position: absolute;
   top: -6px;
   right: -6px;
@@ -1761,12 +2044,12 @@ section {
   display: none;
 }
 
-.shape-check svg {
+.option-check svg {
   width: 12px;
   height: 12px;
 }
 
-.shape-card.selected .shape-check {
+.option-card.selected .option-check {
   display: flex;
 }
 
@@ -1841,6 +2124,20 @@ section {
   font-family: var(--f-heading);
 }
 
+/* Confirmació de l'opció triada als passos 2/3 (disseny/color): un toc
+   de feedback extra abans del botó, ja que aquests passos no tenen la
+   fitxa de detall que sí té el pas 1 (forma). */
+.option-selected {
+  font-size: 14px;
+  color: var(--c-muted-light);
+  margin: calc(-1 * var(--space-2)) 0 0;
+}
+
+.option-selected strong {
+  color: var(--c-dark);
+  font-weight: 700;
+}
+
 .wizard-actions {
   display: flex;
   flex-direction: column;
@@ -1907,7 +2204,7 @@ section {
 }
 
 .custom-modal-intro {
-  color: #6b6a68;
+  color: var(--c-muted-light);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 var(--space-4);
@@ -1953,7 +2250,7 @@ section {
 
 .custom-modal-success p {
   font-size: 14px;
-  color: #6b6a68;
+  color: var(--c-muted-light);
   line-height: 1.5;
   margin: 0 0 var(--space-4);
 }
@@ -1981,19 +2278,11 @@ body.modal-open {
     gap: 16px;
   }
 
-  /* L'espai entre wizard-top/step-indicator/wizard-grid ara el dona el
-     gap de 16px de .wizard: sense això, el margin-bottom d'escriptori
-     (32px) s'hi sumaria i tornaria a allunyar el CTA del plec. */
-  .wizard-top {
-    margin-bottom: 0;
-  }
-
+  /* L'espai entre step-indicator/wizard-grid ara el dona el gap de 16px
+     de .wizard: sense això, el margin-bottom d'escriptori (32px) s'hi
+     sumaria i tornaria a allunyar el CTA del plec. */
   .hero-copy h1 {
     font-size: var(--fs-h1-hero-mobile);
-  }
-
-  .wizard-top h1 {
-    font-size: var(--fs-h2-sm-mobile);
   }
 
   .step-indicator {
@@ -2049,11 +2338,19 @@ body.modal-open {
     gap: var(--space-1);
   }
 
-  .shape-intro .eyebrow {
+  /* En mòbil .step-intro és fill directe de .wizard (flex, gap:16px):
+     l'espai ja el dona aquest gap, igual que .step-indicator una mica
+     més amunt — sumar-hi el margin-bottom d'escriptori tornaria
+     a allunyar el CTA del plec. */
+  .step-intro {
+    margin-bottom: 0;
+  }
+
+  .step-intro .eyebrow {
     margin-bottom: var(--space-1);
   }
 
-  .shape-intro h2 {
+  .step-intro h2 {
     font-size: var(--fs-h2-lg-mobile);
   }
 
@@ -2122,9 +2419,10 @@ body.modal-open {
     scroll-snap-align: start;
   }
 
-  /* La graella de formes té un fill extra (.shape-card, imatge+nom): cal
-     donar la mida de l'ítem del carousel a la targeta, no al swatch intern. */
-  .swatch-grid > .shape-card {
+  /* Les targetes d'opció (.option-card: imatge+nom) tenen un fill extra
+     respecte un swatch sol: cal donar la mida de l'ítem del carousel a
+     la targeta, no al swatch intern. */
+  .swatch-grid > .option-card {
     flex: 0 0 76px;
     width: 76px;
     scroll-snap-align: start;
