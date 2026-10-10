@@ -16,44 +16,58 @@
   <body data-page="personalitza">
     <div id="site-header"></div>
 
-    <main class="wizard">
-      <div class="step-indicator">
-        <div class="step-dot" data-step="1" role="button" tabindex="0">
-          <span class="num">1</span>
-          <span>forma</span>
-        </div>
-        <div class="step-connector" data-connector="1"></div>
-        <div class="step-dot" data-step="2" role="button" tabindex="0">
-          <span class="num">2</span>
-          <span>disseny</span>
-        </div>
-        <div class="step-connector" data-connector="2"></div>
-        <div class="step-dot" data-step="3" role="button" tabindex="0">
-          <span class="num">3</span>
-          <span>color</span>
-        </div>
+    <!-- Barra única de progrés + resum (substitueix la parella "barra
+         fosca de resum" + "step indicator" que deien el mateix dues
+         vegades). Cada pas mostra el seu número, el nom i el valor
+         triat; els passos ja visitats són clicables per tornar-hi.
+         Fora de <main> perquè ocupi tot l'ample i quedi enganxada al navbar
+         (el contingut intern s'alinea amb la columna de 1152px). -->
+    <nav class="wizard-bar" aria-label="Passos del configurador">
+      <div class="wizard-bar-inner">
+      <ol class="wizard-steps">
+        <li>
+          <button type="button" class="wizard-step" data-step="1">
+            <span class="num" aria-hidden="true">1</span>
+            <span class="wizard-step-text">
+              <span class="wizard-step-label">Forma</span>
+              <strong class="wizard-step-value" id="bar-shape"></strong>
+            </span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="wizard-step" data-step="2">
+            <span class="num" aria-hidden="true">2</span>
+            <span class="wizard-step-text">
+              <span class="wizard-step-label">Disseny</span>
+              <strong class="wizard-step-value" id="bar-design">Per triar</strong>
+            </span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="wizard-step" data-step="3">
+            <span class="num" aria-hidden="true">3</span>
+            <span class="wizard-step-text">
+              <span class="wizard-step-label">Color</span>
+              <strong class="wizard-step-value" id="bar-color">Per triar</strong>
+            </span>
+          </button>
+        </li>
+      </ol>
+      <div class="wizard-bar-price">
+        <span class="wizard-step-label">Preu</span>
+        <strong id="bar-price"></strong>
       </div>
+      </div>
+    </nav>
 
-      <!-- La pregunta de cada pas es llegeix UN SOL COP, a tot l'ample,
-           abans de repartir la mirada entre la taula (esquerra) i les
-           opcions (dreta): si vivia dins de .option-panel (només a la
-           dreta), calia saltar steps→pregunta(dreta)→taula(esquerra),
-           un zig-zag. Un bloc per pas, sincronitzats amb .step-panel
-           via JS (render() a personalitza.js). -->
-      <div class="step-intro" id="intro-shape">
-        <p class="eyebrow">Tria la forma</p>
-        <h2>Quina taula s'adapta a tu?</h2>
-      </div>
-      <div class="step-intro" id="intro-design" hidden>
-        <p class="eyebrow">Tria el disseny</p>
-        <h2>Quin acabat t'agrada més?</h2>
-      </div>
-      <div class="step-intro" id="intro-color" hidden>
-        <p class="eyebrow">Tria el color</p>
-        <h2>Quin color el fa teu?</h2>
-      </div>
-      <div class="step-intro" id="intro-summary" hidden>
-        <h2>Dissenyat per tu</h2>
+    <main class="wizard" data-step="1">
+
+      <!-- Pregunta del pas, a tot l'ample (es llegeix un sol cop abans de
+           repartir la mirada entre la taula i les opcions). Un sol bloc
+           que el JS reescriu a cada pas; rep el focus en canviar de pas
+           perquè teclat i lector de pantalla "aterrin" al lloc correcte. -->
+      <div class="step-intro">
+        <h2 id="step-title" tabindex="-1">Quina taula s'adapta a tu?</h2>
       </div>
 
       <div class="wizard-grid">
@@ -64,7 +78,7 @@
         <div class="option-panel">
           <!-- Pas 1: forma -->
           <div id="panel-shape" class="step-panel step-panel-shape">
-            <div class="swatch-grid swatch-grid-shapes" id="shape-grid"></div>
+            <div class="swatch-grid swatch-grid-shapes" id="shape-grid" role="group" aria-label="Formes"></div>
             <div class="shape-detail">
               <div class="option-head">
                 <h3 id="shape-name">PEIX</h3>
@@ -72,56 +86,65 @@
               </div>
               <p class="shape-tagline" id="shape-tagline"></p>
               <p class="shape-description" id="shape-description"></p>
-              <p class="shape-activities-label">ideal per:</p>
+              <p class="shape-activities-label">Ideal per a</p>
               <div class="activity-row activity-chips" id="shape-activities"></div>
-            </div>
-            <div class="wizard-actions">
-              <button class="btn btn-primary btn-wizard-cta" id="btn-step1">
-                <span id="btn-step1-label">Escollir forma</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
             </div>
           </div>
 
           <!-- Pas 2: disseny -->
           <div id="panel-design" class="step-panel" hidden>
-            <div class="swatch-grid" id="design-grid"></div>
-            <p class="option-selected" id="design-selected" hidden>
-              Has triat <strong id="design-selected-name"></strong>
+            <div class="swatch-grid swatch-grid-designs" id="design-grid" role="group" aria-label="Dissenys"></div>
+            <p class="step-hint" id="design-hint" hidden>
+              <span class="step-hint-dot" aria-hidden="true"></span>
+              La zona grisa és la que pintaràs al pas següent.
             </p>
-            <div class="wizard-actions">
-              <button class="btn btn-dark btn-wizard-cta" id="btn-step2" disabled>
-                <span>Tria aquest disseny</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
-            </div>
           </div>
 
           <!-- Pas 3: color -->
           <div id="panel-color" class="step-panel" hidden>
-            <div class="swatch-grid" id="color-grid"></div>
-            <p class="option-selected" id="color-selected" hidden>
-              Has triat <strong id="color-selected-name"></strong>
-            </p>
-            <div class="wizard-actions">
-              <button class="btn btn-dark btn-wizard-cta" id="btn-step3" disabled>
-                <span>Tria aquest color</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
-            </div>
+            <div class="swatch-grid swatch-grid-colors" id="color-grid" role="group" aria-label="Colors"></div>
           </div>
 
           <!-- Pas 4: resum -->
           <div id="panel-summary" class="step-panel" hidden>
-            <div class="summary-box">
-              <div class="row"><span>Forma</span><strong id="sum-shape"></strong></div>
-              <div class="row"><span>Disseny</span><strong id="sum-design"></strong></div>
-              <div class="row"><span>Color</span><strong id="sum-color"></strong></div>
-              <div class="row price"><span>Preu</span><span id="sum-price"></span></div>
-            </div>
-            <div class="wizard-actions">
-              <button class="btn btn-dark" id="btn-add-cart">Afegir a la cistella</button>
-              <button class="btn btn-secondary-outline" id="btn-more-custom">Personalitza la taula encara més</button>
+            <dl class="summary-box">
+              <div class="row">
+                <dt>Forma</dt>
+                <dd><strong id="sum-shape"></strong> <button type="button" class="summary-edit" data-goto="1">Canvia</button></dd>
+              </div>
+              <div class="row">
+                <dt>Disseny</dt>
+                <dd><strong id="sum-design"></strong> <button type="button" class="summary-edit" data-goto="2">Canvia</button></dd>
+              </div>
+              <div class="row">
+                <dt>Color</dt>
+                <dd><strong id="sum-color"></strong> <button type="button" class="summary-edit" data-goto="3" id="sum-color-edit">Canvia</button></dd>
+              </div>
+              <div class="row price"><dt>Total</dt><dd id="sum-price"></dd></div>
+            </dl>
+            <button class="btn btn-dark btn-wizard-cta" id="btn-add-cart">Afegeix a la cistella</button>
+            <p class="summary-more">
+              Vols un gravat, unes mides especials o un altre acabat?
+              <button type="button" class="link-btn" id="btn-more-custom">Explica'ns la teva idea</button>
+            </p>
+          </div>
+
+          <!-- Navegació única per a tots els passos: Enrere (text) +
+               acció principal (botó). Mateix component i mateixa posició
+               a cada pas; en mòbil queda enganxada a baix de la pantalla,
+               així el CTA sempre és visible sense haver de "guanyar"
+               píxels retallant la resta. -->
+          <div class="wizard-nav" id="wizard-nav">
+            <p class="wizard-nav-error" id="wizard-error" role="alert"></p>
+            <div class="wizard-nav-row">
+              <button type="button" class="link-btn wizard-back" id="btn-back" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+                Enrere
+              </button>
+              <button type="button" class="btn btn-dark btn-wizard-cta" id="btn-next">
+                <span id="btn-next-label">Continua</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -139,7 +162,7 @@
     >
       <button type="button" class="modal-close" id="custom-modal-close" aria-label="Tancar">✕</button>
       <div id="custom-modal-body">
-        <h3 id="custom-modal-title">Personalitza la taula encara més</h3>
+        <h3 id="custom-modal-title">Fem-la encara més teva</h3>
         <p class="custom-modal-intro">
           Explica'ns què t'agradaria afegir o canviar (un gravat, unes mides
           diferents, un altre acabat...) i t'ajudem a fer-ho realitat.

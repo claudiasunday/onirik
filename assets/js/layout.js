@@ -98,7 +98,7 @@ function renderFooter() {
   if (!mount) return;
   const current = document.body.dataset.page || "";
   const teaser =
-    current === "contacte"
+    current === "contacte" || current === "personalitza"
       ? ""
       : `
     <section class="container">
@@ -114,22 +114,43 @@ function renderFooter() {
   mount.innerHTML = `
     ${teaser}
     <footer class="site-footer">
-      <div class="footer-grid container">
-        <div class="footer-brand">
-          <img src="assets/images/logo.png" alt="ONIRIK BOARDS" class="footer-logo" />
-          <p class="footer-claim">🤟🏾 Balance as an attitude</p>
-          <p>Balance boards fetes a mà, una a una.</p>
+      <div class="footer-top container">
+        <div class="footer-col">
+          <h3 class="footer-col-title">Descobreix</h3>
+          <div class="footer-links">
+            ${NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}
+          </div>
         </div>
-        <div class="footer-links">
-          ${NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contacta'ns</h3>
+          <div class="footer-contact">
+            <a href="mailto:info@onirikboards.com">✉️ info@onirikboards.com</a>
+            <a href="https://wa.me/34625579914">💬 +34 625 57 99 14</a>
+            <a href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener">📷 @onirikboards</a>
+          </div>
         </div>
-        <div class="footer-contact">
-          <a href="mailto:info@onirikboards.com">✉️ info@onirikboards.com</a>
-          <a href="https://wa.me/34625579914">💬 +34 625 57 99 14</a>
-          <a href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener">📷 @onirikboards</a>
+        <div class="footer-col footer-col--social">
+          <h3 class="footer-col-title">Segueix-nos</h3>
+          <a class="footer-social-icon" href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4.2" />
+              <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
         </div>
       </div>
-      <p class="copyright">© <span id="year"></span> ONIRIK BOARDS — tots els drets reservats.</p>
+      <div class="footer-hero">
+        <div class="footer-wordmark-row container">
+          <img src="assets/images/logo-boards-orange.png" alt="ONIRIK Boards" class="footer-hero-logo" />
+        </div>
+        <img src="assets/images/footer-board-roller.png" alt="Balance board ONIRIK amb roller de suro" class="footer-hero-photo" />
+      </div>
+      <div class="footer-bottom container">
+        <p class="footer-claim">🤟🏾 Balance as an attitude</p>
+        <p class="footer-tagline">Balance boards fetes a mà, una a una.</p>
+        <p class="copyright">© <span id="year"></span> ONIRIK BOARDS — tots els drets reservats.</p>
+      </div>
     </footer>
   `;
   document.getElementById("year").textContent = new Date().getFullYear();

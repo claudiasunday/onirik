@@ -76,18 +76,21 @@ const ACTIVITY_LABELS = {
   tonificacio: "tonificació",
 };
 
+// Noms curts (1-2 paraules): els llargs ("Franja gran i franges petites")
+// es tallaven al carrusel mòbil (76px) i descrivien la geometria en lloc
+// de donar-li nom. La miniatura ja ensenya com és.
 // "Disseny" — patrons / acabats aplicats a la superfície de la taula.
 // Cada patró (`kind`) defineix quina part de la taula és "de color": la
 // resta és sempre fusta o un to fix propi del disseny. El pas 3 (color)
 // només pinta aquesta zona concreta — mai substitueix tot el disseny.
 const DESIGNS = [
-  { id: "fusta-natural", name: "Fusta amb vernis", kind: "wood", wood: ["#e7c9a0", "#c98a4b"] },
-  { id: "fusta-teca", name: "Fusta amb vernis teca", kind: "wood", wood: ["#a9723f", "#6b3d1f"] },
-  { id: "solid", name: "Fullcolor sòlid", kind: "solid", wood: ["#e7c9a0", "#c98a4b"] },
-  { id: "franja-dreta", name: "Franja al mig-dret", kind: "franja-dreta", wood: ["#e7c9a0", "#c98a4b"] },
-  { id: "franges-centre", name: "Franja gran i franges petites", kind: "franges-centre", wood: ["#e7c9a0", "#c98a4b"] },
-  { id: "diagonal", name: "Diagonal amb franja", kind: "diagonal", wood: ["#e7c9a0", "#c98a4b"] },
-  { id: "meitat", name: "Meitat de color", kind: "meitat", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "fusta-natural", name: "Fusta natural", kind: "wood", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "fusta-teca", name: "Fusta teca", kind: "wood", wood: ["#a9723f", "#6b3d1f"] },
+  { id: "solid", name: "Color sòlid", kind: "solid", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "franja-dreta", name: "Franja", kind: "franja-dreta", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "franges-centre", name: "Ratlles", kind: "franges-centre", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "diagonal", name: "Diagonal", kind: "diagonal", wood: ["#e7c9a0", "#c98a4b"] },
+  { id: "meitat", name: "Meitat i meitat", kind: "meitat", wood: ["#e7c9a0", "#c98a4b"] },
 ];
 
 // To neutre que marca, abans de triar color, quina zona d'un disseny és

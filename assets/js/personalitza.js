@@ -1,73 +1,109 @@
 /**
  * Configurador "Personalitza la teva taula" — 3 passos (forma, disseny,
- * color) + resum final, seguint el flux ja dissenyat a Figma.
+ * color) + resum final.
+ *
+ * Regla clau: els dissenys de fusta massissa (kind "wood") no tenen cap
+ * zona de color, així que el pas 3 se salta (abans t'obligava a triar
+ * un color que no canviava res de la taula).
  */
 
 const state = {
   step: 1,
-  maxStep: 1,
+  maxStep: 1, // pas més llunyà al qual s'ha arribat amb "Continua"
   shapeIndex: 0,
   designId: null,
   colorId: null,
 };
 
-// Marca de selecció (check) compartida per les targetes d'opció de
-// forma/disseny/color — .option-card.selected la mostra via CSS.
 const OPTION_CHECK = `<span class="option-check" aria-hidden="true">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
 </span>`;
 
+const $ = (id) => document.getElementById(id);
+
 const els = {
-  preview: document.getElementById("board-preview"),
-  dots: document.querySelectorAll(".step-dot"),
-  connectors: document.querySelectorAll(".step-connector"),
+  wizard: document.querySelector(".wizard"),
+  preview: $("board-preview"),
+  steps: document.querySelectorAll(".wizard-step"),
   panels: {
-    1: document.getElementById("panel-shape"),
-    2: document.getElementById("panel-design"),
-    3: document.getElementById("panel-color"),
-    4: document.getElementById("panel-summary"),
+    1: $("panel-shape"),
+    2: $("panel-design"),
+    3: $("panel-color"),
+    4: $("panel-summary"),
   },
-  intros: {
-    1: document.getElementById("intro-shape"),
-    2: document.getElementById("intro-design"),
-    3: document.getElementById("intro-color"),
-    4: document.getElementById("intro-summary"),
-  },
-  shapeName: document.getElementById("shape-name"),
-  shapeTag: document.getElementById("shape-tag"),
-  shapeTagline: document.getElementById("shape-tagline"),
-  shapeDescription: document.getElementById("shape-description"),
-  shapeActivities: document.getElementById("shape-activities"),
-  shapeGrid: document.getElementById("shape-grid"),
-  designGrid: document.getElementById("design-grid"),
-  colorGrid: document.getElementById("color-grid"),
-  designSelected: document.getElementById("design-selected"),
-  designSelectedName: document.getElementById("design-selected-name"),
-  colorSelected: document.getElementById("color-selected"),
-  colorSelectedName: document.getElementById("color-selected-name"),
-  btnStep1: document.getElementById("btn-step1"),
-  btnStep1Label: document.getElementById("btn-step1-label"),
-  btnStep2: document.getElementById("btn-step2"),
-  btnStep3: document.getElementById("btn-step3"),
-  sumShape: document.getElementById("sum-shape"),
-  sumDesign: document.getElementById("sum-design"),
-  sumColor: document.getElementById("sum-color"),
-  sumPrice: document.getElementById("sum-price"),
-  btnAddCart: document.getElementById("btn-add-cart"),
-  btnMoreCustom: document.getElementById("btn-more-custom"),
-  customModalBackdrop: document.getElementById("custom-modal-backdrop"),
-  customModal: document.getElementById("custom-modal"),
-  customModalClose: document.getElementById("custom-modal-close"),
-  customModalBody: document.getElementById("custom-modal-body"),
-  customModalForm: document.getElementById("custom-modal-form"),
-  customModalEmail: document.getElementById("custom-modal-email"),
-  customModalMessage: document.getElementById("custom-modal-message"),
-  customModalSuccess: document.getElementById("custom-modal-success"),
+  title: $("step-title"),
+  shapeName: $("shape-name"),
+  shapeTag: $("shape-tag"),
+  shapeTagline: $("shape-tagline"),
+  shapeDescription: $("shape-description"),
+  shapeActivities: $("shape-activities"),
+  shapeGrid: $("shape-grid"),
+  designGrid: $("design-grid"),
+  designHint: $("design-hint"),
+  colorGrid: $("color-grid"),
+  barShape: $("bar-shape"),
+  barDesign: $("bar-design"),
+  barColor: $("bar-color"),
+  barPrice: $("bar-price"),
+  nav: $("wizard-nav"),
+  btnBack: $("btn-back"),
+  btnNext: $("btn-next"),
+  btnNextLabel: $("btn-next-label"),
+  error: $("wizard-error"),
+  sumShape: $("sum-shape"),
+  sumDesign: $("sum-design"),
+  sumColor: $("sum-color"),
+  sumColorEdit: $("sum-color-edit"),
+  sumPrice: $("sum-price"),
+  btnAddCart: $("btn-add-cart"),
+  btnMoreCustom: $("btn-more-custom"),
+  customModalBackdrop: $("custom-modal-backdrop"),
+  customModal: $("custom-modal"),
+  customModalClose: $("custom-modal-close"),
+  customModalBody: $("custom-modal-body"),
+  customModalForm: $("custom-modal-form"),
+  customModalEmail: $("custom-modal-email"),
+  customModalSuccess: $("custom-modal-success"),
+  customModalDone: $("custom-modal-done"),
 };
 
-function currentShape() {
-  return SHAPES[state.shapeIndex];
+const STEP_COPY = {
+  1: { title: "Quina taula s'adapta a tu?" },
+  2: { title: "Quin acabat t'agrada més?" },
+  3: { title: "Quin color la fa teva?" },
+  4: { title: "Dissenyada per tu" },
+};
+
+// --- Dades derivades ---------------------------------------------------
+
+const currentShape = () => SHAPES[state.shapeIndex];
+const currentDesign = () => DESIGNS.find((d) => d.id === state.designId);
+const currentColor = () => COLORS.find((c) => c.id === state.colorId);
+
+// El color només té sentit si el disseny té una zona per pintar.
+function needsColor(design = currentDesign()) {
+  return !design || design.kind !== "wood";
 }
+
+function totalSteps() {
+  return needsColor() ? 3 : 2;
+}
+
+function isComplete() {
+  return !!currentDesign() && (!needsColor() || !!currentColor());
+}
+
+// Es pot saltar a un pas des de la barra si ja s'hi ha arribat abans i
+// té sentit amb les tries actuals (p. ex. el color, només si cal).
+function isReachable(n) {
+  if (n === 1) return true;
+  if (n === 2) return state.maxStep >= 2;
+  if (n === 3) return state.maxStep >= 3 && !!currentDesign() && needsColor();
+  if (n === 4) return state.maxStep >= 4 && isComplete();
+  return false;
+}
+
+// --- Render ------------------------------------------------------------
 
 function renderPreview() {
   els.preview.innerHTML = renderBoardSVG({
@@ -75,6 +111,14 @@ function renderPreview() {
     designId: state.designId || "fusta-natural",
     colorId: state.colorId,
   });
+}
+
+function optionCard({ selected, attrs, swatchClass = "", swatchStyle = "", inner = "", name, meta = "" }) {
+  return `<button type="button" class="option-card${selected ? " selected" : ""}" ${attrs} aria-pressed="${selected}">
+    <span class="swatch ${swatchClass}"${swatchStyle ? ` style="${swatchStyle}"` : ""}>${inner}${OPTION_CHECK}</span>
+    <span class="option-card-name">${name}</span>
+    ${meta}
+  </button>`;
 }
 
 function renderShapeStep() {
@@ -86,210 +130,227 @@ function renderShapeStep() {
   els.shapeActivities.innerHTML = shape.activities
     .map(
       (a) =>
-        `<div class="activity-chip"><span class="activity-chip-icon">${activityIcon(
+        `<div class="activity-chip"><span class="activity-chip-icon" aria-hidden="true">${activityIcon(
           a
         )}</span><span class="activity-chip-label">${ACTIVITY_LABELS[a]}</span></div>`
     )
     .join("");
-  els.btnStep1Label.textContent = `Escollir ${shape.name}`;
-  // Targetes de cada forma (nom a sota + marca de selecció): es poden
-  // triar directament clicant-hi, sense passar per fletxes.
-  els.shapeGrid.innerHTML = SHAPES.map((s, i) => {
-    const selected = i === state.shapeIndex ? " selected" : "";
-    return `<button type="button" class="option-card${selected}" data-index="${i}" title="${s.name}">
-      <span class="swatch swatch-shape">
-        ${renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", colorId: null, showLogo: false })}
-        ${OPTION_CHECK}
-      </span>
-      <span class="option-card-name">${s.name}</span>
-    </button>`;
-  }).join("");
+  els.shapeGrid.innerHTML = SHAPES.map((s, i) =>
+    optionCard({
+      selected: i === state.shapeIndex,
+      attrs: `data-index="${i}"`,
+      swatchClass: "swatch-shape",
+      inner: renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", showLogo: false }),
+      name: s.name,
+      meta: `<span class="option-card-price">${s.price}€</span>`,
+    })
+  ).join("");
 }
 
-// Genera el fons pla (CSS) de cada swatch del selector de disseny, seguint
-// la mateixa zona "de color" (aquí en taronja, a mode d'exemple) que farà
-// servir renderBoardSVG un cop es triï un color de debò al pas 3.
-function designSwatchBackground(d) {
-  const [, wood] = d.wood;
-  const accent = "#f9b54f";
-  const dark = "#313030";
-  switch (d.kind) {
-    case "solid":
-      return dark;
-    case "franja-dreta":
-      return `linear-gradient(90deg, ${dark} 0 55%, ${accent} 55% 62%, ${wood} 62% 100%)`;
-    case "franges-centre":
-      return `linear-gradient(90deg, ${wood} 0 38%, ${dark} 38% 42%, ${accent} 42% 46%, ${dark} 46% 100%)`;
-    case "diagonal":
-      return `linear-gradient(135deg, ${dark} 0 46%, ${accent} 46% 54%, ${wood} 54% 100%)`;
-    case "meitat":
-      return `linear-gradient(90deg, ${wood} 0 50%, ${accent} 50% 100%)`;
-    case "wood":
-    default:
-      return `linear-gradient(135deg, ${d.wood[0]}, ${d.wood[1]})`;
-  }
-}
-
+// Cada disseny es mostra aplicat a la forma JA triada (no un quadrat
+// abstracte): així es veu exactament què et quedarà. La zona de color va
+// en gris fins que es tria al pas 3 — igual que a la vista gran.
 function renderDesignStep() {
-  els.designGrid.innerHTML = DESIGNS.map((d) => {
-    const selected = state.designId === d.id ? " selected" : "";
-    return `<button type="button" class="option-card${selected}" data-id="${d.id}" title="${d.name}">
-      <span class="swatch" style="background:${designSwatchBackground(d)}">${OPTION_CHECK}</span>
-      <span class="option-card-name">${d.name}</span>
-    </button>`;
-  }).join("");
-  const design = DESIGNS.find((d) => d.id === state.designId);
-  els.designSelected.hidden = !design;
-  if (design) els.designSelectedName.textContent = design.name;
+  const shape = currentShape();
+  els.designGrid.innerHTML = DESIGNS.map((d) =>
+    optionCard({
+      selected: state.designId === d.id,
+      attrs: `data-id="${d.id}"`,
+      swatchClass: "swatch-shape",
+      inner: renderBoardSVG({ shapeId: shape.id, designId: d.id, colorId: state.colorId, showLogo: false }),
+      name: d.name,
+      meta: needsColor(d) ? "" : `<span class="option-card-meta">Sense pintar</span>`,
+    })
+  ).join("");
+  const design = currentDesign();
+  els.designHint.hidden = !design || !needsColor(design) || !!currentColor();
 }
 
 function renderColorStep() {
-  els.colorGrid.innerHTML = COLORS.map((c) => {
-    const selected = state.colorId === c.id ? " selected" : "";
-    return `<button type="button" class="option-card${selected}" data-id="${c.id}" title="${c.name}">
-      <span class="swatch swatch-color" style="background:${c.hex}">${OPTION_CHECK}</span>
-      <span class="option-card-name">${c.name}</span>
-    </button>`;
-  }).join("");
-  const color = COLORS.find((c) => c.id === state.colorId);
-  els.colorSelected.hidden = !color;
-  if (color) els.colorSelectedName.textContent = color.name;
+  els.colorGrid.innerHTML = COLORS.map((c) =>
+    optionCard({
+      selected: state.colorId === c.id,
+      attrs: `data-id="${c.id}"`,
+      swatchClass: "swatch-color",
+      swatchStyle: `background:${c.hex}`,
+      name: c.name,
+    })
+  ).join("");
 }
 
 function renderSummary() {
   const shape = currentShape();
-  const design = DESIGNS.find((d) => d.id === state.designId);
-  const color = COLORS.find((c) => c.id === state.colorId);
+  const design = currentDesign();
+  const color = currentColor();
   els.sumShape.textContent = shape.name;
   els.sumDesign.textContent = design.name;
-  els.sumColor.textContent = color.name;
+  els.sumColor.textContent = needsColor() ? color.name : "Sense color";
+  els.sumColorEdit.hidden = !needsColor();
   els.sumPrice.textContent = `${shape.price}€`;
 }
 
+// Barra de progrés + resum. El preu només depèn de la forma, així que és
+// definitiu des del primer clic: res de "des de" (prometria variacions
+// que no existeixen).
+function renderBar() {
+  const design = currentDesign();
+  const color = currentColor();
+  const values = {
+    1: currentShape().name,
+    2: design ? design.name : "Per triar",
+    3: !needsColor() ? "No cal" : color ? color.name : "Per triar",
+  };
+  els.barShape.textContent = values[1];
+  els.barDesign.textContent = values[2];
+  els.barColor.textContent = values[3];
+  els.barPrice.textContent = `${currentShape().price}€`;
+
+  els.steps.forEach((btn) => {
+    const n = Number(btn.dataset.step);
+    const skipped = n === 3 && !needsColor();
+    const done = (n === 1 && state.maxStep > 1) || (n === 2 && !!design) || (n === 3 && !!color && !skipped);
+    const isCurrent = n === state.step;
+    btn.classList.toggle("is-current", isCurrent);
+    btn.classList.toggle("is-done", done && !isCurrent);
+    btn.classList.toggle("is-pending", !done && !isCurrent);
+    btn.classList.toggle("is-skipped", skipped);
+    btn.disabled = isCurrent ? false : !isReachable(n);
+    if (isCurrent) btn.setAttribute("aria-current", "step");
+    else btn.removeAttribute("aria-current");
+  });
+}
+
+function renderNav() {
+  const s = state.step;
+  els.btnBack.hidden = s === 1;
+  els.nav.hidden = s === 4;
+  const labels = {
+    1: `Continua amb ${currentShape().name}`,
+    2: currentDesign() && !needsColor() ? "Veure el resum" : "Següent: color",
+    3: "Veure el resum",
+  };
+  if (labels[s]) els.btnNextLabel.textContent = labels[s];
+}
+
 function render() {
-  // Marca el pas actual al <main>: el pas 1 (forma) ja mostra la imatge
-  // de la taula a cada targeta i a la fitxa de detall, així que la vista
-  // prèvia gran de dalt hi és redundant i es pot encongir en mòbil
-  // (vegeu CSS [data-step="1"] .board-preview) per no tapar el CTA.
-  document.querySelector(".wizard").dataset.step = state.step;
+  const s = state.step;
+  els.wizard.dataset.step = s;
 
-  // step indicator — els punts ja visitats (<= maxStep) es poden clicar
-  // per tornar-hi o saltar-hi de nou, sense perdre les tries fetes.
-  els.dots.forEach((dot) => {
-    const n = Number(dot.dataset.step);
-    dot.classList.toggle("active", n === state.step);
-    dot.classList.toggle("done", n < state.step);
-    dot.classList.toggle("reachable", n <= state.maxStep);
+  Object.entries(els.panels).forEach(([n, panel]) => {
+    panel.hidden = Number(n) !== s;
   });
 
-  // Línia entre els punts: tota taronja si el pas ja s'ha completat,
-  // mig taronja mentre s'hi és (indica progrés cap al següent) i grisa
-  // si encara no s'hi ha arribat.
-  els.connectors.forEach((line) => {
-    const n = Number(line.dataset.connector);
-    line.classList.toggle("done", n < state.step);
-    line.classList.toggle("active", n === state.step);
-  });
+  els.title.textContent = STEP_COPY[s].title;
 
-  // panels
-  Object.entries(els.panels).forEach(([step, panel]) => {
-    panel.hidden = Number(step) !== state.step;
-  });
+  if (s === 1) renderShapeStep();
+  if (s === 2) renderDesignStep();
+  if (s === 3) renderColorStep();
+  if (s === 4) renderSummary();
 
-  // intro (eyebrow + pregunta), ara a fora de .option-panel i sincronitzat
-  // igual que els panells.
-  Object.entries(els.intros).forEach(([step, intro]) => {
-    intro.hidden = Number(step) !== state.step;
-  });
-
-  if (state.step === 1) renderShapeStep();
-  if (state.step === 2) renderDesignStep();
-  if (state.step === 3) renderColorStep();
-  if (state.step === 4) renderSummary();
-
-  els.btnStep2.disabled = !state.designId;
-  els.btnStep3.disabled = !state.colorId;
-
+  renderBar();
+  renderNav();
   renderPreview();
 }
 
-// --- Navegació entre passos -------------------------------------------
+// --- Navegació ---------------------------------------------------------
 
-function unlockStep(n) {
-  state.maxStep = Math.max(state.maxStep, n);
+function clearError() {
+  els.error.textContent = "";
 }
 
-// Els punts 1/2/3 permeten tornar a qualsevol pas ja visitat (mai saltar
-// endavant a un que encara no s'ha desbloquejat completant l'anterior).
 function goToStep(n) {
-  if (n === state.step || n > state.maxStep) return;
+  if (n === state.step) return;
+  clearError();
   state.step = n;
+  state.maxStep = Math.max(state.maxStep, n);
   render();
+  // Torna a dalt i porta el focus a la pregunta nova: en mòbil, sense
+  // això, el pas següent començava a mitja pantalla.
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  els.title.focus({ preventScroll: true });
 }
 
-els.dots.forEach((dot) => {
-  dot.addEventListener("click", () => goToStep(Number(dot.dataset.step)));
-  dot.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      goToStep(Number(dot.dataset.step));
+function next() {
+  const s = state.step;
+  if (s === 1) return goToStep(2);
+  if (s === 2) {
+    if (!currentDesign()) {
+      els.error.textContent = "Tria un disseny per continuar.";
+      return;
     }
+    if (!needsColor()) {
+      state.colorId = null;
+      return goToStep(4);
+    }
+    return goToStep(3);
+  }
+  if (s === 3) {
+    if (!currentColor()) {
+      els.error.textContent = "Tria un color per continuar.";
+      return;
+    }
+    return goToStep(4);
+  }
+}
+
+function back() {
+  const s = state.step;
+  if (s === 4) return goToStep(needsColor() ? 3 : 2);
+  if (s > 1) goToStep(s - 1);
+}
+
+els.steps.forEach((btn) =>
+  btn.addEventListener("click", () => {
+    const n = Number(btn.dataset.step);
+    if (isReachable(n)) goToStep(n);
+  })
+);
+
+els.btnNext.addEventListener("click", next);
+els.btnBack.addEventListener("click", back);
+
+document.querySelectorAll(".summary-edit").forEach((btn) =>
+  btn.addEventListener("click", () => goToStep(Number(btn.dataset.goto)))
+);
+
+// --- Selecció d'opcions ------------------------------------------------
+
+function onPick(grid, apply) {
+  grid.addEventListener("click", (e) => {
+    const card = e.target.closest(".option-card");
+    if (!card) return;
+    apply(card);
+    clearError();
+    render();
+    // render() reescriu la graella: recuperem el focus a la mateixa
+    // targeta perquè el teclat no "salti" a l'inici de la pàgina.
+    // (e.detail === 0 => activat amb teclat, no amb ratolí)
+    const attr = "index" in card.dataset ? "index" : "id";
+    const again = grid.querySelector(`[data-${attr}="${card.dataset[attr]}"]`);
+    if (again && e.detail === 0) again.focus();
   });
+}
+
+onPick(els.shapeGrid, (card) => {
+  state.shapeIndex = Number(card.dataset.index);
 });
 
-// Graella de targetes de formes: se selecciona directament clicant-hi
-// (la navegació cap enrere es fa amb els punts de pas, ja clicables).
-els.shapeGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".option-card");
-  if (!btn) return;
-  state.shapeIndex = Number(btn.dataset.index);
-  render();
+onPick(els.designGrid, (card) => {
+  state.designId = card.dataset.id;
 });
 
-els.btnStep1.addEventListener("click", () => {
-  state.step = 2;
-  unlockStep(2);
-  render();
-});
-
-els.designGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".option-card");
-  if (!btn) return;
-  state.designId = btn.dataset.id;
-  render();
-});
-
-els.btnStep2.addEventListener("click", () => {
-  if (!state.designId) return;
-  state.step = 3;
-  unlockStep(3);
-  render();
-});
-
-els.colorGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest(".option-card");
-  if (!btn) return;
-  state.colorId = btn.dataset.id;
-  render();
-});
-
-els.btnStep3.addEventListener("click", () => {
-  if (!state.colorId) return;
-  state.step = 4;
-  unlockStep(4);
-  render();
+onPick(els.colorGrid, (card) => {
+  state.colorId = card.dataset.id;
 });
 
 els.btnAddCart.addEventListener("click", () => {
-  els.btnAddCart.textContent = "Afegit a la cistella ✓";
+  els.btnAddCart.textContent = "Afegida a la cistella ✓";
   els.btnAddCart.disabled = true;
 });
 
-// --- Popup "Personalitza la taula encara més" --------------------------
+// --- Popup "Fem-la encara més teva" ------------------------------------
 
 function openCustomModal() {
-  // Cada vegada que s'obre, comença de nou pel formulari (per si la
-  // vegada anterior es va arribar a enviar la petició).
   els.customModalForm.reset();
   els.customModalBody.hidden = false;
   els.customModalSuccess.hidden = true;
@@ -303,12 +364,12 @@ function closeCustomModal() {
   els.customModal.hidden = true;
   els.customModalBackdrop.hidden = true;
   document.body.classList.remove("modal-open");
+  els.btnMoreCustom.focus();
 }
 
 els.btnMoreCustom.addEventListener("click", openCustomModal);
 els.customModalClose.addEventListener("click", closeCustomModal);
 els.customModalBackdrop.addEventListener("click", closeCustomModal);
-els.customModalDone = document.getElementById("custom-modal-done");
 els.customModalDone.addEventListener("click", closeCustomModal);
 
 document.addEventListener("keydown", (e) => {
@@ -317,11 +378,10 @@ document.addEventListener("keydown", (e) => {
 
 els.customModalForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  // Sense backend real: simulem l'enviament de la petició (nom, email
-  // i missatge) i mostrem la confirmació, seguint el mateix patró que
-  // "Afegit a la cistella".
+  // Sense backend real: simulem l'enviament i mostrem la confirmació.
   els.customModalBody.hidden = true;
   els.customModalSuccess.hidden = false;
+  els.customModalDone.focus();
 });
 
 render();
