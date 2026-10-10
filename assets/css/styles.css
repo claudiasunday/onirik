@@ -1425,7 +1425,6 @@ section {
 .page-hero h1 {
   font-size: var(--fs-h1);
   margin-top: var(--space-2);
-  max-width: 20ch;
 }
 
 .page-hero .lede {
@@ -1699,7 +1698,7 @@ section {
   padding-top: calc(var(--header-h) + var(--space-4));
 }
 
-/* "Progress bar" navegable: els 3 punts es reparteixen a partes iguals
+/* "Progress bar" navegable: els 3 punts es reparteixen a parts iguals
    sobre tot l'ample (flex:1 a cada .step-dot) perquè el seu centre
    horitzontal caigui exactament a 1/6, 1/2 i 5/6 de l'ample total —
    així la línia connectora (.step-connector) es pot posicionar amb
