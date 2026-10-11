@@ -1349,7 +1349,8 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--c-orange-dark);
+  color: var(--c-dark);
+  flex: none;
 }
 
 .benefit-item h3 {
