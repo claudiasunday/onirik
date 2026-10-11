@@ -95,7 +95,7 @@
           <div id="panel-design" class="step-panel" hidden>
             <div class="swatch-grid swatch-grid-designs" id="design-grid" role="group" aria-label="Dissenys"></div>
             <p class="step-hint" id="design-hint" hidden>
-              <span class="step-hint-dot" aria-hidden="true"></span>
+              <span class="step-hint-dot" aria-hidden="true">i</span>
               La zona grisa és la que pintaràs al pas següent.
             </p>
           </div>
@@ -103,6 +103,13 @@
           <!-- Pas 3: color -->
           <div id="panel-color" class="step-panel" hidden>
             <div class="swatch-grid swatch-grid-colors" id="color-grid" role="group" aria-label="Colors"></div>
+            <p class="color-custom">
+              <button type="button" class="link-btn" id="btn-color-custom">Explora'n més</button>
+            </p>
+            <div class="color-custom-field" id="color-custom-field" hidden>
+              <label for="color-custom-input">Descriu el color que vols</label>
+              <input type="text" id="color-custom-input" placeholder="P. ex. verd oliva, lila fosc..." />
+            </div>
           </div>
 
           <!-- Pas 4: resum -->

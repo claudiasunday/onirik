@@ -753,18 +753,27 @@ body[data-page="home"] .hero-inner {
     gap: var(--space-4);
   }
 
-  /* El titular i el CTA van primer (ordre natural del DOM): la taula
-     il·lustrada anava abans i, en mòbil, empenyia el CTA fora de la
-     part visible sense fer scroll. */
-  .hero-art {
-    min-height: 160px;
-  }
-
+  /* En mòbil traiem la taula il·lustrada (i el seu halo): només afegia
+     scroll sense aportar res que el text/CTA de sobre no digués ja. Es
+     queda la insígnia (bossa/grup/edifici) com a únic element d'art. */
+  .hero-blob,
   .hero-illustration {
-    width: min(100%, 150px);
+    display: none;
   }
 
+  .hero-art {
+    position: static;
+    min-height: 0;
+  }
+
+  /* Sense la il·lustració, la insígnia puja a l'altra punta de la
+     pestanya (Boards/Tallers/Col·labora), a la cantonada superior dreta:
+     .hero-art ja no li serveix de referència (ha quedat a 0 d'alçada,
+     després del CTA), així que s'ancora a .hero-inner. */
   .hero-badge {
+    position: absolute;
+    top: 12px;
+    right: 0;
     width: 40px;
     height: 40px;
   }
@@ -829,7 +838,7 @@ body[data-page="home"] .hero-inner {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   overflow: hidden;
   padding: var(--space-4) 0;
   /* Esvaeix les pills a les vores en lloc de tallar-les en sec, perquè
@@ -889,20 +898,59 @@ body[data-page="home"] .hero-inner {
 
 /* Resum "Tria la forma / el disseny / el color" just sota el hero, per
    reforçar la proposta de valor (personalització en 3 passos) abans
-   d'arribar als productes. */
+   d'arribar als productes. Ara són 3 targetes soltes: cadascuna es
+   queda enganxada (sticky) un pèl més avall que l'anterior, així que
+   en fer scroll s'apilen l'una sobre l'altra en comptes de desaparèixer. */
 .value-steps {
-  padding: var(--space-5);
-  background: var(--c-cream-2);
-  border-radius: var(--r-card);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
 }
 
 .value-step {
+  position: sticky;
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.value-step.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.value-step:nth-child(1) {
+  top: calc(var(--header-h) + 16px);
+  z-index: 1;
+}
+
+.value-step:nth-child(2) {
+  top: calc(var(--header-h) + 32px);
+  z-index: 2;
+}
+
+.value-step:nth-child(3) {
+  top: calc(var(--header-h) + 48px);
+  z-index: 3;
+}
+
+.value-steps-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value-step {
+    transition: none;
+  }
 }
 
 .value-step-num {
@@ -924,10 +972,14 @@ body[data-page="home"] .hero-inner {
 }
 
 @media (max-width: 639px) {
-  .value-steps {
-    grid-template-columns: 1fr;
+  .value-step {
+    position: static;
     padding: var(--space-4);
-    gap: var(--space-3);
+  }
+
+  .value-steps-cta .link-pill {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -1080,10 +1132,20 @@ section {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.product-card:hover,
 .product-card:focus-visible {
   transform: translateY(-3px);
   box-shadow: 0 14px 30px rgba(49, 48, 48, 0.16);
+}
+
+/* L'efecte hover només en dispositius amb ratolí real: al mòbil, en
+   tocar la targeta queda "enganxada" en estat hover (no hi ha manera
+   de treure el cursor de sobre) i es veu com si la targeta cresqués i
+   no tornés a l'estat normal fins que toques una altra targeta. */
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(49, 48, 48, 0.16);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1458,7 +1520,12 @@ section {
 
 .footer-hero {
   position: relative;
-  min-height: clamp(240px, 28vw, 420px);
+  /* Ha de coincidir exactament amb l'alçada real de .footer-hero-photo
+     (width: min(56vw, 800px) × la seva relació d'aspecte 768/576 = 0.75),
+     no un clamp independent: si no coincideixen, la foto (ancorada a
+     bottom:0) sobresurt per dalt del contenidor i es menja el .footer-top
+     de sobre, deixant alhora un buit buit sota seu dins d'aquesta caixa. */
+  min-height: min(42vw, 600px);
   padding-top: var(--space-5);
 }
 
@@ -1655,6 +1722,11 @@ section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-3);
+  /* Per sota de 860px .prose-layout és d'una sola columna: sense això,
+     les imatges queden després de tot el text (card-row inclòs) i
+     semblen "amagades" al final en lloc de ser-hi, entre el títol i
+     el cos del text. */
+  order: -1;
 }
 
 @media (min-width: 860px) {
@@ -1663,6 +1735,7 @@ section {
     gap: var(--space-4);
     position: sticky;
     top: calc(var(--header-h) + var(--space-4));
+    order: 0;
   }
 }
 
@@ -2039,6 +2112,21 @@ section {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Amplada fixa pensada pel nom més llarg possible de cada pas (forma,
+   disseny o color): si no, cada cop que es tria una opció més curta o
+   més llarga que l'anterior, tota la barra es reajusta i "balla". */
+.wizard-step[data-step="1"] .wizard-step-value {
+  min-width: 62px;
+}
+
+.wizard-step[data-step="2"] .wizard-step-value {
+  min-width: 100px;
+}
+
+.wizard-step[data-step="3"] .wizard-step-value {
+  min-width: 60px;
 }
 
 .wizard-step.is-pending .wizard-step-value {
@@ -2585,10 +2673,55 @@ section {
 
 .step-hint-dot {
   flex: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
   background: #cfcfcf;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Pas 3 (color): enllaç per descriure un color fora de la graella.
+   El valor triat es recull igual que un color normal (bar + resum
+   mostren "Personalitzat"). */
+.color-custom {
+  margin: var(--space-3) 0 0;
+}
+
+.color-custom-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.color-custom-field[hidden] {
+  display: none;
+}
+
+.color-custom-field input {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--c-dark);
+  padding: 10px 14px;
+  border: 1.5px solid rgba(49, 48, 48, 0.15);
+  border-radius: var(--r-swatch);
+}
+
+.color-custom-field input:focus {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 1px;
 }
 
 /* Navegació del wizard: Enrere (enllaç) + acció principal (botó),

@@ -13,6 +13,8 @@ const state = {
   shapeIndex: 0,
   designId: null,
   colorId: null,
+  customColor: "",
+  customColorOpen: false,
 };
 
 const OPTION_CHECK = `<span class="option-check" aria-hidden="true">
@@ -41,6 +43,9 @@ const els = {
   designGrid: $("design-grid"),
   designHint: $("design-hint"),
   colorGrid: $("color-grid"),
+  colorCustomBtn: $("btn-color-custom"),
+  colorCustomField: $("color-custom-field"),
+  colorCustomInput: $("color-custom-input"),
   barShape: $("bar-shape"),
   barDesign: $("bar-design"),
   barColor: $("bar-color"),
@@ -79,6 +84,7 @@ const STEP_COPY = {
 const currentShape = () => SHAPES[state.shapeIndex];
 const currentDesign = () => DESIGNS.find((d) => d.id === state.designId);
 const currentColor = () => COLORS.find((c) => c.id === state.colorId);
+const hasCustomColor = () => state.customColor.trim().length > 0;
 
 // El color només té sentit si el disseny té una zona per pintar.
 function needsColor(design = currentDesign()) {
@@ -90,7 +96,7 @@ function totalSteps() {
 }
 
 function isComplete() {
-  return !!currentDesign() && (!needsColor() || !!currentColor());
+  return !!currentDesign() && (!needsColor() || !!currentColor() || hasCustomColor());
 }
 
 // Es pot saltar a un pas des de la barra si ja s'hi ha arribat abans i
@@ -169,13 +175,17 @@ function renderDesignStep() {
 function renderColorStep() {
   els.colorGrid.innerHTML = COLORS.map((c) =>
     optionCard({
-      selected: state.colorId === c.id,
+      selected: !hasCustomColor() && state.colorId === c.id,
       attrs: `data-id="${c.id}"`,
       swatchClass: "swatch-color",
       swatchStyle: `background:${c.hex}`,
       name: c.name,
     })
   ).join("");
+  els.colorCustomField.hidden = !(state.customColorOpen || hasCustomColor());
+  if (els.colorCustomInput.value !== state.customColor) {
+    els.colorCustomInput.value = state.customColor;
+  }
 }
 
 function renderSummary() {
@@ -184,7 +194,7 @@ function renderSummary() {
   const color = currentColor();
   els.sumShape.textContent = shape.name;
   els.sumDesign.textContent = design.name;
-  els.sumColor.textContent = needsColor() ? color.name : "Sense color";
+  els.sumColor.textContent = !needsColor() ? "Sense color" : hasCustomColor() ? "Personalitzat" : color.name;
   els.sumColorEdit.hidden = !needsColor();
   els.sumPrice.textContent = `${shape.price}€`;
 }
@@ -198,7 +208,7 @@ function renderBar() {
   const values = {
     1: currentShape().name,
     2: design ? design.name : "Per triar",
-    3: !needsColor() ? "No cal" : color ? color.name : "Per triar",
+    3: !needsColor() ? "No cal" : hasCustomColor() ? "Personalitzat" : color ? color.name : "Per triar",
   };
   els.barShape.textContent = values[1];
   els.barDesign.textContent = values[2];
@@ -208,7 +218,7 @@ function renderBar() {
   els.steps.forEach((btn) => {
     const n = Number(btn.dataset.step);
     const skipped = n === 3 && !needsColor();
-    const done = (n === 1 && state.maxStep > 1) || (n === 2 && !!design) || (n === 3 && !!color && !skipped);
+    const done = (n === 1 && state.maxStep > 1) || (n === 2 && !!design) || (n === 3 && (!!color || hasCustomColor()) && !skipped);
     const isCurrent = n === state.step;
     btn.classList.toggle("is-current", isCurrent);
     btn.classList.toggle("is-done", done && !isCurrent);
@@ -280,13 +290,15 @@ function next() {
     }
     if (!needsColor()) {
       state.colorId = null;
+      state.customColor = "";
+      state.customColorOpen = false;
       return goToStep(4);
     }
     return goToStep(3);
   }
   if (s === 3) {
-    if (!currentColor()) {
-      els.error.textContent = "Tria un color per continuar.";
+    if (!currentColor() && !hasCustomColor()) {
+      els.error.textContent = "Tria un color o descriu-ne un per continuar.";
       return;
     }
     return goToStep(4);
@@ -341,6 +353,21 @@ onPick(els.designGrid, (card) => {
 
 onPick(els.colorGrid, (card) => {
   state.colorId = card.dataset.id;
+  state.customColor = "";
+  state.customColorOpen = false;
+});
+
+els.colorCustomBtn.addEventListener("click", () => {
+  state.customColorOpen = true;
+  render();
+  els.colorCustomInput.focus();
+});
+
+els.colorCustomInput.addEventListener("input", (e) => {
+  state.colorId = null;
+  state.customColor = e.target.value;
+  clearError();
+  render();
 });
 
 els.btnAddCart.addEventListener("click", () => {
