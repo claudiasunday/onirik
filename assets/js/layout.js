@@ -156,6 +156,28 @@ function renderFooter() {
   document.getElementById("year").textContent = new Date().getFullYear();
 }
 
+/**
+ * Targetes ".value-step" (Home, Tenda...): fosa + pujada en entrar al
+ * viewport. Compartit perquè qualsevol pàgina pugui reutilitzar-les.
+ */
+function revealValueSteps() {
+  const steps = document.querySelectorAll(".value-step");
+  if (!steps.length) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  steps.forEach((step) => observer.observe(step));
+}
+
 renderHeader();
 renderFooter();
 initHeaderScroll();
+revealValueSteps();
