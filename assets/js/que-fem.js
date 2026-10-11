@@ -115,6 +115,7 @@ function topicFromHref(href) {
 
 function initQueFemSubnav() {
   const prose = document.getElementById("que-fem-prose");
+  const media = document.getElementById("que-fem-media");
   const subnav = document.querySelector(".subnav");
   if (!prose || !subnav) return;
   const links = [...subnav.querySelectorAll("a")];
@@ -123,6 +124,7 @@ function initQueFemSubnav() {
     const data = QUE_FEM_TOPICS[topic];
     if (!data) return;
     prose.innerHTML = `<h2>${data.title}</h2>${data.body}${data.cards}`;
+    if (media) media.setAttribute("aria-label", data.title);
     links.forEach((a) =>
       a.classList.toggle("active", topicFromHref(a.getAttribute("href")) === topic)
     );

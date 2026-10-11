@@ -104,7 +104,7 @@ function renderFooter() {
     <section class="container">
       <div class="contact-teaser">
         <div>
-          <h2>Vols alguna cosa personalitzada?</h2>
+          <h2>Vols una taula personalitzada?</h2>
           <p>Escriu-nos i t'ajudem a trobar la teva balance board ideal.</p>
         </div>
         <a class="btn btn-primary" href="contacte.html">Contacta'm</a>
