@@ -268,7 +268,7 @@ function renderBoardThumb(entry) {
 
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
-  { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null },
+  { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null, photo: "assets/images/board-peix-diagonal-verd.png" },
   { id: "p2", shapeId: "lasai", designId: "fusta-natural", colorId: null, discount: null },
   { id: "p3", shapeId: "keki", designId: "franja-dreta", colorId: "negre", discount: 20 },
   { id: "p4", shapeId: "peix", designId: "franja-dreta", colorId: "taronja", discount: null },
@@ -277,6 +277,10 @@ const CATALOG = [
   { id: "p7", shapeId: "la-free", designId: "meitat", colorId: "taronja", discount: null },
   { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
   { id: "p9", shapeId: "la-free", designId: "fusta-natural", colorId: null, discount: null },
+  { id: "p10", shapeId: "peix", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-peix-blau.png" },
+  { id: "p11", shapeId: "peix", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-peix-negre-mostassa.png" },
+  { id: "p12", shapeId: "lasai", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-lasai-blau.png" },
+  { id: "p13", shapeId: "la-free", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-keki-teca-blau.png" },
 ];
 
 // Packs — taula + roller de suro amb preu conjunt (estalvi respecte

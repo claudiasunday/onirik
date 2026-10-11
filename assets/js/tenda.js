@@ -19,8 +19,10 @@ const CATEGORY_LABEL = {
 
 // Un únic llistat amb totes les categories, marcant les taules "normals"
 // amb kind: "board" perquè el filtre de categoria les pugui distingir.
+// Només les taules amb foto real (entry.photo): a la Tenda no volem cap
+// il·lustració SVG generada, només producte fotografiat de debò.
 const ALL_ITEMS = [
-  ...CATALOG.map((e) => ({ ...e, kind: e.kind || "board" })),
+  ...CATALOG.filter((e) => e.photo).map((e) => ({ ...e, kind: e.kind || "board" })),
   ...PACKS,
   ...EDITIONS,
   { ...ROLLER, kind: "accessori" },

@@ -1181,15 +1181,25 @@ section {
 
 .product-card .thumb {
   aspect-ratio: 1 / 1.05;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-2);
+  overflow: hidden;
 }
 
+/* Totes les miniatures ocupen exactament el mateix espai, siguin SVG
+   generats (relació 200/300 ja pensada per encaixar-hi) o fotos reals
+   amb la seva pròpia relació d'aspecte (sovint molt més altes que
+   amples). Amb height:100% dins d'un flex, un <img> amb mida intrínseca
+   gran ignora el contenidor i desborda; position:absolute + inset:0 el
+   lliga sempre a la mida real de .thumb, vingui d'on vingui la imatge. */
 .product-card .thumb svg,
 .product-card .thumb .board-photo {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -1750,6 +1760,15 @@ section {
   opacity: 0.8;
   max-width: 60ch;
   margin-top: var(--space-3);
+}
+
+/* A la Tenda el h1/lede es queden visually-hidden (text per a SEO/
+   lectors de pantalla, menys scroll per a qui compra): sense títol
+   visible, el padding del hero pensat per encaixar-lo queda com un
+   buit injustificat abans del contingut real. */
+body[data-page="tenda"] .page-hero {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-2);
 }
 
 /* Columna de text (.prose) + espais reservats per a fotografia real

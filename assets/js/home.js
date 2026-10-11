@@ -7,7 +7,11 @@
 
 function mountProducts() {
   const grid = document.getElementById("product-grid-1");
-  CATALOG.slice(0, 4).forEach((p) => grid.appendChild(buildProductCard(p)));
+  // Només taules amb foto real: igual que a la Tenda, cap il·lustració
+  // SVG generada en aquest aparador.
+  CATALOG.filter((p) => p.photo)
+    .slice(0, 4)
+    .forEach((p) => grid.appendChild(buildProductCard(p)));
 }
 
 function mountFeatured() {
