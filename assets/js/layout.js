@@ -40,6 +40,9 @@ function renderHeader() {
       </nav>
       <div class="header-actions">
         <a class="btn btn-primary btn-compra" href="personalitza.html">Crea la teva taula</a>
+        <a class="icon-btn cart-link" href="cistella.html" aria-label="Cistella">
+          🛒<span class="cart-badge" hidden>0</span>
+        </a>
         <button class="icon-btn menu-btn" id="menu-toggle" aria-label="Menú">☰</button>
       </div>
     </header>
@@ -98,7 +101,7 @@ function renderFooter() {
   if (!mount) return;
   const current = document.body.dataset.page || "";
   const teaser =
-    current === "contacte" || current === "personalitza"
+    current === "contacte" || current === "personalitza" || current === "cistella"
       ? ""
       : `
     <section class="container">

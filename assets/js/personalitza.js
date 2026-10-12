@@ -49,7 +49,6 @@ const els = {
   barShape: $("bar-shape"),
   barDesign: $("bar-design"),
   barColor: $("bar-color"),
-  barPrice: $("bar-price"),
   nav: $("wizard-nav"),
   btnBack: $("btn-back"),
   btnNext: $("btn-next"),
@@ -213,7 +212,6 @@ function renderBar() {
   els.barShape.textContent = values[1];
   els.barDesign.textContent = values[2];
   els.barColor.textContent = values[3];
-  els.barPrice.textContent = `${currentShape().price}€`;
 
   els.steps.forEach((btn) => {
     const n = Number(btn.dataset.step);

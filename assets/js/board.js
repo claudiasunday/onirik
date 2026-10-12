@@ -339,6 +339,54 @@ const SHAPE_TYPE_LABEL = {
   keki: "fish",
 };
 
+// Totes les entrades del catàleg (taules, packs, edicions i l'accessori)
+// en un sol llistat, per cercar qualsevol peça pel seu id — usat per la
+// cistella (i reutilitzable per qualsevol altra pàgina que ho necessiti).
+const ALL_CATALOG_ENTRIES = [
+  ...CATALOG.map((e) => ({ ...e, kind: e.kind || "board" })),
+  ...PACKS,
+  ...EDITIONS,
+  { ...ROLLER, kind: "accessori" },
+];
+
+function findCatalogEntry(id) {
+  return ALL_CATALOG_ENTRIES.find((e) => e.id === id);
+}
+
+/**
+ * Títol i miniatura "de visualització" d'una entrada del catàleg (taula,
+ * pack, edició o accessori), per a qualsevol lloc que la mostri fora de
+ * la seva targeta pròpia — p. ex. la cistella.
+ */
+function catalogEntryDisplay(entry) {
+  if (entry.kind === "pack") {
+    const shape = SHAPES.find((s) => s.id === entry.shapeId);
+    return {
+      title: `${shape.name} + Roller`,
+      thumbHtml: `<div class="pack-thumb-board">${renderBoardSVG({
+        shapeId: entry.shapeId,
+        designId: entry.designId,
+        colorId: entry.colorId,
+      })}</div>`,
+    };
+  }
+  if (entry.kind === "edition") {
+    return {
+      title: entry.editionName,
+      thumbHtml: renderBoardSVG({
+        shapeId: entry.shapeId,
+        designId: entry.designId,
+        colorId: entry.colorId,
+      }),
+    };
+  }
+  if (entry.kind === "accessori") {
+    return { title: entry.name, thumbHtml: renderRollerPhoto() };
+  }
+  const shape = SHAPES.find((s) => s.id === entry.shapeId);
+  return { title: shape.name, thumbHtml: renderBoardThumb(entry) };
+}
+
 /**
  * Fa que una targeta de producte (div, no <a>) sigui operable amb
  * teclat: focusable (tabindex) i activable amb Enter/Espai, a més del
@@ -376,7 +424,7 @@ function buildProductCard(entry, { onClick } = {}) {
   `;
   makeCardInteractive(card, () => {
     if (onClick) onClick(entry);
-    else window.location.href = "personalitza.html";
+    else window.location.href = `fitxa.html?id=${entry.id}`;
   });
   return card;
 }
@@ -414,7 +462,7 @@ function buildPackCard(entry) {
     <p class="p-price">${entry.packPrice}€ <s style="color:var(--c-muted-light);font-weight:400;">${separatePrice}€</s></p>
     <p class="p-save">Estalvia ${save}€</p>
   `;
-  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = `fitxa.html?id=${entry.id}`));
   return card;
 }
 
@@ -434,7 +482,7 @@ function buildEditionCard(entry) {
     <p class="p-type">${shape.name} · Queden ${entry.units} unitats</p>
     <p class="p-price">${entry.price}€</p>
   `;
-  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = `fitxa.html?id=${entry.id}`));
   return card;
 }
 
@@ -447,7 +495,7 @@ function buildAccessoryCard(entry) {
     <p class="p-type">${entry.tagline}</p>
     <p class="p-price">${entry.price}€</p>
   `;
-  makeCardInteractive(card, () => (window.location.href = "personalitza.html"));
+  makeCardInteractive(card, () => (window.location.href = `fitxa.html?id=${entry.id}`));
   return card;
 }
 

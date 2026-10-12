@@ -479,6 +479,32 @@ body.mobile-nav-open {
   color: var(--c-dark);
 }
 
+.cart-link {
+  position: relative;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.cart-badge[hidden] {
+  display: none;
+}
+
 .btn.btn-compra {
   padding: 10px 20px;
   font-size: 14px;
@@ -1942,6 +1968,266 @@ body[data-page="tenda"] .page-hero {
   opacity: 0.75;
 }
 
+/* ---- Fitxa de producte ---------------------------------------------- */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-muted-light);
+}
+
+.back-link:hover {
+  color: var(--c-dark);
+}
+
+.fitxa-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  z-index: 1;
+}
+
+.fitxa-pack-thumb {
+  width: 100%;
+  height: 100%;
+}
+
+.fitxa-price {
+  font-family: var(--f-heading);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.fitxa-price s {
+  font-family: var(--f-body);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--c-muted-light);
+  margin-left: var(--space-2);
+}
+
+.fitxa-specs {
+  font-size: 13px;
+  color: var(--c-muted-light);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(49, 48, 48, 0.1);
+}
+
+.fitxa-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.fitxa-cta-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.fitxa-cart-confirm {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-orange-dark);
+}
+
+.shape-detail .option-head h1 {
+  font-size: var(--fs-h3-lg);
+}
+
+/* ---- Selector de quantitat (fitxa de producte i cistella) --------------- */
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1.5px solid rgba(49, 48, 48, 0.18);
+  border-radius: var(--r-pill);
+  padding: 4px 6px;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  color: var(--c-dark);
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.qty-btn:hover {
+  background: var(--c-orange);
+}
+
+.qty-value {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---- Cistella -------------------------------------------------------------- */
+
+.cart-empty {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+}
+
+.cart-empty p {
+  color: var(--c-muted-light);
+  margin-bottom: var(--space-3);
+}
+
+.cart-layout {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.cart-layout[hidden] {
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .cart-layout {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+}
+
+.cart-line-thumb {
+  width: 72px;
+  height: 90px;
+}
+
+.cart-line-thumb svg,
+.cart-line-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cart-line-info h3 {
+  font-size: 15px;
+}
+
+.cart-line-price {
+  font-size: 13px;
+  color: var(--c-muted-light);
+}
+
+.cart-line-subtotal {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cart-line-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--c-muted-light);
+  font-size: 14px;
+}
+
+.cart-line-remove:hover {
+  background: rgba(49, 48, 48, 0.08);
+  color: var(--c-dark);
+}
+
+.cart-summary {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-3);
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-3));
+}
+
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.cart-clear {
+  align-self: center;
+  font-size: 13px;
+  color: var(--c-muted-light);
+  text-decoration: underline;
+}
+
+@media (max-width: 639px) {
+  .cart-line {
+    grid-template-columns: 56px 1fr auto;
+    grid-template-areas:
+      "thumb info remove"
+      "thumb qty subtotal";
+    row-gap: var(--space-2);
+  }
+
+  .cart-line-thumb {
+    grid-area: thumb;
+    width: 56px;
+    height: 70px;
+  }
+
+  .cart-line-info {
+    grid-area: info;
+  }
+
+  .cart-line-remove {
+    grid-area: remove;
+    justify-self: end;
+  }
+
+  .cart-line .qty-stepper {
+    grid-area: qty;
+  }
+
+  .cart-line-subtotal {
+    grid-area: subtotal;
+    justify-self: end;
+  }
+}
+
 /* ---- Contacte ------------------------------------------------------------ */
 
 .contact-grid {
@@ -2213,19 +2499,6 @@ body[data-page="tenda"] .page-hero {
   font-weight: 400;
 }
 
-.wizard-bar-price {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.2;
-  flex: none;
-}
-
-.wizard-bar-price strong {
-  font-family: var(--f-heading);
-  font-size: 18px;
-}
-
 /* Mòbil: 3 passos + preu no hi caben amb etiqueta i valor; es manté
    el número + el valor triat (que és el que importa) i el preu. */
 @media (max-width: 639px) {
@@ -2261,14 +2534,6 @@ body[data-page="tenda"] .page-hero {
   .wizard-step-value {
     font-size: 12px;
     max-width: 64px;
-  }
-
-  .wizard-bar-price .wizard-step-label {
-    display: none;
-  }
-
-  .wizard-bar-price strong {
-    font-size: 15px;
   }
 }
 
@@ -3056,6 +3321,14 @@ body.modal-open {
 
   .shape-detail .option-head h3 {
     font-size: var(--fs-h3-lg-mobile);
+  }
+
+  .shape-detail .option-head h1 {
+    font-size: var(--fs-h3-lg-mobile);
+  }
+
+  .fitxa-price {
+    font-size: 22px;
   }
 
   .shape-description {
