@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keiki Board 3D</title>
+<style>
+  :root {
+    --ui-fg: #1d1d1b;
+    --ui-bg: rgba(255, 255, 255, 0.78);
+    --ui-border: rgba(0, 0, 0, 0.10);
+    --ui-active-bg: #1d1d1b;
+    --ui-active-fg: #ffffff;
+    --ui-focus: #e8860f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ui-fg: #f2f0eb;
+      --ui-bg: rgba(28, 28, 26, 0.66);
+      --ui-border: rgba(255, 255, 255, 0.14);
+      --ui-active-bg: #f2f0eb;
+      --ui-active-fg: #1d1d1b;
+    }
+  }
+  html, body { margin: 0; height: 100%; background: transparent; }
+
+  .board-viewer { position: relative; width: 100%; height: 100%; min-height: 420px; }
+  .board-viewer canvas {
+    display: block; width: 100%; height: 100%;
+    touch-action: none; cursor: grab; outline: none;
+  }
+  .board-viewer canvas:active { cursor: grabbing; }
+
+  .face-toggle {
+    position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+    display: flex; gap: 2px; padding: 3px; border-radius: 999px;
+    background: var(--ui-bg); border: 1px solid var(--ui-border);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    font: 500 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .face-toggle button {
+    appearance: none; border: 0; background: transparent; color: var(--ui-fg);
+    min-height: 36px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+    font: inherit; transition: background-color .2s, color .2s;
+  }
+  .face-toggle button[aria-pressed="true"] { background: var(--ui-active-bg); color: var(--ui-active-fg); }
+  .face-toggle button:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+  .face-toggle button:disabled { cursor: progress; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div class="board-viewer" id="board-viewer">
+  <canvas id="board-canvas" role="img" tabindex="0"
+          aria-label="Modelo 3D de la balance board Keiki. Arrastra para girarla, rueda o pellizco para acercar."></canvas>
+  <div class="face-toggle" role="group" aria-label="Cara visible">
+    <button type="button" data-face="top" aria-pressed="true">Cara superior</button>
+    <button type="button" data-face="bottom" aria-pressed="false">Cara inferior</button>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* ============================================================
+   CONFIG — todo lo editable está aquí. Unidades: centímetros.
+   ============================================================ */
+const CONFIG = {
+  lengthCm: 75,
+  widthCm: null,            // null = proporción medida en la foto (L/W ≈ 2,58 → ≈ 29,1 cm)
+  thicknessCm: 1.8,
+  plies: 9,                 // capas de contrachapado visibles en el canto
+  edgeRadiusCm: 0.45,       // radio del bisel redondeado
+  gripMarginCm: 2,          // margen de madera entre grip y canto
+  gripThicknessCm: 0.06,    // el grip sobresale 0,6 mm; el disco queda enrasado con él
+
+  // Disco superior (foto 1). centerFromNose = fracción del largo medida desde la punta.
+  disc: { diameterCm: 7.4, centerFromNose: 0.514, logoScale: 0.76 },
+  // Logo inferior (foto 2). fx/fy = posición en la foto vista desde abajo (0..1).
+  bottomLogo: { diameterCm: 4.9, fx: 0.209, fy: 0.80 },
+  // Franja diagonal inferior, medida en la foto 2 (fracciones del largo, en el eje central).
+  stripe: {
+    edgeAtCenter: 0.5173,   // fin del verde delantero en el eje
+    slope: -0.1773,         // Δfy / Δfx (sube hacia la derecha en la foto)
+    // límites desde el borde del verde: madera / naranja / madera / verde / madera
+    bands: [0.0165, 0.0310, 0.0437, 0.0705],
+  },
+  colors: {
+    grip: '#111111',
+    wood: '#d2b892',
+    woodDark: '#bfa27a',
+    green: '#1c3a23',
+    orange: '#e27f0c',
+    plyA: '#e9dabb',
+    plyB: '#d8bf96',
+    glue: '#a68b66',
+  },
+  // Pega aquí el SVG real cuando lo tengas (string con el <svg> completo).
+  // Contorno: un único path cerrado, punta arriba. Logo: lo relleno se graba.
+  outlineSVG: null,
+  logoSVG: null,
+
+  camera: { fov: 32, polarDeg: 30, azimuthDeg: 10, margin: 1.1, uiSafePx: 76 },
+  maxPixelRatio: 2,
+};
+
+/* Contorno trazado de la foto inferior (silueta simetrizada).
+   Media tabla derecha: pares (x, y) en unidades de largo; y=0 punta, y=1 extremos de la cola. */
+const HALF_OUTLINE = [0.0000,0.0000,0.0083,0.0027,0.0157,0.0075,0.0226,0.0129,0.0292,0.0187,0.0356,0.0247,0.0419,0.0308,0.0483,0.0370,0.0546,0.0431,0.0609,0.0492,0.0671,0.0554,0.0733,0.0617,0.0794,0.0681,0.0852,0.0747,0.0908,0.0814,0.0963,0.0883,0.1015,0.0954,0.1065,0.1027,0.1113,0.1101,0.1158,0.1176,0.1202,0.1252,0.1245,0.1329,0.1285,0.1407,0.1323,0.1487,0.1360,0.1567,0.1394,0.1648,0.1427,0.1729,0.1457,0.1812,0.1487,0.1895,0.1514,0.1979,0.1540,0.2063,0.1564,0.2147,0.1588,0.2232,0.1611,0.2317,0.1633,0.2402,0.1654,0.2488,0.1675,0.2573,0.1696,0.2659,0.1716,0.2744,0.1735,0.2830,0.1752,0.2917,0.1769,0.3003,0.1784,0.3090,0.1799,0.3176,0.1813,0.3263,0.1825,0.3351,0.1837,0.3438,0.1848,0.3525,0.1858,0.3612,0.1868,0.3700,0.1877,0.3787,0.1886,0.3875,0.1894,0.3963,0.1901,0.4050,0.1907,0.4138,0.1912,0.4226,0.1918,0.4314,0.1923,0.4402,0.1926,0.4490,0.1928,0.4578,0.1930,0.4666,0.1932,0.4754,0.1935,0.4842,0.1936,0.4930,0.1937,0.5018,0.1938,0.5106,0.1940,0.5193,0.1942,0.5282,0.1943,0.5370,0.1942,0.5457,0.1942,0.5545,0.1942,0.5634,0.1941,0.5722,0.1941,0.5810,0.1940,0.5898,0.1937,0.5986,0.1934,0.6073,0.1931,0.6161,0.1927,0.6249,0.1923,0.6337,0.1918,0.6425,0.1913,0.6513,0.1907,0.6601,0.1902,0.6689,0.1897,0.6776,0.1890,0.6864,0.1883,0.6952,0.1876,0.7040,0.1869,0.7127,0.1861,0.7215,0.1853,0.7303,0.1846,0.7390,0.1838,0.7478,0.1829,0.7566,0.1819,0.7653,0.1810,0.7741,0.1801,0.7828,0.1791,0.7916,0.1781,0.8003,0.1770,0.8090,0.1758,0.8178,0.1747,0.8265,0.1736,0.8352,0.1724,0.8439,0.1711,0.8527,0.1697,0.8613,0.1684,0.8700,0.1671,0.8787,0.1656,0.8874,0.1642,0.8961,0.1627,0.9048,0.1612,0.9134,0.1597,0.9221,0.1582,0.9308,0.1566,0.9395,0.1550,0.9481,0.1534,0.9568,0.1518,0.9654,0.1502,0.9741,0.1484,0.9827,0.1459,0.9911,0.1409,0.9982,0.1326,0.9997,0.1243,0.9969,0.1165,0.9928,0.1088,0.9886,0.1011,0.9843,0.0934,0.9800,0.0857,0.9757,0.0780,0.9715,0.0703,0.9672,0.0626,0.9629,0.0549,0.9587,0.0472,0.9544,0.0395,0.9501,0.0318,0.9458,0.0241,0.9416,0.0163,0.9375,0.0084,0.9336,0.0000,0.9313];
+
+const V2 = THREE.Vector2;
+const clamp01 = (x) => Math.min(1, Math.max(0, x));
+const smooth = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+// Colores en sRGB tal cual para pintar en canvas:
+const srgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+
+/* ---------- Ruido de valor (rápido, determinista, opcionalmente periódico) ---------- */
+function hash2(i, j, s) {
+  let h = Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(s, 1442695041);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  h ^= h >>> 16;
+  return (h >>> 0) / 4294967295;
+}
+function vnoise(x, y, s = 0, px = 0) {
+  const xi = Math.floor(x), yi = Math.floor(y);
+  const xf = x - xi, yf = y - yi;
+  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  let x0 = xi, x1 = xi + 1, y0 = yi, y1 = yi + 1;
+  if (px) { const w = (q) => ((q % px) + px) % px; x0 = w(x0); x1 = w(x1); y0 = w(y0); y1 = w(y1); }   // periódico en ambos ejes
+  const a = hash2(x0, y0, s), b = hash2(x1, y0, s), c = hash2(x0, y1, s), d = hash2(x1, y1, s);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+function fbm(x, y, oct, s = 0, px = 0) {
+  let sum = 0, amp = 0.5, norm = 0;
+  for (let o = 0; o < oct; o++) {
+    sum += amp * vnoise(x, y, s + o * 17, px); norm += amp;
+    x *= 2; y *= 2; if (px) px *= 2; amp *= 0.5;
+  }
+  return sum / norm;
+}
+
+/* ---------- Utilidades de canvas / texturas ---------- */
+function makeCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function canvasTex(canvas, { color = false, repeat = false } = {}) {
+  const t = new THREE.CanvasTexture(canvas);
+  t.flipY = false;                                  // fila 0 del canvas = v 0
+  t.colorSpace = color ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  t.wrapS = t.wrapT = repeat ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+  t.anisotropy = 8;
+  return t;
+}
+// Altura (Float32Array) → normal map tangente (RGB)
+function heightToNormalCanvas(h, w, hh, strength, wrap) {
+  const c = makeCanvas(w, hh), ctx = c.getContext('2d'), img = ctx.createImageData(w, hh), d = img.data;
+  const at = (x, y) => {
+    if (wrap) { x = (x + w) % w; y = (y + hh) % hh; } else { x = Math.min(w - 1, Math.max(0, x)); y = Math.min(hh - 1, Math.max(0, y)); }
+    return h[y * w + x];
+  };
+  for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
+    const dx = (at(x + 1, y) - at(x - 1, y)) * strength;
+    const dy = (at(x, y + 1) - at(x, y - 1)) * strength;
+    const l = Math.hypot(dx, dy, 1), i = (y * w + x) * 4;
+    d[i] = (-dx / l * 0.5 + 0.5) * 255; d[i + 1] = (-dy / l * 0.5 + 0.5) * 255; d[i + 2] = (1 / l * 0.5 + 0.5) * 255; d[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  return c;
+}
+
+/* ---------- Geometría 2D: contorno y offset ---------- */
+function normalizedOutlineFromHalf() {
+  const right = [];
+  for (let i = 0; i < HALF_OUTLINE.length; i += 2) right.push([HALF_OUTLINE[i], HALF_OUTLINE[i + 1]]);
+  const left = right.slice(1, -1).reverse().map(([x, y]) => [-x, y]);
+  return right.concat(left);
+}
+function normalizedOutlineFromSVG(svgText) {
+  const data = new SVGLoader().parse(svgText);
+  const shapes = data.paths.flatMap((p) => SVGLoader.createShapes(p));
+  if (!shapes.length) throw new Error('El SVG del contorno no contiene ningún path cerrado');
+  const shape = shapes.sort((a, b) => Math.abs(THREE.ShapeUtils.area(b.getPoints())) - Math.abs(THREE.ShapeUtils.area(a.getPoints())))[0];
+  const pts = shape.getSpacedPoints(360);
+  pts.pop();
+  const box = new THREE.Box2().setFromPoints(pts);
+  const L = box.max.y - box.min.y, cx = (box.min.x + box.max.x) / 2;
+  return pts.map((p) => [(p.x - cx) / L, (p.y - box.min.y) / L]);   // y de SVG crece hacia abajo: punta arriba → y=0
+}
+function polyArea(P) { let a = 0; for (let i = 0, n = P.length; i < n; i++) { const p = P[i], q = P[(i + 1) % n]; a += p.x * q.y - q.x * p.y; } return a / 2; }
+function segIntersect(p1, p2, p3, p4) {
+  const d = (p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x);
+  if (Math.abs(d) < 1e-12) return null;
+  const t = ((p3.x - p1.x) * (p4.y - p3.y) - (p3.y - p1.y) * (p4.x - p3.x)) / d;
+  const u = ((p3.x - p1.x) * (p2.y - p1.y) - (p3.y - p1.y) * (p2.x - p1.x)) / d;
+  return (t > 0 && t < 1 && u > 0 && u < 1) ? new V2(p1.x + t * (p2.x - p1.x), p1.y + t * (p2.y - p1.y)) : null;
+}
+// Elimina los bucles que genera un offset en esquinas convexas cerradas (punta, picos de la cola)
+function removeLoops(P) {
+  for (let guard = 0; guard < 400; guard++) {
+    let changed = false;
+    const n = P.length;
+    search:
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 2; j < n; j++) {
+        if (i === 0 && j === n - 1) continue;
+        const X = segIntersect(P[i], P[(i + 1) % n], P[j], P[(j + 1) % n]);
+        if (!X) continue;
+        const inner = P.slice(i + 1, j + 1);
+        const outer = P.slice(j + 1).concat(P.slice(0, i + 1));
+        P = Math.abs(polyArea(inner)) > Math.abs(polyArea(outer)) ? [X, ...inner] : [...outer, X];
+        changed = true;
+        break search;
+      }
+    }
+    if (!changed) break;
+  }
+  return P;
+}
+// Offset hacia dentro (P en sentido antihorario)
+function offsetInward(P, d) {
+  const n = P.length, out = [];
+  for (let i = 0; i < n; i++) {
+    const a = P[(i - 1 + n) % n], b = P[i], c = P[(i + 1) % n];
+    const e1 = b.clone().sub(a).normalize(), e2 = c.clone().sub(b).normalize();
+    const n1 = new V2(-e1.y, e1.x), n2 = new V2(-e2.y, e2.x);
+    const bis = n1.clone().add(n2);
+    if (bis.lengthSq() < 1e-10) bis.copy(n1); else bis.normalize();
+    const k = Math.min(4, 1 / Math.max(0.25, bis.dot(n1)));
+    out.push(b.clone().addScaledVector(bis, d * k));
+  }
+  return removeLoops(out);
+}
+
+/* ---------- Grabado del logo (altura 0..1, 1 = fondo del surco) ----------
+   Redibujado a partir del grabado de las fotos. r normalizado al radio exterior del logo.
+   Mitad delantera (hacia la punta): anillos 0,81–1 y 0,375–0,53.
+   Mitad trasera: anillos 0,625–0,78 y 0,16–0,31. Línea horizontal en el eje. */
+function logoDepth(lx, ly) {
+  const groove = (r, a, b) => { if (r < a || r > b) return 0; const t = (r - a) / (b - a); return clamp01(Math.min(t, 1 - t) / 0.28); };
+  const r = Math.hypot(lx, ly);
+  let d = 0;
+  if (ly > 0.004) d = Math.max(groove(r, 0.81, 1.0), groove(r, 0.375, 0.53));
+  else if (ly < -0.004) d = Math.max(groove(r, 0.625, 0.78), groove(r, 0.16, 0.31));
+  if (Math.abs(ly) < 0.022 && Math.abs(lx) < 1.04) d = Math.max(d, 0.55 * clamp01(1 - Math.abs(ly) / 0.022) * smooth(1.04, 1.0, Math.abs(lx)));
+  return d;
+}
+// extent = semiancho del canvas en unidades del radio del logo
+async function logoHeightField(size, extent) {
+  const h = new Float32Array(size * size);
+  if (CONFIG.logoSVG) {
+    const img = new Image();
+    const url = URL.createObjectURL(new Blob([CONFIG.logoSVG], { type: 'image/svg+xml' }));
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
+    const c = makeCanvas(size, size), ctx = c.getContext('2d');
+    const box = (2 / extent) * size, s = box / Math.max(img.width, img.height);
+    ctx.filter = `blur(${Math.max(1, size / 260)}px)`;           // chaflán del surco
+    ctx.translate(size / 2, size / 2); ctx.scale(1, -1);          // fila 0 = cola
+    ctx.drawImage(img, -img.width * s / 2, -img.height * s / 2, img.width * s, img.height * s);
+    const d = ctx.getImageData(0, 0, size, size).data;
+    for (let i = 0; i < size * size; i++) h[i] = d[i * 4 + 3] / 255;
+    URL.revokeObjectURL(url);
+  } else {
+    const ss = 2;                                                 // supermuestreo 2×2
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      let acc = 0;
+      for (let sy = 0; sy < ss; sy++) for (let sx = 0; sx < ss; sx++) {
+        const lx = ((x + (sx + 0.5) / ss) / size * 2 - 1) * extent;
+        const ly = ((y + (sy + 0.5) / ss) / size * 2 - 1) * extent;   // fila alta = hacia la punta
+        acc += logoDepth(lx, ly);
+      }
+      h[y * size + x] = acc / (ss * ss);
+    }
+  }
+  return h;
+}
+async function logoTextures(size, extent, strength) {
+  const h = await logoHeightField(size, extent);
+  const depth = h.map((v) => -v);
+  const normal = canvasTex(heightToNormalCanvas(depth, size, size, strength, false));
+  const ao = makeCanvas(size, size), actx = ao.getContext('2d'), img = actx.createImageData(size, size);
+  for (let i = 0; i < size * size; i++) { const v = 255 * (1 - 0.72 * h[i]); img.data.set([v, v, v, 255], i * 4); }
+  actx.putImageData(img, 0, 0);
+  normal.channel = 1;
+  const aoTex = canvasTex(ao); aoTex.channel = 1;
+  return { normal, ao: aoTex };
+}
+
+/* ---------- Veta de abedul (desenrollado: llamas suaves a lo largo) ---------- */
+function woodSample(xCm, sCm, seed) {
+  // Abedul: pálido y de poco contraste. Fibra fina longitudinal + alguna llama muy suave.
+  const warp = (fbm(xCm * 0.03 + seed, sCm * 0.008, 3, seed) - 0.5) * 30;
+  const ring = Math.abs(((xCm + warp) / 4.2) % 1 + 1) % 1;
+  const line = smooth(0.44, 0.5, ring) * (1 - smooth(0.5, 0.58, ring));
+  const band = fbm(xCm * 0.06 + 40, sCm * 0.015, 3, seed + 3);
+  const streak = fbm(xCm * 3.2 + seed, sCm * 0.05, 2, seed + 9);
+  const fleck = vnoise(xCm * 14, sCm * 0.7, seed + 21);
+  const tone = 0.16 * line + 0.34 * (band - 0.5) * 2 + 0.22 * (streak - 0.5) * 2 + 0.07 * (fleck - 0.5) * 2;
+  return { tone, height: 0.3 * line + 0.7 * streak };
+}
+
+/* ============================================================ */
+async function init() {
+  const t0 = performance.now();
+  const container = document.getElementById('board-viewer');
+  const canvas = document.getElementById('board-canvas');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- Contorno a escala real --- */
+  let norm = normalizedOutlineFromHalf();
+  if (CONFIG.outlineSVG) {
+    try { norm = normalizedOutlineFromSVG(CONFIG.outlineSVG); } catch (e) { console.warn(e.message, '→ uso el contorno de la foto'); }
+  }
+  const L = CONFIG.lengthCm;
+  const natW = Math.max(...norm.map((p) => p[0])) - Math.min(...norm.map((p) => p[0]));
+  const sx = CONFIG.widthCm ? CONFIG.widthCm / (natW * L) : 1;
+  const W = natW * L * sx;
+  let P = norm.map(([x, y]) => new V2(x * L * sx, L / 2 - y * L));
+  if (THREE.ShapeUtils.isClockWise(P)) P.reverse();
+
+  const T = CONFIG.thicknessCm;
+  const r = Math.min(CONFIG.edgeRadiusCm, T / 2 - 0.05);
+  const gT = CONFIG.gripThicknessCm;
+  const topZ = T / 2, botZ = -T / 2;
+
+  // Mapeos planares: v = 1 en la punta. La cara inferior va espejada en u (se ve desde abajo).
+  const uTop = (x) => (x + W / 2) / W;
+  const uBot = (x) => (W / 2 - x) / W;
+  const vOf = (y) => (y + L / 2) / L;
+
+  // Longitud de arco del contorno para el canto
+  const cum = [0];
+  for (let i = 1; i <= P.length; i++) cum.push(cum[i - 1] + P[i % P.length].distanceTo(P[i - 1]));
+  const perimeter = cum[P.length];
+  const EDGE_TILE_CM = 24;
+  const edgeTiles = Math.max(1, Math.round(perimeter / EDGE_TILE_CM));
+
+  /* --- Texturas procedurales --- */
+  const C = CONFIG.colors;
+
+  // 1) Madera cara superior (margen + disco)
+  const topTexW = 384, topTexH = Math.round(topTexW * L / W);
+  const topWoodCanvas = (() => {
+    const c = makeCanvas(topTexW, topTexH), ctx = c.getContext('2d'), img = ctx.createImageData(topTexW, topTexH), d = img.data;
+    const base = srgb(C.wood), dark = srgb(C.woodDark);
+    for (let j = 0; j < topTexH; j++) {
+      const s = (j + 0.5) / topTexH * L;
+      for (let i = 0; i < topTexW; i++) {
+        const x = (i + 0.5) / topTexW * W;
+        const { tone } = woodSample(x, s, 11);
+        const col = mix(base, dark, clamp01(0.35 + tone * 0.9));
+        d.set([col[0], col[1], col[2], 255], (j * topTexW + i) * 4);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return c;
+  })();
+  const topWoodTex = canvasTex(topWoodCanvas, { color: true });
+
+  // 2) Cara inferior: madera + pintura verde + franja (dibujada en coordenadas de la foto 2)
+  const botW = 640, botH = Math.round(botW * L / W);
+  const bottomMaps = (() => {
+    const color = makeCanvas(botW, botH), rough = makeCanvas(botW, botH);
+    const cctx = color.getContext('2d'), rctx = rough.getContext('2d');
+    const cimg = cctx.createImageData(botW, botH), rimg = rctx.createImageData(botW, botH);
+    const height = new Float32Array(botW * botH);
+    const base = srgb(C.wood), dark = srgb(C.woodDark), green = srgb(C.green), orange = srgb(C.orange);
+    const S = CONFIG.stripe;
+    // escala px por unidad de fy perpendicular a la franja
+    const angle = Math.atan2(-S.slope * L, W);       // pendiente en espacio físico
+    const pxPerFy = botH * Math.cos(angle);
+    const layers = [ // [límite, color, rugosidad, ¿pintura?]
+      [0, base, 0.74, 0], [S.bands[0], orange, 0.84, 1], [S.bands[1], base, 0.74, 0], [S.bands[2], green, 0.9, 1], [S.bands[3], base, 0.74, 0],
+    ];
+    for (let j = 0; j < botH; j++) {
+      const v = (j + 0.5) / botH, fy = 1 - v, s = v * L;
+      for (let i = 0; i < botW; i++) {
+        const u = (i + 0.5) / botW, fx = u, x = (1 - u) * W;   // uBot ya espeja: u = fx de la foto
+        const wd = woodSample(x, s, 5);
+        let col = mix(base, dark, clamp01(0.35 + wd.tone * 0.9));
+        const dist = fy - (S.edgeAtCenter + S.slope * (fx - 0.5));
+        // capa a capa, con antialias analítico en cada borde
+        let paint = green, rgh = 0.9, isPaint = 1;
+        for (const [o, lc, lr, lp] of layers) {
+          const f = clamp01(0.5 + (dist - o) * pxPerFy);
+          if (f <= 0) break;
+          paint = mix(paint, lc === base ? col : lc, f);
+          rgh = rgh + (lr - rgh) * f; isPaint = isPaint + (lp - isPaint) * f;
+        }
+        // grano de pintura (rodillo) muy sutil
+        const speck = (vnoise(i * 0.9, j * 0.9, 77) - 0.5) * 0.06 + (fbm(x * 0.4, s * 0.4, 2, 31) - 0.5) * 0.06;
+        const pc = isPaint > 0 ? paint.map((c) => c * (1 + speck * isPaint)) : paint;
+        const k = j * botW + i;
+        cimg.data.set([pc[0], pc[1], pc[2], 255], k * 4);
+        const rv = Math.round(rgh * 255); rimg.data.set([rv, rv, rv, 255], k * 4);
+        height[k] = wd.height * 0.25 * (1 - isPaint) + isPaint * (0.35 + speck * 3) ;
+      }
+    }
+    cctx.putImageData(cimg, 0, 0); rctx.putImageData(rimg, 0, 0);
+    return {
+      color: canvasTex(color, { color: true }),
+      rough: canvasTex(rough),
+      normal: canvasTex(heightToNormalCanvas(height, botW, botH, 1.6, false)),
+    };
+  })();
+
+  // 3) Canto de contrachapado: capas horizontales (según z), periódico a lo largo del perímetro
+  const edgeTex = (() => {
+    const w = 1024, h = 256, c = makeCanvas(w, h), ctx = c.getContext('2d'), img = ctx.createImageData(w, h), d = img.data;
+    const A = srgb(C.plyA), B = srgb(C.plyB), G = srgb(C.glue), N = CONFIG.plies;
+    const plyJitter = Array.from({ length: N + 1 }, (_, k) => (k === 0 || k === N) ? 0 : (hash2(k, 3, 9) - 0.5) * 0.18);
+    for (let y = 0; y < h; y++) {
+      const v = (y + 0.5) / h;
+      for (let x = 0; x < w; x++) {
+        // límite de capa ondulado muy ligeramente
+        const wav = (vnoise(x / w * 24, v * 4, 5, 24) - 0.5) * 0.25 / N;
+        const pv = (v + wav) * N;
+        let k = Math.floor(pv); k = Math.min(N - 1, Math.max(0, k));
+        const local = pv - k + plyJitter[k];
+        const isA = k % 2 === 0;
+        let col = isA ? A : B;
+        if (isA) {         // fibra longitudinal: rayitas a lo largo
+          const st = vnoise(x / w * 220, pv * 9, 13, 220) - 0.5;
+          col = col.map((cc) => cc * (1 + st * 0.10));
+        } else {           // testa: poros
+          const po = vnoise(x / w * 520, pv * 40, 17, 520);
+          col = col.map((cc) => cc * (1 - 0.12 * smooth(0.62, 0.85, po)));
+        }
+        const tone = (vnoise(x / w * 12, k * 3.1, 21, 12) - 0.5) * 0.08;
+        col = col.map((cc) => cc * (1 + tone));
+        // línea de cola entre capas
+        const dEdge = Math.min(Math.abs(pv - Math.round(pv)) * (h / N), 99);
+        const glue = (Math.round(pv) > 0 && Math.round(pv) < N) ? 1 - smooth(0.4, 1.4, dEdge) : 0;
+        col = mix(col, G, glue * 0.55);
+        d.set([col[0], col[1], col[2], 255], (y * w + x) * 4);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const t = canvasTex(c, { color: true });
+    t.wrapS = THREE.RepeatWrapping;
+    return t;
+  })();
+
+  // 4) Grip: tejido tafetán + pelusa, en tesela de 1,2 cm
+  const GRIP_TILE_CM = 1.2;
+  const gripMaps = (() => {
+    const n = 256, P8 = 8, h = new Float32Array(n * n);
+    const c = makeCanvas(n, n), ctx = c.getContext('2d'), img = ctx.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const cx = Math.floor(x / P8), cy = Math.floor(y / P8);
+      const fx = (x % P8 + 0.5) / P8, fy = (y % P8 + 0.5) / P8;
+      const warp = Math.sin(Math.PI * fx) * (0.55 + 0.45 * (0.5 + 0.5 * Math.cos(Math.PI * (y + 0.5) / P8 + Math.PI * cx)));
+      const weft = Math.sin(Math.PI * fy) * (0.55 + 0.45 * (0.5 + 0.5 * Math.cos(Math.PI * (x + 0.5) / P8 + Math.PI * cy + Math.PI)));
+      const fuzz = vnoise(x / 4, y / 4, 3, n / 4) * 0.35 + vnoise(x / 2, y / 2, 7, n / 2) * 0.15;
+      const v = Math.max(warp, weft) * 0.75 + fuzz;
+      h[y * n + x] = v;
+      const g = 255 * (0.80 + 0.2 * clamp01(v));
+      img.data.set([g, g, g, 255], (y * n + x) * 4);
+    }
+    ctx.putImageData(img, 0, 0);
+    const map = canvasTex(c, { color: true, repeat: true });
+    const normal = canvasTex(heightToNormalCanvas(h, n, n, 2.2, true), { repeat: true });
+    return { map, normal };
+  })();
+
+  // 5) Logos
+  const discR = CONFIG.disc.diameterCm / 2;
+  const discExtent = 1 / CONFIG.disc.logoScale;         // canvas cubre el disco entero
+  const botLogoR = CONFIG.bottomLogo.diameterCm / 2;
+  const botLogoExtent = 1.25;
+  const [discLogo, botLogo] = await Promise.all([
+    logoTextures(512, discExtent, 16),
+    logoTextures(384, botLogoExtent, 12),
+  ]);
+
+  /* --- Renderer, escena, luces --- */
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, CONFIG.maxPixelRatio));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NeutralToneMapping;     // fiel al color de producto
+  renderer.toneMappingExposure = 1.0;
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  [topWoodTex, bottomMaps.color, bottomMaps.normal, bottomMaps.rough, edgeTex, gripMaps.map, gripMaps.normal,
+   discLogo.normal, discLogo.ao, botLogo.normal, botLogo.ao].forEach((t) => { t.anisotropy = Math.min(8, maxAniso); });
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.5;
+  pmrem.dispose();
+
+  const key = new THREE.DirectionalLight(0xfff7ef, 2.2); key.position.set(-70, 130, 55);
+  const fill = new THREE.DirectionalLight(0xe9eefb, 0.55); fill.position.set(100, 60, 50);
+  const rim = new THREE.DirectionalLight(0xffffff, 1.5); rim.position.set(45, 22, -120);
+  scene.add(key, fill, rim);
+
+  /* --- Materiales (uno por cara) --- */
+  const topWoodMat = new THREE.MeshStandardMaterial({ map: topWoodTex, roughness: 0.72, metalness: 0 });
+  const bottomMat = new THREE.MeshStandardMaterial({
+    map: bottomMaps.color, roughnessMap: bottomMaps.rough, roughness: 1, metalness: 0,
+    normalMap: bottomMaps.normal, normalScale: new V2(0.5, 0.5),
+  });
+  const edgeMat = new THREE.MeshStandardMaterial({ map: edgeTex, roughness: 0.8, metalness: 0 });
+  const gripMat = new THREE.MeshStandardMaterial({
+    color: C.grip, map: gripMaps.map, normalMap: gripMaps.normal, normalScale: new V2(0.7, 0.7),
+    roughness: 0.95, metalness: 0,
+  });
+  const discMat = new THREE.MeshStandardMaterial({
+    map: topWoodTex, normalMap: discLogo.normal, aoMap: discLogo.ao, aoMapIntensity: 1,
+    roughness: 0.74, metalness: 0,
+  });
+  const botLogoMat = new THREE.MeshStandardMaterial({
+    map: bottomMaps.color, normalMap: botLogo.normal, aoMap: botLogo.ao, aoMapIntensity: 1,
+    roughness: 0.74, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+  });
+
+  /* --- Cuerpo de la tabla: extrusión con bisel redondeado --- */
+  const bodyGeo = (() => {
+    const g0 = new THREE.ExtrudeGeometry(new THREE.Shape(P), {
+      depth: T - 2 * r, steps: 1, curveSegments: 1,
+      bevelEnabled: true, bevelThickness: r, bevelSize: r, bevelOffset: -r, bevelSegments: 5,
+    });
+    g0.translate(0, 0, -(T - 2 * r) / 2);
+    g0.deleteAttribute('uv');
+    const g = toCreasedNormals(g0, THREE.MathUtils.degToRad(42));
+    const pos = g.attributes.position.array, nrm = g.attributes.normal.array;
+    const tri = pos.length / 9;
+    const buckets = [[], [], []];                        // 0 superior, 1 inferior, 2 canto
+    for (let t = 0; t < tri; t++) {
+      const z0 = pos[t * 9 + 2], z1 = pos[t * 9 + 5], z2 = pos[t * 9 + 8], eps = 1e-4;
+      if (Math.abs(z0 - topZ) < eps && Math.abs(z1 - topZ) < eps && Math.abs(z2 - topZ) < eps) buckets[0].push(t);
+      else if (Math.abs(z0 - botZ) < eps && Math.abs(z1 - botZ) < eps && Math.abs(z2 - botZ) < eps) buckets[1].push(t);
+      else buckets[2].push(t);
+    }
+    const order = buckets.flat();
+    const P3 = new Float32Array(order.length * 9), N3 = new Float32Array(order.length * 9), UV = new Float32Array(order.length * 6);
+    // índice del punto de contorno más cercano → longitud de arco
+    const nearestArc = (x, y) => {
+      let best = 0, bd = Infinity;
+      for (let i = 0; i < P.length; i++) { const dx = P[i].x - x, dy = P[i].y - y, dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = i; } }
+      // refinamiento sobre los dos segmentos vecinos
+      let s = cum[best], bestD = bd;
+      for (const [a, b, sa] of [[(best - 1 + P.length) % P.length, best, best === 0 ? cum[P.length - 1] : cum[best - 1]], [best, (best + 1) % P.length, cum[best]]]) {
+        const A = P[a], B = P[b], ex = B.x - A.x, ey = B.y - A.y, l2 = ex * ex + ey * ey || 1;
+        const tt = clamp01(((x - A.x) * ex + (y - A.y) * ey) / l2), px = A.x + ex * tt - x, py = A.y + ey * tt - y, dd = px * px + py * py;
+        if (dd <= bestD) { bestD = dd; s = sa + tt * Math.sqrt(l2); }
+      }
+      return s / perimeter;
+    };
+    order.forEach((t, k) => {
+      P3.set(pos.subarray(t * 9, t * 9 + 9), k * 9);
+      N3.set(nrm.subarray(t * 9, t * 9 + 9), k * 9);
+      const group = k < buckets[0].length ? 0 : k < buckets[0].length + buckets[1].length ? 1 : 2;
+      const us = [];
+      for (let vtx = 0; vtx < 3; vtx++) {
+        const x = pos[t * 9 + vtx * 3], y = pos[t * 9 + vtx * 3 + 1], z = pos[t * 9 + vtx * 3 + 2];
+        let u, v;
+        if (group === 0) { u = uTop(x); v = vOf(y); }
+        else if (group === 1) { u = uBot(x); v = vOf(y); }
+        else { u = nearestArc(x, y) * edgeTiles; v = (z - botZ) / T; }
+        us.push([u, v]);
+      }
+      if (group === 2) {                                  // costura del canto en la punta
+        const umax = Math.max(...us.map((q) => q[0]));
+        us.forEach((q) => { if (umax - q[0] > edgeTiles / 2) q[0] += edgeTiles; });
+      }
+      us.forEach((q, vtx) => { UV[k * 6 + vtx * 2] = q[0]; UV[k * 6 + vtx * 2 + 1] = q[1]; });
+    });
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(P3, 3));
+    out.setAttribute('normal', new THREE.BufferAttribute(N3, 3));
+    out.setAttribute('uv', new THREE.BufferAttribute(UV, 2));
+    out.addGroup(0, buckets[0].length * 3, 0);
+    out.addGroup(buckets[0].length * 3, buckets[1].length * 3, 1);
+    out.addGroup((buckets[0].length + buckets[1].length) * 3, buckets[2].length * 3, 2);
+    out.computeBoundingSphere();
+    g0.dispose();
+    return out;
+  })();
+  const body = new THREE.Mesh(bodyGeo, [topWoodMat, bottomMat, edgeMat]);
+
+  /* --- Grip: offset de 2 cm del contorno, con hueco para el disco --- */
+  const discCx = 0, discCy = L / 2 - CONFIG.disc.centerFromNose * L;
+  const gripGeo = (() => {
+    const shape = new THREE.Shape(offsetInward(P, CONFIG.gripMarginCm));
+    shape.holes.push(new THREE.Path().absarc(discCx, discCy, discR + 0.05, 0, Math.PI * 2, true));
+    const g = new THREE.ExtrudeGeometry(shape, { depth: gT, bevelEnabled: false, curveSegments: 72 });
+    g.translate(0, 0, topZ);
+    const p = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / GRIP_TILE_CM, p.getY(i) / GRIP_TILE_CM);
+    return g;
+  })();
+  const grip = new THREE.Mesh(gripGeo, gripMat);
+
+  // UV de madera (canal 0) + UV local del logo (canal 1) a partir de posiciones
+  function decalUVs(g, cx, cy, halfExtentCm, uFn) {
+    const p = g.attributes.position, n = p.count;
+    const uv = new Float32Array(n * 2), uv1 = new Float32Array(n * 2);
+    for (let i = 0; i < n; i++) {
+      const x = p.getX(i), y = p.getY(i);
+      uv[i * 2] = uFn(x); uv[i * 2 + 1] = vOf(y);
+      uv1[i * 2] = (x - cx) / (2 * halfExtentCm) + 0.5; uv1[i * 2 + 1] = (y - cy) / (2 * halfExtentCm) + 0.5;
+    }
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    g.setAttribute('uv1', new THREE.BufferAttribute(uv1, 2));
+  }
+
+  /* --- Disco de madera con logo, enrasado con el grip --- */
+  const discGeo = (() => {
+    const shape = new THREE.Shape().absarc(discCx, discCy, discR, 0, Math.PI * 2, false);
+    const g = new THREE.ExtrudeGeometry(shape, { depth: gT, bevelEnabled: false, curveSegments: 96 });
+    g.translate(0, 0, topZ);
+    decalUVs(g, discCx, discCy, discR, uTop);
+    return g;
+  })();
+  const disc = new THREE.Mesh(discGeo, discMat);
+
+  /* --- Logo pequeño grabado en la cara inferior --- */
+  const blX = (0.5 - CONFIG.bottomLogo.fx) * W;          // izquierda de la foto (vista desde abajo) = +x
+  const blY = L / 2 - CONFIG.bottomLogo.fy * L;
+  const botLogoGeo = (() => {
+    const half = botLogoR * botLogoExtent;
+    const g = new THREE.CircleGeometry(half, 96);
+    g.rotateY(Math.PI);                                   // mira hacia -z
+    g.translate(blX, blY, botZ - 0.004);
+    decalUVs(g, blX, blY, half, uBot);
+    return g;
+  })();
+  const botLogoMesh = new THREE.Mesh(botLogoGeo, botLogoMat);
+
+  // Espacio "forma" (x ancho, y largo, z grosor) → mundo (y arriba, punta hacia -z)
+  const boardShapeSpace = new THREE.Group();
+  boardShapeSpace.add(body, grip, disc, botLogoMesh);
+  boardShapeSpace.rotation.x = -Math.PI / 2;
+  const pivot = new THREE.Group();                         // gira sobre el eje largo para enseñar la otra cara
+  pivot.add(boardShapeSpace);
+  pivot.position.y = T / 2;
+  scene.add(pivot);
+
+  /* --- Sombra de contacto: silueta desenfocada, sin suelo visible --- */
+  const shadow = (() => {
+    const m = 10, sw = W + 2 * m, sh = L + 2 * m, res = 4;      // px por cm
+    const c = makeCanvas(Math.round(sw * res), Math.round(sh * res)), ctx = c.getContext('2d');
+    const path = new Path2D();
+    P.forEach((p, i) => { const X = (p.x + sw / 2) * res, Y = (sh / 2 - p.y) * res; i ? path.lineTo(X, Y) : path.moveTo(X, Y); });
+    path.closePath();
+    ctx.fillStyle = '#000';
+    ctx.filter = `blur(${2.6 * res}px)`; ctx.globalAlpha = 0.32; ctx.fill(path);
+    ctx.filter = `blur(${0.5 * res}px)`; ctx.globalAlpha = 0.55; ctx.fill(path);
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(sw, sh), mat);
+    mesh.rotation.x = -Math.PI / 2; mesh.position.y = -0.02; mesh.renderOrder = -1;
+    return mesh;
+  })();
+  scene.add(shadow);
+
+  /* --- Cámara y controles --- */
+  const cam = CONFIG.camera;
+  const camera = new THREE.PerspectiveCamera(cam.fov, 1, 10, 3000);
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.enablePan = false;
+  controls.rotateSpeed = 0.7;
+  controls.maxPolarAngle = THREE.MathUtils.degToRad(84);   // nunca por debajo del "suelo"
+  controls.target.set(0, T / 2, 0);
+
+  let userMoved = false;
+  // Encaje exacto: proyecta el contorno (arriba y abajo) y busca la distancia mínima que cabe.
+  const fitPts = [];
+  P.forEach((p, i) => { if (i % 3 === 0) { fitPts.push(new THREE.Vector3(p.x, T, -p.y), new THREE.Vector3(p.x, 0, -p.y)); } });
+  function cameraDir() {
+    const pol = THREE.MathUtils.degToRad(cam.polarDeg), az = THREE.MathUtils.degToRad(cam.azimuthDeg);
+    return new THREE.Vector3(Math.sin(pol) * Math.sin(az), Math.cos(pol), Math.sin(pol) * Math.cos(az));
+  }
+  function fits(d) {
+    camera.position.copy(controls.target).addScaledVector(cameraDir(), d);
+    camera.lookAt(controls.target); camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+    const lim = 1 / cam.margin, q = new THREE.Vector3();
+    return fitPts.every((p) => { q.copy(p).project(camera); return Math.abs(q.x) <= lim && Math.abs(q.y) <= lim; });
+  }
+  function placeCamera() {
+    let lo = 20, hi = 3000;
+    for (let i = 0; i < 30; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
+    camera.position.copy(controls.target).addScaledVector(cameraDir(), hi);
+    controls.minDistance = hi * 0.45; controls.maxDistance = hi * 1.8;
+    controls.update();
+  }
+
+  /* --- Render bajo demanda --- */
+  let frameQueued = false, flip = null, face = 0;          // face: 0 superior, 1 inferior
+  function requestRender() { if (!frameQueued) { frameQueued = true; requestAnimationFrame(frame); } }
+  function frame(now) {
+    frameQueued = false;
+    let again = controls.update();
+    if (flip) {
+      const t = clamp01((now - flip.start) / flip.dur);
+      const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const a = flip.from + (flip.to - flip.from) * e;
+      const lift = Math.abs(Math.sin(a)) * (W / 2 + 1);
+      pivot.rotation.z = a;
+      pivot.position.y = T / 2 + lift;
+      const k = 1 - Math.min(0.75, lift / (W / 2) * 0.75);
+      shadow.material.opacity = k;
+      shadow.scale.set(1 + (1 - k) * 0.25, 1, 1 + (1 - k) * 0.08);
+      if (t < 1) again = true; else { flip = null; buttonsBusy(false); }
+    }
+    renderer.render(scene, camera);
+    if (again) requestRender();
+  }
+  controls.addEventListener('change', requestRender);
+  controls.addEventListener('start', () => { userMoved = true; });
+
+  function resize() {
+    const w = container.clientWidth, h = container.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    // Reserva la franja inferior del selector: la tabla se centra en el área libre.
+    const safe = Math.min(cam.uiSafePx, h * 0.15);
+    camera.aspect = w / (h - safe);
+    camera.clearViewOffset();
+    if (!userMoved) placeCamera();                        // encaje en el área libre (sin la franja del selector)
+    camera.setViewOffset(w, h - safe, 0, 0, w, h);        // el lienzo se extiende por debajo, bajo el selector
+    camera.updateProjectionMatrix();
+    requestRender();
+  }
+  new ResizeObserver(resize).observe(container);
+  resize();
+
+  /* --- Cambio de cara --- */
+  const buttons = [...document.querySelectorAll('.face-toggle button')];
+  function buttonsBusy(b) { buttons.forEach((btn) => { btn.disabled = b; }); }
+  function showFace(target) {
+    if (target === face || flip) return;
+    const from = pivot.rotation.z, to = target ? Math.PI : 0;
+    face = target;
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.face === 'bottom') === !!target)));
+    flip = { from, to, start: performance.now(), dur: reduceMotion ? 1 : 1100 };
+    buttonsBusy(true);
+    requestRender();
+  }
+  buttons.forEach((b) => b.addEventListener('click', () => showFace(b.dataset.face === 'bottom' ? 1 : 0)));
+
+  // API mínima para la web de producto
+  window.keikiBoard = { showFace: (f) => showFace(f === 'bottom' ? 1 : 0), renderer, scene, camera, controls, buildMs: Math.round(performance.now() - t0) };
+  document.documentElement.dataset.boardReady = 'true';
+}
+
+init().catch((err) => {
+  console.error(err);
+  document.getElementById('board-canvas').setAttribute('aria-label', 'No se ha podido cargar el modelo 3D.');
+});
+</script>
+</body>
+</html>
