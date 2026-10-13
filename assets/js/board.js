@@ -130,6 +130,25 @@ function whatsappOrderUrl(message) {
   return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 }
 
+// Referència curta de producte (forma + tipus), de cara al client: mai
+// inclou lot de fabricació ni quantitat —això ho assigna la Clàudia més
+// tard, quan passa la comanda a l'Excel d'estoc intern.
+const REF_SHAPE_CODE = {
+  peix: "PE",
+  lasai: "LAS",
+  "la-free": "LFR",
+  keki: "KEK",
+};
+
+function shortProductRef(entry) {
+  if (entry.kind === "accessori") return "ROL";
+  const shapeCode = REF_SHAPE_CODE[entry.shapeId] || "XX";
+  if (entry.kind === "custom") return `${shapeCode}-PER`;
+  if (entry.kind === "pack") return `${shapeCode}-PACK`;
+  if (entry.kind === "edition") return `${shapeCode}-EDI`;
+  return `${shapeCode}-BAS`;
+}
+
 let __uid = 0;
 
 /**

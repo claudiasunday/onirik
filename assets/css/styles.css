@@ -2194,6 +2194,70 @@ body[data-page="tenda"] .page-hero {
   margin-top: -4px;
 }
 
+/* ---- Comanda (resum només lectura + formulari) --------------------------- */
+
+.order-layout {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .order-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.order-summary-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.order-summary-head h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.cart-line.order-line {
+  grid-template-columns: 72px 1fr auto;
+}
+
+.order-ref {
+  display: inline-block;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--c-cream);
+  color: var(--c-dark);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-right: var(--space-2);
+}
+
+.order-total-row {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+}
+
+.order-form h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+button.wizard-cta-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .cart-clear {
   align-self: center;
   font-size: 13px;

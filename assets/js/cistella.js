@@ -54,13 +54,6 @@ function renderCartLine(line) {
   return row;
 }
 
-function buildOrderMessage(lines, total) {
-  const items = lines
-    .map((line) => `- ${catalogEntryDisplay(line.entry).title} x${line.qty}`)
-    .join("\n");
-  return `Hola! Voldria fer aquesta comanda:\n${items}\n\nTotal: ${total}€`;
-}
-
 function renderCart() {
   const lines = cartLines();
 
@@ -76,9 +69,7 @@ function renderCart() {
   cartListEl.innerHTML = "";
   lines.forEach((line) => cartListEl.appendChild(renderCartLine(line)));
 
-  const total = cartTotal();
-  cartTotalEl.textContent = `${total}€`;
-  cartCheckoutEl.href = whatsappOrderUrl(buildOrderMessage(lines, total));
+  cartTotalEl.textContent = `${cartTotal()}€`;
 }
 
 cartClearEl.addEventListener("click", () => {

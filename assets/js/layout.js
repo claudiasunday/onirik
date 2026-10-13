@@ -101,7 +101,7 @@ function renderFooter() {
   if (!mount) return;
   const current = document.body.dataset.page || "";
   const teaser =
-    current === "contacte" || current === "personalitza" || current === "cistella"
+    current === "contacte" || current === "personalitza" || current === "cistella" || current === "comanda"
       ? ""
       : `
     <section class="container">

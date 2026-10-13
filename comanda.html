@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirma la comanda — ONIRIK BOARDS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body data-page="comanda">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="page-hero container">
+        <span class="eyebrow">📦 Comanda</span>
+        <h1>Confirma la teva comanda</h1>
+        <p class="lede">
+          Revisa què has triat i deixa'ns les teves dades. T'enviarem la
+          comanda directament per WhatsApp, llesta per confirmar.
+        </p>
+      </section>
+
+      <section class="container section-tight-top">
+        <div class="cart-empty" id="order-empty" hidden>
+          <p>La teva cistella és buida.</p>
+          <a class="btn btn-primary" href="tenda.html">Anar a la tenda</a>
+        </div>
+
+        <div class="order-layout" id="order-layout" hidden>
+          <div class="order-summary-col">
+            <div class="order-summary-head">
+              <h2>El teu resum</h2>
+              <a class="link-underline" href="cistella.html">Modifica la cistella</a>
+            </div>
+            <div class="cart-list" id="order-list"></div>
+            <div class="cart-summary-row order-total-row">
+              <span>Total</span>
+              <span id="order-total">0€</span>
+            </div>
+          </div>
+
+          <form class="contact-form order-form" id="order-form">
+            <h2>Les teves dades</h2>
+            <label for="order-name">
+              Nom
+              <input type="text" id="order-name" name="name" required />
+            </label>
+            <label for="order-phone">
+              Telèfon
+              <input type="tel" id="order-phone" name="phone" required />
+            </label>
+            <label for="order-email">
+              Email (opcional)
+              <input type="email" id="order-email" name="email" />
+            </label>
+            <label class="consent">
+              <input type="checkbox" id="order-whatsapp-consent" checked required />
+              <span>Vull que em contactin per WhatsApp amb aquesta comanda.</span>
+            </label>
+            <button class="btn btn-primary" type="submit">Enviar comanda per WhatsApp</button>
+            <p class="cart-checkout-note">És l'única manera de fer-nos arribar la comanda ara mateix.</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/comanda.js"></script>
+  </body>
+</html>
