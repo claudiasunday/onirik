@@ -36,6 +36,18 @@ function addToCart(id, qty = 1) {
   saveCart(cart);
 }
 
+// Afegeix una taula personalitzada (configurador "Personalitza la teva
+// taula"): no té id de catàleg, així que es guarda sencera a la línia
+// (en lloc de només l'id) amb un id generat només per identificar-la
+// dins la cistella.
+function addCustomToCart(customEntry, qty = 1) {
+  const cart = getCart();
+  const id = `custom-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  cart.push({ id, qty, custom: customEntry });
+  saveCart(cart);
+  return id;
+}
+
 function removeFromCart(id) {
   saveCart(getCart().filter((l) => l.id !== id));
 }
@@ -62,7 +74,7 @@ function clearCart() {
 function cartLines() {
   return getCart()
     .map((line) => {
-      const entry = findCatalogEntry(line.id);
+      const entry = line.custom || findCatalogEntry(line.id);
       return entry ? { ...line, entry } : null;
     })
     .filter(Boolean);

@@ -2187,6 +2187,13 @@ body[data-page="tenda"] .page-hero {
   font-size: 18px;
 }
 
+.cart-checkout-note {
+  font-size: 12px;
+  color: var(--c-muted-light);
+  text-align: center;
+  margin-top: -4px;
+}
+
 .cart-clear {
   align-self: center;
   font-size: 13px;

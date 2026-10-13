@@ -121,6 +121,15 @@ const ROLLER = {
     "El complement natural de la teva balance board: suro massís, lleuger i amb el grip just per practicar a qualsevol superfície, dins o fora de casa.",
 };
 
+// Canal real de comandes: WhatsApp (no hi ha backend de veritat darrere
+// del formulari de contacte, així que qualsevol comanda amb dades ja
+// triades —cistella, fitxa— s'envia per aquí, on sí que arriba algú).
+const WHATSAPP_PHONE = "34625579914";
+
+function whatsappOrderUrl(message) {
+  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+}
+
 let __uid = 0;
 
 /**
@@ -359,6 +368,18 @@ function findCatalogEntry(id) {
  * la seva targeta pròpia — p. ex. la cistella.
  */
 function catalogEntryDisplay(entry) {
+  if (entry.kind === "custom") {
+    const shape = SHAPES.find((s) => s.id === entry.shapeId);
+    const design = DESIGNS.find((d) => d.id === entry.designId);
+    return {
+      title: `${shape.name} personalitzada${design ? ` — ${design.name}` : ""}`,
+      thumbHtml: renderBoardSVG({
+        shapeId: entry.shapeId,
+        designId: entry.designId,
+        colorId: entry.colorId,
+      }),
+    };
+  }
   if (entry.kind === "pack") {
     const shape = SHAPES.find((s) => s.id === entry.shapeId);
     return {
@@ -433,6 +454,7 @@ function buildProductCard(entry, { onClick } = {}) {
  * Preu efectiu d'una entrada del catàleg (taula normal, pack, edició o accessori).
  */
 function getEntryPrice(entry) {
+  if (entry.kind === "custom") return entry.price;
   if (entry.kind === "pack") return entry.packPrice;
   if (entry.kind === "edition") return entry.price;
   if (entry.kind === "accessori") return entry.price;

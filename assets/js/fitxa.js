@@ -54,7 +54,7 @@ function fitxaCta(title, entryId) {
         </div>
         <button type="button" class="btn btn-primary" data-add-to-cart>Afegeix a la cistella</button>
       </div>
-      <a class="wizard-cta-link" href="contacte.html?missatge=${msg}">Vull-la ara, sense cistella →</a>
+      <a class="wizard-cta-link" href="${whatsappOrderUrl(`Hola! Estic interessat/da en: ${title}.`)}" target="_blank" rel="noopener">Vull-la ara, per WhatsApp →</a>
       <a class="wizard-cta-link" href="personalitza.html">O personalitza la teva pròpia →</a>
     </div>
     <p class="fitxa-cart-confirm" data-cart-confirm hidden>✓ Afegit a la cistella · <a href="cistella.html">Veure-la →</a></p>

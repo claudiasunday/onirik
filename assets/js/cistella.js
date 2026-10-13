@@ -16,12 +16,17 @@ function renderCartLine(line) {
   const display = catalogEntryDisplay(entry);
   const price = getEntryPrice(entry);
 
+  const titleHtml =
+    entry.kind === "custom"
+      ? display.title
+      : `<a href="fitxa.html?id=${id}">${display.title}</a>`;
+
   const row = document.createElement("div");
   row.className = "cart-line";
   row.innerHTML = `
     <div class="cart-line-thumb">${display.thumbHtml}</div>
     <div class="cart-line-info">
-      <h3><a href="fitxa.html?id=${id}">${display.title}</a></h3>
+      <h3>${titleHtml}</h3>
       <p class="cart-line-price">${price}€ / unitat</p>
     </div>
     <div class="qty-stepper" role="group" aria-label="Quantitat">
@@ -73,7 +78,7 @@ function renderCart() {
 
   const total = cartTotal();
   cartTotalEl.textContent = `${total}€`;
-  cartCheckoutEl.href = `contacte.html?missatge=${encodeURIComponent(buildOrderMessage(lines, total))}`;
+  cartCheckoutEl.href = whatsappOrderUrl(buildOrderMessage(lines, total));
 }
 
 cartClearEl.addEventListener("click", () => {

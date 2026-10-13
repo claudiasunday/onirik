@@ -60,6 +60,7 @@ const els = {
   sumColorEdit: $("sum-color-edit"),
   sumPrice: $("sum-price"),
   btnAddCart: $("btn-add-cart"),
+  cartConfirm: $("cart-confirm"),
   btnMoreCustom: $("btn-more-custom"),
   customModalBackdrop: $("custom-modal-backdrop"),
   customModal: $("custom-modal"),
@@ -369,8 +370,19 @@ els.colorCustomInput.addEventListener("input", (e) => {
 });
 
 els.btnAddCart.addEventListener("click", () => {
+  const shape = currentShape();
+  const design = currentDesign();
+  addCustomToCart({
+    kind: "custom",
+    shapeId: shape.id,
+    designId: design.id,
+    colorId: state.colorId,
+    customColor: hasCustomColor() ? state.customColor : null,
+    price: shape.price,
+  });
   els.btnAddCart.textContent = "Afegida a la cistella ✓";
   els.btnAddCart.disabled = true;
+  els.cartConfirm.hidden = false;
 });
 
 // --- Popup "Fem-la encara més teva" ------------------------------------
