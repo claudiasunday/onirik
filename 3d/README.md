@@ -19,6 +19,18 @@ els fitxers de `dist/` i `assets/` ja estan generats.
 - Colors del selector: variables CSS `--ob-fg`, `--ob-bg`, `--ob-border`, `--ob-active-bg`, `--ob-active-fg`, `--ob-focus`.
 - Sense WebGL2 o amb "estalvi de dades" activat, es queda el pòster (amb dades estalviades, carrega en tocar-lo).
 
+## Mode hero
+
+```html
+<onirik-board-3d class="hero-board" mode="hero"></onirik-board-3d>
+```
+
+- Escriptori (ratolí): la taula segueix el cursor i gira una mica en fer scroll.
+- Pantalles tàctils: gira sola (una volta cada ~22 s). No captura el dit: l'scroll de la pàgina funciona igual.
+- Fora de pantalla o amb la pestanya amagada, s'atura (0 fotogrames). Amb "reduir moviment" es queda quieta.
+- Pòster propi (`assets/poster-hero.webp`, fons transparent) amb la mateixa pose, perquè el pas a 3D no salti.
+- Pose, amplituds i velocitat: `CONFIG.hero` a `src/config.js` (després `npm run build` i tornar a coure el pòster).
+
 ## Pes i temps (4G simulat, CPU de mòbil mitjà)
 
 | | Versió 1 (HTML únic) | Versió 2 (aquesta) |

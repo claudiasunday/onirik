@@ -11,6 +11,9 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <!-- Taula 3D del hero: el pòster surt de seguida; el 3D es carrega quan el navegador queda lliure -->
+    <link rel="preload" as="image" href="3d/assets/poster-hero.webp" type="image/webp" fetchpriority="high" />
+    <script type="module" src="3d/dist/onirik-board.js"></script>
     <link rel="icon" type="image/png" href="assets/images/favicon.png" />
   </head>
   <body data-page="home">
@@ -54,6 +57,7 @@
             </div>
 
             <div class="hero-art">
+              <onirik-board-3d class="hero-board" mode="hero"></onirik-board-3d>
               <div class="hero-blob"></div>
               <div class="hero-illustration" id="hero-illustration"></div>
               <div class="hero-badge">

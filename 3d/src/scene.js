@@ -58,8 +58,9 @@ function studioEnvironment() {
  * @param {object} o.tex             textures: topWood, bottomColor, bottomRough, bottomNormal, edge, gripColor, gripNormal, discLogo, bottomLogo, shadow
  * @param {boolean} [o.reduceMotion]
  */
-export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, reduceMotion = false, preserveDrawingBuffer = false }) {
+export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, reduceMotion = false, preserveDrawingBuffer = false, mode = 'viewer' }) {
   const { L, W, T } = D;
+  const hero = mode === 'hero';   // hero: sense controls ni ombra; la taula flota i es mou per codi
   const C = cfg.colors;
 
   prepTexture(tex.topWood, { color: true });
@@ -76,7 +77,7 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   /* --- Renderer --- */
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer });
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cfg.maxPixelRatio));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, hero ? cfg.hero.maxPixelRatio : cfg.maxPixelRatio));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;      // fidel al color de producte
 
@@ -121,8 +122,21 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   shapeSpace.rotation.x = -Math.PI / 2;
   const pivot = new THREE.Group();                       // gira sobre l'eix llarg per ensenyar l'altra cara
   pivot.add(shapeSpace);
-  pivot.position.y = T / 2;
-  scene.add(pivot);
+  pivot.position.y = hero ? 0 : T / 2;
+  // Pose del hero: yaw (eix vertical, l'anima el cursor/scroll/autorotació) > roll (diagonal) > tilt (dreta, cap a càmera)
+  const yawG = new THREE.Group(), rollG = new THREE.Group(), tiltG = new THREE.Group();
+  yawG.add(rollG); rollG.add(tiltG); tiltG.add(pivot);
+  scene.add(yawG);
+  const deg = THREE.MathUtils.degToRad;
+  const H = cfg.hero;
+  const poseNow = { yaw: 0, tilt: 0 }, poseTarget = { yaw: 0, tilt: 0 };
+  function applyPose() {
+    if (!hero) return;
+    rollG.rotation.z = deg(H.rollDeg);
+    tiltG.rotation.x = deg(H.tiltDeg + poseNow.tilt);
+    yawG.rotation.y = deg(H.yawDeg + poseNow.yaw);
+  }
+  applyPose();
 
   const m = cfg.shadowMarginCm;
   const shadow = new THREE.Mesh(
@@ -132,16 +146,21 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   shadow.rotation.x = -Math.PI / 2; shadow.position.y = -0.02; shadow.renderOrder = -1;
   // PlaneGeometry té v=1 a dalt; la textura de l'ombra té la punta a la fila 0 → flipY=false i invertim v
   shadow.geometry.attributes.uv.array.forEach((_, i, a) => { if (i % 2) a[i] = 1 - a[i]; });
-  scene.add(shadow);
+  if (!hero) scene.add(shadow);
 
   /* --- Càmera --- */
   const cam = cfg.camera;
   const camera = new THREE.PerspectiveCamera(cam.fov, 1, 10, 3000);
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true; controls.dampingFactor = 0.08;
-  controls.enablePan = false; controls.rotateSpeed = 0.7;
-  controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
-  controls.target.set(0, T / 2, 0);
+  // Al hero no hi ha OrbitControls: posaria touch-action:none al canvas i bloquejaria l'scroll del mòbil
+  const controls = hero
+    ? { target: new THREE.Vector3(), update: () => false, addEventListener() {}, dispose() {}, minDistance: 0, maxDistance: 0 }
+    : new OrbitControls(camera, canvas);
+  if (!hero) {
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    controls.enablePan = false; controls.rotateSpeed = 0.7;
+    controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
+    controls.target.set(0, T / 2, 0);
+  }
 
   const fitPts = [];
   D.P.forEach((p, i) => { if (i % 3 === 0) fitPts.push(new THREE.Vector3(p.x, T, -p.y), new THREE.Vector3(p.x, 0, -p.y)); });
@@ -156,7 +175,17 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
     const lim = 1 / cam.margin;
     return fitPts.every((p) => { q.copy(p).project(camera); return Math.abs(q.x) <= lim && Math.abs(q.y) <= lim; });
   }
+  // Hero: encaix per esfera envoltant, així la taula hi cap en qualsevol pose i el pòster coincideix a qualsevol proporció
+  function placeHeroCamera() {
+    const R = Math.hypot(L / 2, W / 2, T / 2);
+    const vf = deg(cam.fov) / 2, hf = Math.atan(Math.tan(vf) * camera.aspect);
+    const d = R / Math.sin(Math.min(vf, hf)) * H.margin;
+    const pol = deg(H.cameraPolarDeg);
+    camera.position.set(0, Math.cos(pol) * d, Math.sin(pol) * d);
+    camera.lookAt(0, 0, 0);
+  }
   function placeCamera() {
+    if (hero) return placeHeroCamera();
     let lo = 20, hi = 3000;
     for (let i = 0; i < 28; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
     camera.position.copy(controls.target).addScaledVector(dir, hi);
@@ -165,12 +194,23 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   }
 
   /* --- Render sota demanda --- */
-  let frameQueued = false, flip = null, face = 0, userMoved = false, disposed = false;
+  let frameQueued = false, flip = null, face = 0, userMoved = false, disposed = false, running = true;
   const listeners = new Set();
   function requestRender() { if (!frameQueued && !disposed) { frameQueued = true; requestAnimationFrame(frame); } }
+  let lastT = 0, autoRotate = 0;
   function frame(now) {
     frameQueued = false;
     let again = controls.update();
+    if (hero) {
+      const dt = lastT ? Math.min(0.1, (now - lastT) / 1000) : 1 / 60;
+      lastT = now;
+      if (autoRotate) poseTarget.yaw += autoRotate * dt;
+      const k = 1 - Math.exp(-dt * H.smoothing);       // suavitzat independent dels fps
+      const dy = poseTarget.yaw - poseNow.yaw, dtl = poseTarget.tilt - poseNow.tilt;
+      poseNow.yaw += dy * k; poseNow.tilt += dtl * k;
+      applyPose();
+      if (autoRotate || Math.abs(dy) > 0.02 || Math.abs(dtl) > 0.02) again = true; else lastT = 0;
+    }
     if (flip) {
       const t = clamp01((now - flip.start) / flip.dur);
       const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -184,12 +224,12 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
       if (t < 1) again = true; else { flip = null; listeners.forEach((fn) => fn('flipend', face)); }
     }
     renderer.render(scene, camera);
-    if (again) requestRender();
+    if (again && running) requestRender();
   }
   controls.addEventListener('change', requestRender);
   controls.addEventListener('start', () => { userMoved = true; });
 
-  function resize(uiSafe = true) {
+  function resize(uiSafe = !hero) {
     const w = container.clientWidth, h = container.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
@@ -220,6 +260,14 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
     renderer, scene, camera, controls, lights,
     resize, showFace, requestRender,
     resetView() { userMoved = false; resize(); },
+    /** Hero: pose objectiu en graus, relativa a la pose base (yaw = eix vertical, tilt = inclinació) */
+    setPose({ yaw = poseTarget.yaw, tilt = poseTarget.tilt } = {}) { poseTarget.yaw = yaw; poseTarget.tilt = tilt; requestRender(); },
+    /** Hero: rotació contínua en graus/segon (0 = parada) */
+    setAutoRotate(degPerSec) { autoRotate = degPerSec; lastT = 0; requestRender(); },
+    /** Pausa el bucle (fora de pantalla o pestanya amagada) */
+    setRunning(on) { running = on; lastT = 0; if (on) requestRender(); },
+    /** Salta a la pose objectiu sense animar (pòster) */
+    snapPose() { poseNow.yaw = poseTarget.yaw; poseNow.tilt = poseTarget.tilt; applyPose(); renderer.render(scene, camera); },
     get face() { return face; },
     on(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     dispose() {

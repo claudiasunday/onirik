@@ -17,7 +17,7 @@ export const TEXTURE_FILES = {
   shadow: 'shadow.webp',
 };
 
-export async function mount({ canvas, container, assetsBase, reduceMotion = false }) {
+export async function mount({ canvas, container, assetsBase, reduceMotion = false, mode = 'viewer' }) {
   const base = assetsBase.endsWith('/') ? assetsBase : assetsBase + '/';
   const loader = new THREE.TextureLoader();
   // Tot en paral·lel: contorn + 10 textures
@@ -27,5 +27,7 @@ export async function mount({ canvas, container, assetsBase, reduceMotion = fals
   ]);
   const tex = Object.fromEntries(Object.keys(TEXTURE_FILES).map((k, i) => [k, texList[i]]));
   const D = boardDims(outline.points, CONFIG);
-  return createViewer({ canvas, container, D, tex, cfg: CONFIG, reduceMotion });
+  const viewer = await createViewer({ canvas, container, D, tex, cfg: CONFIG, reduceMotion, mode });
+  viewer.heroConfig = CONFIG.hero;
+  return viewer;
 }

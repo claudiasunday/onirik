@@ -8,6 +8,9 @@
 //   assets   carpeta de textures/pòster (per defecte ../assets/ relatiu a aquest fitxer)
 //   loading  "lazy" (per defecte: en apropar-se a la pantalla) | "eager" | "interaction" (només en tocar-lo)
 //   face     "top" | "bottom"  cara inicial
+//   mode     "viewer" (per defecte: girable amb el dit/ratolí i selector de cara)
+//            "hero"   (decoratiu: segueix el cursor i l'scroll; en pantalles tàctils gira sol;
+//                      no captura el tacte, així l'scroll del mòbil no es bloqueja)
 // API:  el.showFace('bottom' | 'top')   ·   event "facechange" (detail.face)
 
 const DEFAULT_ASSETS = new URL('../assets/', import.meta.url).href;
@@ -32,6 +35,8 @@ canvas:active { cursor: grabbing; }
   min-height: 36px; padding: 0 16px; border-radius: 999px; cursor: pointer; transition: background-color .2s, color .2s; }
 .toggle button[aria-pressed="true"] { background: var(--ob-active-bg); color: var(--ob-active-fg); }
 .toggle button:focus-visible { outline: 2px solid var(--ob-focus); outline-offset: 2px; }
+:host([mode="hero"]) { aspect-ratio: 1 / 1; }
+:host([mode="hero"]) canvas { pointer-events: none; touch-action: auto; cursor: auto; }
 @media (prefers-reduced-motion: reduce) { .poster, canvas, .toggle { transition: none; } }
 `;
 
@@ -41,12 +46,27 @@ class OnirikBoard3D extends HTMLElement {
   #io = null;
   #ro = null;
   #pendingFace = null;
+  #ac = null;          // AbortController dels listeners del mode hero
+  #onScreen = true;
+
+  get #isHero() { return this.getAttribute('mode') === 'hero'; }
 
   connectedCallback() {
     if (this.shadowRoot) return;
     const assets = this.getAttribute('assets') || DEFAULT_ASSETS;
     const base = assets.endsWith('/') ? assets : assets + '/';
     const root = this.attachShadow({ mode: 'open' });
+    if (this.#isHero) {
+      root.innerHTML = `<style>${css}</style>
+      <img class="poster" src="${base}poster-hero.webp" width="1000" height="1000" decoding="async" fetchpriority="high"
+           alt="Taula d'equilibri Keiki: grip negre, marge de fusta i disc amb el logo gravat">
+      <canvas role="img" aria-label="Taula d'equilibri Keiki en 3D"></canvas>`;
+      this.dataset.state = 'poster';
+      this.#hideBrokenPoster();
+      const saveData = navigator.connection && navigator.connection.saveData;
+      if (!saveData) this.#idle(() => this.load());
+      return;
+    }
     root.innerHTML = `<style>${css}</style>
       <img class="poster" src="${base}poster.webp" width="1000" height="1250" decoding="async"
            alt="Taula d'equilibri Keiki: grip negre, marge de fusta i disc amb el logo gravat">
@@ -56,6 +76,7 @@ class OnirikBoard3D extends HTMLElement {
         <button type="button" data-face="bottom" aria-pressed="false">Cara de sota</button>
       </div>`;
     this.dataset.state = 'poster';
+    this.#hideBrokenPoster();
     root.querySelectorAll('.toggle button').forEach((b) => b.addEventListener('click', () => this.showFace(b.dataset.face)));
     if (this.getAttribute('face') === 'bottom') this.#pendingFace = 'bottom';
 
@@ -76,9 +97,12 @@ class OnirikBoard3D extends HTMLElement {
 
   disconnectedCallback() {
     if (this.#io) this.#io.disconnect();
+    if (this.#ac) this.#ac.abort();
     if (this.#ro) this.#ro.disconnect();
     if (this.#viewer) { this.#viewer.dispose(); this.#viewer = null; }
   }
+
+  #hideBrokenPoster() { const img = this.shadowRoot.querySelector('.poster'); img.addEventListener('error', () => img.remove(), { once: true }); }
 
   #idle(fn) { ('requestIdleCallback' in window) ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200); }
 
@@ -90,12 +114,13 @@ class OnirikBoard3D extends HTMLElement {
     const assets = this.getAttribute('assets') || DEFAULT_ASSETS;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.#loading = import(VIEWER_URL)
-      .then((m) => m.mount({ canvas: root.querySelector('canvas'), container: this, assetsBase: assets, reduceMotion }))
+      .then((m) => m.mount({ canvas: root.querySelector('canvas'), container: this, assetsBase: assets, reduceMotion, mode: this.#isHero ? 'hero' : 'viewer' }))
       .then((viewer) => {
         this.#viewer = viewer;
         this.#ro = new ResizeObserver(() => viewer.resize());
         this.#ro.observe(this);
         viewer.on((type, face) => { if (type === 'flipend') this.#setButtonsBusy(false); });
+        if (this.#isHero) this.#startHeroMotion(viewer, reduceMotion);
         requestAnimationFrame(() => { this.dataset.state = 'ready'; });
         if (this.#pendingFace) this.showFace(this.#pendingFace);
         this.dispatchEvent(new CustomEvent('ready'));
@@ -103,6 +128,43 @@ class OnirikBoard3D extends HTMLElement {
       })
       .catch((err) => { console.error('[onirik-board-3d]', err); this.dataset.state = 'error'; return null; });
     return this.#loading;
+  }
+
+  // Hero: cursor + scroll a l'escriptori; rotació contínua en tàctil. Es pausa fora de pantalla.
+  #startHeroMotion(viewer, reduceMotion) {
+    if (reduceMotion) return;                         // es queda quieta a la pose base
+    const H = viewer.heroConfig;
+    const ac = (this.#ac = new AbortController());
+    const opt = { passive: true, signal: ac.signal };
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let px = 0, py = 0, sp = 0;
+
+    const scrollProgress = () => {                  // 0 a dalt de tot · 1 quan el hero ja ha sortit per dalt
+      const r = this.getBoundingClientRect();
+      return Math.min(1, Math.max(0, scrollY / Math.max(1, r.bottom + scrollY)));
+    };
+    const push = () => {
+      if (fine) viewer.setPose({ yaw: px * H.pointerYawDeg + sp * H.scrollYawDeg, tilt: py * H.pointerTiltDeg + sp * H.scrollTiltDeg });
+      else viewer.setPose({ tilt: sp * H.scrollTiltDeg });   // el yaw el porta l'autorotació
+    };
+    if (fine) {
+      addEventListener('pointermove', (e) => {
+        px = (e.clientX / innerWidth) * 2 - 1;
+        py = (e.clientY / innerHeight) * 2 - 1;
+        if (this.#onScreen) push();
+      }, opt);
+      document.documentElement.addEventListener('pointerleave', () => { px = 0; py = 0; push(); }, opt);
+    } else {
+      viewer.setAutoRotate(H.autoRotateDegPerSec);
+    }
+    addEventListener('scroll', () => { sp = scrollProgress(); if (this.#onScreen) push(); }, opt);
+    sp = scrollProgress(); push();
+
+    const sync = () => viewer.setRunning(this.#onScreen && !document.hidden);
+    document.addEventListener('visibilitychange', sync, { signal: ac.signal });
+    const io = new IntersectionObserver(([e]) => { this.#onScreen = e.isIntersecting; sync(); });
+    io.observe(this);
+    ac.signal.addEventListener('abort', () => io.disconnect());
   }
 
   /** Instància del visor (null fins que carrega): renderer, scene, camera, controls… */

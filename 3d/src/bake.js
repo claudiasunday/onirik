@@ -52,6 +52,7 @@ export async function bake({ outlineSVG = null, logoSVG = null, previewCanvas, p
     const rounded = norm.map(([x, y]) => [Math.round(x * 1e5) / 1e5, Math.round(y * 1e5) / 1e5]);
     files['outline.json'] = new Blob([JSON.stringify({ points: rounded })], { type: 'application/json' });
     files['poster.webp'] = await renderPoster();
+    files['poster-hero.webp'] = await renderHeroPoster();
     return files;
   }
 
@@ -67,6 +68,22 @@ export async function bake({ outlineSVG = null, logoSVG = null, previewCanvas, p
     const blob = await toBlob(r.domElement, 0.9);
     previewContainer.style.width = box.width + 'px'; previewContainer.style.height = box.height + 'px';
     r.setPixelRatio(prevPR); viewer.resize();
+    return blob;
+  }
+
+  // Pòster del mode hero: mateixa pose base i encaix per esfera; fons transparent
+  async function renderHeroPoster() {
+    const { width, height } = CONFIG.hero.poster;
+    const box = document.createElement('div');
+    box.style.cssText = `position:fixed;left:-10000px;top:0;width:${width}px;height:${height}px`;
+    const c = document.createElement('canvas');
+    c.style.cssText = 'display:block;width:100%;height:100%';
+    box.append(c); document.body.append(box);
+    const tex2 = Object.fromEntries(Object.entries(canvases).map(([k, cv]) => [k, new THREE.CanvasTexture(cv)]));
+    const v = await createViewer({ canvas: c, container: box, D, tex: tex2, mode: 'hero', preserveDrawingBuffer: true });
+    v.renderer.setPixelRatio(1); v.resize(); v.snapPose();
+    const blob = await toBlob(v.renderer.domElement, 0.9);
+    v.dispose(); box.remove();
     return blob;
   }
 
