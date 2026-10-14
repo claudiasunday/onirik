@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forn de textures 3D</title>
+<style>
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: #1d1d1b; background: #f3f1ec; }
+  main { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 24px; padding: 24px; max-width: 1200px; margin: auto; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  p { margin: 0 0 12px; color: #55524c; }
+  label { display: block; font-weight: 600; margin: 16px 0 6px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 90px; font: 12px ui-monospace, monospace; border: 1px solid #d6d2c8; border-radius: 8px; padding: 8px; background: #fff; }
+  button { margin-top: 16px; min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: #1d1d1b; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  button.secondary { background: transparent; color: #1d1d1b; border: 1px solid #1d1d1b; margin-left: 8px; }
+  #status { margin-top: 12px; font-size: 13px; color: #55524c; }
+  .preview { position: relative; aspect-ratio: 4 / 5; width: 100%; max-width: 640px; }
+  .preview canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>Forn de textures</h1>
+    <p>Genera les textures del visor a partir del codi procedural i, si n'hi ha, dels SVG reals. Descarrega els fitxers i substitueix els de <code>3d/assets/</code>. Només cal fer-ho quan canviïs el disseny, no a cada visita.</p>
+    <label for="outline">SVG del contorn (opcional)</label>
+    <textarea id="outline" placeholder="<svg …> un sol path tancat, punta a dalt"></textarea>
+    <label for="logo">SVG del logo (opcional)</label>
+    <textarea id="logo" placeholder="<svg …> el que estigui ple es grava"></textarea>
+    <button id="regen" type="button">Regenerar</button><button id="download" class="secondary" type="button" disabled>Descarregar assets</button>
+    <div id="status" role="status">Generant…</div>
+  </section>
+  <section><div class="preview" id="preview"><canvas id="canvas"></canvas></div></section>
+</main>
+<script type="module">
+import { bake } from './dist/bake.js';
+const $ = (id) => document.getElementById(id);
+let current = null;
+
+async function run() {
+  $('status').textContent = 'Generant…'; $('download').disabled = true;
+  if (current) { current.viewer.dispose(); const c = $('canvas').cloneNode(); $('canvas').replaceWith(c); }
+  try {
+    current = await bake({ outlineSVG: $('outline').value.trim() || null, logoSVG: $('logo').value.trim() || null, previewCanvas: $('canvas'), previewContainer: $('preview') });
+    $('status').textContent = `Textures generades en ${current.genMs} ms. Gira la taula per revisar-la.`;
+    $('download').disabled = false;
+  } catch (e) { $('status').textContent = 'Error: ' + e.message; console.error(e); }
+}
+async function download() {
+  const files = await current.exportAll();
+  for (const [name, blob] of Object.entries(files)) {
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: name });
+    a.click(); await new Promise((r) => setTimeout(r, 200)); URL.revokeObjectURL(a.href);
+  }
+  $('status').textContent = `${Object.keys(files).length} fitxers descarregats.`;
+}
+$('regen').addEventListener('click', run);
+$('download').addEventListener('click', download);
+window.__bake = { run, get current() { return current; } };
+run();
+</script>
+</body>
+</html>

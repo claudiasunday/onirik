@@ -1,0 +1,13 @@
+{
+  "name": "onirik-board-3d",
+  "private": true,
+  "type": "module",
+  "description": "Visor 3D de les taules Onirik: <keiki-board> amb pòster i càrrega diferida",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "three": "0.186.1"
+  }
+}

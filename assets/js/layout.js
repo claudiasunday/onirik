@@ -17,20 +17,21 @@ const NAV_ITEMS = [
 ];
 
 /**
- * A la Home, el centre de la capçalera (escriptori) és el selector
- * d'audiència del hero en lloc del menú: Boards / Tallers / Col·labora
- * canvien el contingut del hero (hero.js), i "Tenda" és un enllaç normal
- * amb el mateix aspecte de pastilla. Per això no és un tablist ARIA (no
- * hi pot haver un enllaç dins) sinó botons amb aria-pressed.
+ * A la Home, el centre de la capçalera (escriptori) és una navegació
+ * pròpia en format pastilla, diferent del menú de la resta de pàgines.
  */
-function renderHeroTabs() {
+const HOME_NAV_ITEMS = [
+  { href: "boards.html", label: "Boards" },
+  { href: "tenda.html", label: "Tenda" },
+  { href: "que-fem.html", label: "Tallers" },
+  { href: "familia-onirik.html", label: "Col·labora" },
+];
+
+function renderHomeNav() {
   return `
-      <div class="hero-tabs hero-tabs--header" role="group" aria-label="Qui ets?">
-        <button type="button" aria-pressed="true" data-key="particulars">Boards</button>
-        <a href="tenda.html">Tenda</a>
-        <button type="button" aria-pressed="false" data-key="tallers">Tallers</button>
-        <button type="button" aria-pressed="false" data-key="espais">Col·labora</button>
-      </div>`;
+      <nav class="home-nav" aria-label="Principal">
+        ${HOME_NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}
+      </nav>`;
 }
 
 function renderHeader() {
@@ -49,7 +50,7 @@ function renderHeader() {
           <img class="onirik-logo__wordmark-overlay" src="assets/images/logo-wordmark.png" alt="" aria-hidden="true" />
         </span>
       </a>
-      ${current === "home" ? renderHeroTabs() : `
+      ${current === "home" ? renderHomeNav() : `
       <nav class="main-nav">
         ${NAV_ITEMS.map(
           (item) =>
@@ -65,7 +66,7 @@ function renderHeader() {
       </div>
     </header>
     <nav class="mobile-nav" id="mobile-nav" hidden>
-      ${NAV_ITEMS.map(
+      ${(current === "home" ? HOME_NAV_ITEMS : NAV_ITEMS).map(
         (item) =>
           `<a href="${item.href}"${item.id === current ? ' class="active"' : ""}>${item.label}</a>`
       ).join("")}
