@@ -680,7 +680,7 @@ body.mobile-nav-open {
 }
 
 @media (min-width: 860px) {
-  .home-nav {
+  #site-header .home-nav {
     display: inline-flex;
   }
 }
@@ -780,6 +780,74 @@ body.mobile-nav-open {
 @media (prefers-reduced-motion: reduce) {
   .hero-cta-primary {
     transition: none;
+  }
+}
+
+/* ---- Hero de la Home en mòbil/tablet (< 860px) ----------------------- */
+/* Taula 3D a dalt (el text se li superposa una mica per sota), sense
+   logo a la capçalera mentre som al hero, la navegació en pastilla sota
+   el CTA i els 3 passos fora del hero, obrint la secció següent. */
+.hero-board-3d-slot,
+.value-steps-section {
+  display: none;
+}
+
+@media (max-width: 859px) {
+  .hero-board-3d-slot {
+    display: flex;
+    justify-content: center;
+    /* el titular puja per sobre de la part baixa de la taula */
+    margin-bottom: -96px;
+  }
+
+  .hero-board-3d {
+    width: min(44vw, 210px);
+  }
+
+  .hero-copy > :not(.hero-board-3d-slot) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .value-steps.value-steps--hero {
+    display: none;
+  }
+
+  .home-nav--hero {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: var(--space-5);
+  }
+
+  .home-nav--hero a {
+    flex: 1;
+    text-align: center;
+    padding: 9px 4px;
+  }
+
+  .value-steps-section {
+    display: block;
+    padding-top: var(--space-5);
+    padding-bottom: 0;
+  }
+
+  .value-steps--mobile .value-step {
+    position: static;
+  }
+
+  body[data-page="home"] #site-header:not(.scrolled) .logo {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  body[data-page="home"] #site-header .logo {
+    transition: opacity 0.45s ease-in-out, visibility 0.45s;
+  }
+
+  body[data-page="home"].mobile-nav-open #site-header .logo {
+    opacity: 1;
+    visibility: visible;
   }
 }
 

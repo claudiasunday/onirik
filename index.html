@@ -21,6 +21,8 @@
         <section class="hero">
           <div class="hero-inner">
             <div class="hero-copy">
+              <!-- Mòbil: taula 3D a dalt (la hi posa home.js només en mòbil) -->
+              <div class="hero-board-3d-slot" id="hero-board-3d-slot" aria-hidden="true"></div>
               <p class="hero-eyebrow">Personalitza la teva taula</p>
               <h1>Troba el teu equilibri, en 3 passos</h1>
               <p class="hero-subtext">
@@ -31,6 +33,13 @@
               <div class="hero-cta-row">
                 <a class="hero-cta-primary" href="personalitza.html">Crea la teva taula</a>
               </div>
+              <!-- Mòbil: la navegació en pastilla va sota el CTA (en escriptori és a la capçalera) -->
+              <nav class="home-nav home-nav--hero" aria-label="Seccions">
+                <a href="boards.html">Boards</a>
+                <a href="tenda.html">Tenda</a>
+                <a href="que-fem.html">Tallers</a>
+                <a href="familia-onirik.html">Col·labora</a>
+              </nav>
             </div>
 
             <img
@@ -67,6 +76,34 @@
           </div>
         </section>
       </div>
+
+      <!-- Mòbil: els 3 passos surten del hero i obren la secció següent
+           (en escriptori són dins del hero, a la dreta de la taula). -->
+      <section class="container value-steps-section">
+        <div class="value-steps value-steps--mobile">
+          <div class="value-step">
+            <span class="value-step-num">1</span>
+            <div>
+              <h3>Tria la forma</h3>
+              <p>Peix, Lasai, La Free o Keki — segons el teu nivell.</p>
+            </div>
+          </div>
+          <div class="value-step">
+            <span class="value-step-num">2</span>
+            <div>
+              <h3>Tria el disseny</h3>
+              <p>Fusta, fullcolor o franges — l'acabat que t'agradi.</p>
+            </div>
+          </div>
+          <div class="value-step">
+            <span class="value-step-num">3</span>
+            <div>
+              <h3>Tria el color</h3>
+              <p>8 colors per fer-la 100% teva.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div class="value-ribbon" aria-label="ONIRIK Boards en poques paraules">
         <div class="value-ribbon-track">
