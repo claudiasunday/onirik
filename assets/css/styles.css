@@ -10,6 +10,7 @@
   --c-dark: #313030;
   --c-cream: #f2e5d5;
   --c-cream-2: #fbf3ea;
+  --c-sand: #d9cfc2;      /* fons de la Tenda a escriptori (Figma "Claude · Git") */
   --c-muted: #b1b2b4;
   /* Mateix rol de "text secundari" que --c-muted, però per a fons clars:
      b1b2b4 sobre blanc/crema només fa ~2.1:1 de contrast (il·legible per
@@ -3539,5 +3540,278 @@ body.modal-open {
 @media (max-width: 639px) {
   #panel-summary {
     gap: var(--space-3);
+  }
+}
+
+/* ---- Pàgina BOARD (boards.html) — Figma "Claude · Git", frame BOARD ----- */
+/* Composició del Figma (1440 × 1120) reproduïda en un llenç amb la mateixa
+   proporció: cada mida es dona en "píxels de disseny" (--u = 1/1440 de
+   l'ample del llenç), així es manté idèntica de 960 px fins a 1440 px.
+   Per sota de 960 px es reorganitza en columna (veure més avall). */
+
+body[data-page="boards"] {
+  /* PROVISIONAL: color mitjà de "textura-concreto-blando". Quan tinguem
+     la imatge exportada del Figma: background-image: url(...) cover. */
+  --boards-bg: #e2dcd4;
+  background: var(--boards-bg);
+}
+
+body[data-page="boards"] main {
+  padding-top: 0;
+}
+
+/* Capçalera transparent sobre la textura (com a la Home), però amb el
+   logo i els textos foscos de sempre perquè el fons és clar. */
+body[data-page="boards"] #site-header:not(.scrolled) {
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
+}
+
+/* El teaser de contacte i el peu queden per sobre dels arcs del fons,
+   que continuen per darrere del teaser com al disseny. */
+body[data-page="boards"] #site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="boards"] .site-footer {
+  margin-top: var(--space-6);
+}
+
+.boards-stage {
+  overflow-x: clip;
+  /* sense el padding general de <section>: el llenç comença a dalt de tot,
+     sota la capçalera transparent, com al Figma */
+  padding: 0;
+}
+
+.boards-canvas {
+  --u: calc(100cqw / 1440);
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 1440 / 1120;
+  margin: 0 auto;
+  color: var(--c-dark);
+}
+
+.boards-arcs {
+  position: absolute;
+  left: 0;
+  top: calc(105 * var(--u));
+  width: calc(1437 * var(--u));
+  max-width: none;
+  pointer-events: none;
+}
+
+.boards-ring {
+  position: absolute;
+  color: rgba(49, 48, 48, 0.3);
+  pointer-events: none;
+}
+
+.boards-ring--big {
+  left: calc(1129 * var(--u));
+  top: calc(-234 * var(--u));
+  width: calc(584 * var(--u));
+}
+
+.boards-ring--small {
+  left: calc(-156 * var(--u));
+  top: calc(24 * var(--u));
+  width: calc(200 * var(--u));
+}
+
+.boards-board {
+  position: absolute;
+  /* mateixa caixa que la imatge de la taula al Figma (313 × 830 centrada);
+     el component té proporció 2:5, així que fa 332 d'ample */
+  left: calc(554 * var(--u));
+  top: calc(150 * var(--u));
+  width: calc(332 * var(--u));
+}
+
+.boards-roller {
+  position: absolute;
+  left: calc(894 * var(--u));
+  top: calc(124 * var(--u));
+  width: calc(235 * var(--u));
+  height: auto;
+  max-width: none;
+}
+
+.boards-arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.boards-specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* "SF Compact Text Black" del Figma no es pot servir a la web (llicència
+   d'Apple): Onest 800, que ja és la font del lloc, és la més propera. */
+.boards-spec,
+.boards-all {
+  font-family: var(--f-body);
+  font-weight: 800;
+  line-height: 1.12;
+  text-align: center;
+  color: var(--c-dark);
+}
+
+.boards-spec {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: calc(37 * var(--u));
+}
+
+.boards-spec--grip {
+  left: calc(218 * var(--u));
+  top: calc(190 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-spec--ply {
+  left: calc(237 * var(--u));
+  top: calc(560 * var(--u));
+  width: calc(292 * var(--u));
+  font-size: calc(34 * var(--u));
+  text-wrap: balance;
+}
+
+.boards-spec--roller {
+  left: calc(1212 * var(--u));
+  top: calc(642 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-all {
+  position: absolute;
+  left: calc(568 * var(--u));
+  top: calc(987 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  margin: 0;
+  font-size: calc(27 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-spark {
+  width: calc(51 * var(--u));
+  height: calc(51 * var(--u));
+  flex: none;
+}
+
+/* Tauleta i mòbil: la composició absoluta no hi cap. Taula + roller a
+   dalt, i a sota les tres característiques en llista, sense fletxes. */
+@media (max-width: 959px) {
+  .boards-canvas {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: end;
+    column-gap: var(--space-3);
+    row-gap: var(--space-4);
+    padding: calc(var(--header-h) + var(--space-4)) var(--space-4) var(--space-5);
+  }
+
+  .boards-arcs {
+    top: calc(var(--header-h) + 40px);
+    left: 50%;
+    width: 170%;
+    transform: translateX(-50%);
+  }
+
+  .boards-ring--big {
+    left: auto;
+    right: -120px;
+    top: calc(var(--header-h) + 8px);
+    width: 220px;
+  }
+
+  .boards-ring--small,
+  .boards-arrows {
+    display: none;
+  }
+
+  .boards-board {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(40vw, 200px);
+  }
+
+  .boards-roller {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(26vw, 120px);
+    /* la imatge té aire transparent a dalt: només en veiem el roller */
+    aspect-ratio: 236 / 838;
+    margin-bottom: 4%;
+  }
+
+  .boards-specs {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3);
+    position: relative;
+  }
+
+  .boards-spec,
+  .boards-spec--grip,
+  .boards-spec--ply,
+  .boards-spec--roller {
+    position: static;
+    transform: none;
+    width: auto;
+    font-size: 20px;
+    white-space: normal;
+  }
+
+  .boards-spec br {
+    display: none;
+  }
+
+  .boards-all {
+    grid-column: 1 / -1;
+    position: relative;
+    left: auto;
+    top: auto;
+    justify-content: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  .boards-spark {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ---- Tenda a escriptori (Figma "Claude · Git", frame TENDA 1440) ------- */
+/* Fons sorra a tota la pàgina (fins al peu) i targetes blanques a sobre.
+   Al Figma, la versió mòbil (375) manté fons blanc i targetes crema, així
+   que només s'aplica a partir de 860 px. */
+@media (min-width: 860px) {
+  body[data-page="tenda"] {
+    background: var(--c-sand);
+  }
+
+  body[data-page="tenda"] .product-card {
+    background: var(--c-white);
   }
 }

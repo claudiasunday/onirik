@@ -8,10 +8,13 @@
 //   assets   carpeta de textures/pòster (per defecte ../assets/ relatiu a aquest fitxer)
 //   loading  "lazy" (per defecte: en apropar-se a la pantalla) | "eager" | "interaction" (només en tocar-lo)
 //   face     "top" | "bottom"  cara inicial
+//   pose     (mode hero) "diagonal" (per defecte, Home) | "front" (de cara, pàgina BOARD)
 //   mode     "viewer" (per defecte: girable amb el dit/ratolí i selector de cara)
 //            "hero"   (decoratiu: segueix el cursor i l'scroll; en pantalles tàctils gira sol;
 //                      no captura el tacte, així l'scroll del mòbil no es bloqueja)
 // API:  el.showFace('bottom' | 'top')   ·   event "facechange" (detail.face)
+
+import { HERO_POSES } from './poses.js';
 
 const DEFAULT_ASSETS = new URL('../assets/', import.meta.url).href;
 const VIEWER_URL = new URL('./onirik-board-3d.js', import.meta.url).href;
@@ -35,7 +38,7 @@ canvas:active { cursor: grabbing; }
   min-height: 36px; padding: 0 16px; border-radius: 999px; cursor: pointer; transition: background-color .2s, color .2s; }
 .toggle button[aria-pressed="true"] { background: var(--ob-active-bg); color: var(--ob-active-fg); }
 .toggle button:focus-visible { outline: 2px solid var(--ob-focus); outline-offset: 2px; }
-:host([mode="hero"]) { aspect-ratio: 1 / 1; }
+:host([mode="hero"]) { aspect-ratio: var(--ob-aspect, 1 / 1); }
 :host([mode="hero"]) canvas { pointer-events: none; touch-action: auto; cursor: auto; }
 @media (prefers-reduced-motion: reduce) { .poster, canvas, .toggle { transition: none; } }
 `;
@@ -50,6 +53,8 @@ class OnirikBoard3D extends HTMLElement {
   #onScreen = true;
 
   get #isHero() { return this.getAttribute('mode') === 'hero'; }
+  get #poseName() { return HERO_POSES[this.getAttribute('pose')] ? this.getAttribute('pose') : 'diagonal'; }
+  get #pose() { return HERO_POSES[this.#poseName]; }
 
   connectedCallback() {
     if (this.shadowRoot) return;
@@ -57,8 +62,10 @@ class OnirikBoard3D extends HTMLElement {
     const base = assets.endsWith('/') ? assets : assets + '/';
     const root = this.attachShadow({ mode: 'open' });
     if (this.#isHero) {
+      const P = this.#pose;
+      this.style.setProperty('--ob-aspect', P.aspect);
       root.innerHTML = `<style>${css}</style>
-      <img class="poster" src="${base}poster-hero.webp" width="1000" height="1000" decoding="async" fetchpriority="high"
+      <img class="poster" src="${base}${P.poster.file}" width="${P.poster.width}" height="${P.poster.height}" decoding="async" fetchpriority="high"
            alt="Taula d'equilibri Keiki: grip negre, marge de fusta i disc amb el logo gravat">
       <canvas role="img" aria-label="Taula d'equilibri Keiki en 3D"></canvas>`;
       this.dataset.state = 'poster';
@@ -114,7 +121,7 @@ class OnirikBoard3D extends HTMLElement {
     const assets = this.getAttribute('assets') || DEFAULT_ASSETS;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.#loading = import(VIEWER_URL)
-      .then((m) => m.mount({ canvas: root.querySelector('canvas'), container: this, assetsBase: assets, reduceMotion, mode: this.#isHero ? 'hero' : 'viewer' }))
+      .then((m) => m.mount({ canvas: root.querySelector('canvas'), container: this, assetsBase: assets, reduceMotion, mode: this.#isHero ? 'hero' : 'viewer', pose: this.#poseName }))
       .then((viewer) => {
         this.#viewer = viewer;
         this.#ro = new ResizeObserver(() => viewer.resize());

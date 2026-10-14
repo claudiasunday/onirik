@@ -1,3 +1,5 @@
+import { HERO_POSES } from './poses.js';
+
 // Configuració compartida pel visor (runtime) i pel forn de textures (bake).
 // Unitats: centímetres.
 
@@ -26,18 +28,12 @@ export const CONFIG = {
   maxPixelRatio: 2,
   poster: { width: 1000, height: 1250 },
 
-  // Mode hero (<onirik-board-3d mode="hero">): taula dreta i en diagonal, que es mou sola o amb el cursor
+  // Mode hero (<onirik-board-3d mode="hero" pose="diagonal|front">): les poses són a src/poses.js
   hero: {
-    yawDeg: -34, rollDeg: -22, tiltDeg: 56,   // pose base: de cara a la càmera, inclinada i girada
-    cameraPolarDeg: 84,                        // càmera gairebé frontal
-    margin: 1.04,
-    pointerYawDeg: 22, pointerTiltDeg: 9,      // amplitud del seguiment del cursor
-    scrollYawDeg: 50, scrollTiltDeg: -14,      // gir afegit en fer scroll fins que el hero surt de pantalla
-    autoRotateDegPerSec: 16,                   // mòbil: una volta cada ~22 s
     smoothing: 3.2,                            // com més alt, més ràpid segueix (1/s)
     maxPixelRatio: 1.5,                        // animació contínua: menys píxels, menys bateria
-    poster: { width: 1000, height: 1000 },
-  },   // relació 4:5, la mateixa que el component per defecte
+    poses: HERO_POSES,
+  },
 };
 
 // Contorn traçat de la foto inferior (silueta simetritzada). Mitja taula dreta:

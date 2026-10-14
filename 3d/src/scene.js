@@ -58,7 +58,7 @@ function studioEnvironment() {
  * @param {object} o.tex             textures: topWood, bottomColor, bottomRough, bottomNormal, edge, gripColor, gripNormal, discLogo, bottomLogo, shadow
  * @param {boolean} [o.reduceMotion]
  */
-export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, reduceMotion = false, preserveDrawingBuffer = false, mode = 'viewer' }) {
+export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, reduceMotion = false, preserveDrawingBuffer = false, mode = 'viewer', pose = 'diagonal' }) {
   const { L, W, T } = D;
   const hero = mode === 'hero';   // hero: sense controls ni ombra; la taula flota i es mou per codi
   const C = cfg.colors;
@@ -128,7 +128,7 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   yawG.add(rollG); rollG.add(tiltG); tiltG.add(pivot);
   scene.add(yawG);
   const deg = THREE.MathUtils.degToRad;
-  const H = cfg.hero;
+  const H = { ...cfg.hero, ...(cfg.hero.poses[pose] || cfg.hero.poses.diagonal) };
   const poseNow = { yaw: 0, tilt: 0 }, poseTarget = { yaw: 0, tilt: 0 };
   function applyPose() {
     if (!hero) return;
@@ -177,9 +177,16 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   }
   // Hero: encaix per esfera envoltant, així la taula hi cap en qualsevol pose i el pòster coincideix a qualsevol proporció
   function placeHeroCamera() {
-    const R = Math.hypot(L / 2, W / 2, T / 2);
     const vf = deg(cam.fov) / 2, hf = Math.atan(Math.tan(vf) * camera.aspect);
-    const d = R / Math.sin(Math.min(vf, hf)) * H.margin;
+    let d;
+    if (H.fit === 'box') {
+      // de cara: encaixa l'alçada (L) i l'ample amb el gir màxim del cursor
+      const halfW = (W / 2) * Math.cos(deg(H.pointerYawDeg)) + T / 2;
+      d = Math.max((L / 2) / Math.tan(vf), halfW / Math.tan(hf)) * H.margin + T;
+    } else {
+      const R = Math.hypot(L / 2, W / 2, T / 2);
+      d = R / Math.sin(Math.min(vf, hf)) * H.margin;
+    }
     const pol = deg(H.cameraPolarDeg);
     camera.position.set(0, Math.cos(pol) * d, Math.sin(pol) * d);
     camera.lookAt(0, 0, 0);
@@ -260,6 +267,7 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
     renderer, scene, camera, controls, lights,
     resize, showFace, requestRender,
     resetView() { userMoved = false; resize(); },
+    heroConfig: H,
     /** Hero: pose objectiu en graus, relativa a la pose base (yaw = eix vertical, tilt = inclinació) */
     setPose({ yaw = poseTarget.yaw, tilt = poseTarget.tilt } = {}) { poseTarget.yaw = yaw; poseTarget.tilt = tilt; requestRender(); },
     /** Hero: rotació contínua en graus/segon (0 = parada) */

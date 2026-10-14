@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boards — ONIRIK BOARDS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;800&family=Unbounded:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <!-- Taula 3D: el pòster (mateixa pose) es veu de seguida; el 3D entra quan el navegador queda lliure -->
+    <link rel="preload" as="image" href="3d/assets/poster-hero-front.webp" type="image/webp" fetchpriority="high" />
+    <script type="module" src="3d/dist/onirik-board.js"></script>
+  </head>
+  <body data-page="boards">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="boards-stage" aria-labelledby="boards-title">
+        <h1 class="visually-hidden" id="boards-title">La Keiki i el que porten totes les nostres taules</h1>
+
+        <div class="boards-canvas">
+          <!-- Decoració del Figma (frame "BOARD") -->
+          <img class="boards-arcs" src="assets/images/boards-arcs.webp" width="1437" height="1278" alt="" aria-hidden="true" />
+          <!-- PROVISIONAL: anells, fletxes i estrella redibuixats a mà mentre no tinguem els SVG del Figma -->
+          <svg class="boards-ring boards-ring--big" viewBox="0 0 200 200" aria-hidden="true"><use href="#boards-ring-ticks" /></svg>
+          <svg class="boards-ring boards-ring--small" viewBox="0 0 200 200" aria-hidden="true"><use href="#boards-ring-ticks" /></svg>
+
+          <onirik-board-3d class="boards-board" mode="hero" pose="front"></onirik-board-3d>
+          <img class="boards-roller" src="assets/images/boards-roller.webp" width="236" height="838"
+               alt="Roller de suro d'11 cm amb el logo gravat" />
+
+          <svg class="boards-arrows" viewBox="0 0 1440 1120" fill="none" aria-hidden="true">
+            <!-- Cream Grip → taula -->
+            <path d="M286 286 C 360 248, 470 296, 546 424" />
+            <path d="M286 286 L 309 262 M286 286 L 312 300" />
+            <!-- Contraxapat → taula -->
+            <path d="M352 764 C 368 828, 444 832, 484 778" />
+            <path d="M352 764 L 372 780 M352 764 L 348 790" />
+            <!-- Roller → etiqueta -->
+            <path d="M992 716 C 1012 780, 1092 776, 1118 712" />
+            <path d="M1118 712 L 1098 708 M1118 712 L 1126 732" />
+          </svg>
+
+          <ul class="boards-specs">
+            <li class="boards-spec boards-spec--grip">Cream Grip <br />4.0</li>
+            <li class="boards-spec boards-spec--ply">Taulell de contraxapat marí fenòlic de bedoll finlandès</li>
+            <li class="boards-spec boards-spec--roller">Roller <br />11 cm</li>
+          </ul>
+
+          <p class="boards-all">
+            <svg class="boards-spark" viewBox="0 0 52 52" aria-hidden="true">
+              <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <path d="M26 3v46M3 26h46M9.7 9.7l32.6 32.6M42.3 9.7 9.7 42.3M14.5 4.3l23 43.4M37.5 4.3l-23 43.4M4.3 14.5l43.4 23M4.3 37.5l43.4-23" />
+              </g>
+            </svg>
+            a totes les nostres taules
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Anell de marques radials (provisional; substituir pel SVG "Frame-4" del Figma) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <g id="boards-ring-ticks" stroke="currentColor" stroke-width="2" stroke-linecap="round"></g>
+      </defs>
+    </svg>
+    <script>
+      // 90 marques radials, entre r=82 i r=98
+      (function () {
+        const g = document.getElementById("boards-ring-ticks");
+        let d = "";
+        for (let i = 0; i < 90; i++) {
+          const a = (i / 90) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
+          d += `M${(100 + 82 * c).toFixed(2)} ${(100 + 82 * s).toFixed(2)}L${(100 + 98 * c).toFixed(2)} ${(100 + 98 * s).toFixed(2)}`;
+        }
+        g.innerHTML = `<path d="${d}" />`;
+      })();
+    </script>
+
+    <div id="site-footer"></div>
+
+    <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/cart.js"></script>
+  </body>
+</html>
