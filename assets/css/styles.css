@@ -807,6 +807,19 @@ body[data-page="home"] .hero-inner {
   margin: 0 auto;
 }
 
+/* Mòbil: la taula va a dalt de tot, abans de les pestanyes. La insígnia
+   (bossa/grup/edifici) està ancorada a .hero-inner i s'alineava amb les
+   pestanyes; la baixem la mateixa alçada que la taula + l'espai entre files. */
+@media (max-width: 859px) {
+  .hero-art {
+    order: -1;
+  }
+
+  .hero-badge {
+    top: calc(260px + var(--space-4) + 12px);
+  }
+}
+
 @media (min-width: 860px) {
   body[data-page="home"] .hero-inner {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
