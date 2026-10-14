@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cistella — ONIRIK BOARDS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body data-page="cistella">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="page-hero container">
+        <span class="eyebrow">🛒 Cistella</span>
+        <h1>La teva cistella</h1>
+        <p class="lede">
+          Revisa les peces, ajusta quantitats i envia nova la comanda en un
+          sol missatge. Pagaràs contra reemborsament quan la rebis a casa.
+        </p>
+      </section>
+
+      <section class="container section-tight-top">
+        <div class="cart-empty" id="cart-empty" hidden>
+          <p>Encara no has afegit cap peça a la cistella.</p>
+          <a class="btn btn-primary" href="tenda.html">Anar a la tenda</a>
+        </div>
+
+        <div class="cart-layout" id="cart-layout" hidden>
+          <div class="cart-list" id="cart-list"></div>
+
+          <div class="cart-summary" id="cart-summary">
+            <div class="cart-summary-row">
+              <span>Total</span>
+              <span id="cart-total">0€</span>
+            </div>
+            <a class="btn btn-primary" id="cart-checkout" href="comanda.html">Revisar i confirmar comanda →</a>
+            <p class="cart-checkout-note">Al següent pas et demanarem el telèfon per confirmar-la.</p>
+            <button type="button" class="cart-clear" id="cart-clear">Buida la cistella</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="assets/js/board.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/cistella.js"></script>
+  </body>
+</html>

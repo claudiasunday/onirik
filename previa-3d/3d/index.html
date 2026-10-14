@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keiki 3D — Onirik Boards</title>
+<!-- El pòster és el primer que es veu: es demana amb prioritat -->
+<link rel="preload" as="image" href="assets/poster.webp" type="image/webp">
+<link rel="modulepreload" href="dist/onirik-board.js">
+<script type="module" src="dist/onirik-board.js"></script>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f3f1ec; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  onirik-board-3d { width: min(92vw, 560px); }
+</style>
+</head>
+<body>
+  <onirik-board-3d></onirik-board-3d>
+</body>
+</html>
