@@ -800,40 +800,41 @@ body[data-page="home"] .hero-inner {
 }
 
 /* Taula 3D del hero (<onirik-board-3d mode="hero">, carpeta 3d/).
-   Mòbil: sota els CTA, prou petita perquè el hero no s'allargui gaire.
-   Escriptori: segona columna, centrada en vertical, i les pestanyes i el
-   titular continuen alineats a dalt (no "ballen" en canviar de pestanya). */
+   A totes les mides va a dalt, centrada, abans de les pestanyes; a sota,
+   pestanyes, titular i CTA com sempre. La insígnia (bossa/grup/edifici)
+   està ancorada a .hero-inner i s'alinea amb les pestanyes, així que la
+   baixem l'alçada de la taula + l'espai entre files. */
+.hero-inner {
+  --hero-board-size: 260px;
+}
+
+.hero-art {
+  order: -1;
+}
+
 .hero-board {
-  width: min(100%, 260px);
+  width: min(100%, var(--hero-board-size));
   margin: 0 auto;
 }
 
-/* Mòbil: la taula va a dalt de tot, abans de les pestanyes. La insígnia
-   (bossa/grup/edifici) està ancorada a .hero-inner i s'alineava amb les
-   pestanyes; la baixem la mateixa alçada que la taula + l'espai entre files. */
-@media (max-width: 859px) {
-  .hero-art {
-    order: -1;
-  }
-
-  .hero-badge {
-    top: calc(260px + var(--space-4) + 12px);
-  }
+.hero-badge {
+  top: calc(var(--hero-board-size) + var(--space-4) + 12px);
 }
 
 @media (min-width: 860px) {
-  body[data-page="home"] .hero-inner {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    height: 100%;
+  .hero-inner {
+    --hero-board-size: 300px;
   }
 
-  body[data-page="home"] .hero-art {
-    align-self: center;
+  .hero-badge {
+    top: calc(var(--hero-board-size) + var(--space-5) + 12px);
   }
 
-  .hero-board {
-    width: min(100%, calc(72vh - var(--header-h) - var(--space-6) * 2));
-    margin: 0 0 0 auto;
+  /* Abans el hero feia 72vh exactes; amb la taula a sobre del text no hi
+     cabria: ara és l'alçada mínima i creix si cal. */
+  body[data-page="home"] .hero {
+    height: auto;
+    min-height: 72vh;
   }
 }
 
