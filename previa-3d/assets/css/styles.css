@@ -1,0 +1,3818 @@
+/* ==========================================================================
+   Onirik Boards — Design tokens
+   Extrets del disseny original de Figma (fa 3 anys) i mantinguts al nou fitxer.
+   ========================================================================== */
+
+:root {
+  /* Marca */
+  --c-orange: #f9b54f;
+  --c-orange-dark: #e89e2e;
+  --c-dark: #313030;
+  --c-cream: #f2e5d5;
+  --c-cream-2: #fbf3ea;
+  --c-sand: #d9cfc2;      /* fons de la Tenda a escriptori (Figma "Claude · Git") */
+  --c-muted: #b1b2b4;
+  /* Mateix rol de "text secundari" que --c-muted, però per a fons clars:
+     b1b2b4 sobre blanc/crema només fa ~2.1:1 de contrast (il·legible per
+     a text normal, WCAG AA exigeix 4.5:1). --c-muted es manté tal qual
+     allà on ja funciona bé (text secundari sobre fons fosc: hero, event
+     teaser, contact teaser). */
+  --c-muted-light: #6b6a68;
+  --c-white: #ffffff;
+  --c-black: #000000;
+  --c-wood: #c98a4b;
+  --c-wood-dark: #7a4a24;
+  --c-cork: #b98a52;
+  --c-cork-dark: #8a6238;
+
+  /* Tipografia de marca: Unbounded Black (900) per a títols de nivell 1-2,
+     Onest per al cos (Regular/Medium) i per als subtítols h3 (SemiBold). */
+  --f-heading: "Unbounded", "Onest", sans-serif;
+  --f-body: "Onest", sans-serif;
+
+  /* Escala tipogràfica dels títols (h1/h2), de més gran a més petita.
+     Cada selector de títol hi apunta en lloc de portar un valor solt,
+     perquè la jerarquia es pugui llegir i ajustar des d'un sol lloc. */
+  --fs-h1-hero: clamp(34px, 5.5vw, 40px); /* Home: "Troba el teu equilibri..." */
+  --fs-h1-hero-mobile: 28px;
+  --fs-h1: 30px;                          /* Títol de pàgina (.page-hero h1) */
+  --fs-h2-lg: 26px;                       /* Intro de pas al configurador */
+  --fs-h2-lg-mobile: 21px;
+  --fs-h3-lg: 24px;                       /* Subtítol gran dins d'un pas del configurador */
+  --fs-h3-lg-mobile: 20px;
+  --fs-h2: 22px;                          /* Títol de secció (.section-head h2) */
+  --fs-h2-sm: 20px;                       /* Títols petits (contacte, prose, wizard...) */
+  --fs-h2-sm-mobile: 17px;
+
+  /* Radis i espais */
+  --r-card: 16px;
+  --r-pill: 999px;
+  --r-swatch: 10px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  --shadow-card: 0 8px 24px rgba(49, 48, 48, 0.08);
+  --header-h: 84px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  /* Diverses seccions (hero, cintes de pills/col·laboradors...) "sagnen"
+     fins als 100vw amb el truc width:100vw + margin -50vw per escapar
+     del .container sense tocar l'HTML. En alguns mòbils 100vw es calcula
+     per sobre de l'ample visible real (p.ex. si el navegador compta la
+     barra de scroll), i això filtrava com un petit scroll horitzontal de
+     tota la pàgina. Cap element necessita scroll horitzontal a aquest
+     nivell, així que ho tallem aquí directament. */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--f-body);
+  color: var(--c-dark);
+  background: var(--c-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Anell de focus de marca per a navegació amb teclat. Regles més
+   específiques (hero-tabs, camps del modal...) ja en defineixen un de
+   propi i continuen guanyant per especificitat; aquesta és la xarxa de
+   seguretat perquè la resta d'enllaços/botons/targetes clicables
+   (nav, footer, subnav, targetes de producte...) també en tinguin un. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--c-orange-dark);
+  outline-offset: 2px;
+}
+
+h1,
+h2 {
+  font-family: var(--f-heading);
+  font-weight: 700; /* Unbounded Bold */
+  margin: 0;
+  line-height: 1.15;
+}
+
+h3 {
+  font-family: var(--f-body);
+  font-weight: 600; /* Onest SemiBold per a subtítols (targetes, info-cards...) */
+  margin: 0;
+  line-height: 1.15;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: var(--f-body);
+  cursor: pointer;
+  border: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1152px;
+  margin: 0 auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+/* Treu l'element de la vista i del flux (no ocupa espai) mantenint-lo
+   per a lectors de pantalla i SEO: per a títols/text que calia que hi
+   fossin però no calia veure's (p.ex. retallar scroll abans del
+   contingut real d'una pàgina). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Header ------------------------------------------------------------- */
+/* Navbar fixa, sempre amb fons blanc; l'ombra apareix en fer scroll
+   (mateix comportament que claudiasunday.com, però sense transparència). */
+
+#site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.08);
+  transition: background-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
+}
+
+#site-header.scrolled {
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
+}
+
+/* A la Home, mentre el hero (amb foto de fons) ocupa la part de dalt,
+   la capçalera flota del tot transparent (es veu la fotografia darrere)
+   i el text/icones passen a blanc perquè es llegeixin sobre la foto. En
+   fer scroll recupera el fons blanc i els colors originals (.scrolled,
+   ja gestionat per initHeaderScroll a layout.js). "rgba(255,255,255,0)"
+   en lloc de "transparent": totes dues són invisibles, però transparent
+   equival a negre amb alpha 0, així que interpolar-la cap a blanc feia
+   una barreja fosca/bruta a mig camí en lloc d'un fos net (mateix color,
+   només canvia l'opacitat — l'equivalent a un "smart animate" de Figma). */
+body[data-page="home"] #site-header:not(.scrolled) {
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .main-nav a,
+body[data-page="home"] #site-header:not(.scrolled) .icon-btn {
+  color: var(--c-white);
+}
+
+body[data-page="home"] .main-nav a,
+body[data-page="home"] .icon-btn {
+  transition: color 0.45s ease-in-out;
+}
+
+/* El wordmark és un PNG amb "ONIRIK" taronja + "BOARDS" negre: el negre
+   és il·legible sobre la foto, però volem mantenir el taronja d'"ONIRIK"
+   (no blanquejar-ho tot). Una imatge no es pot recolorir parcialment amb
+   `color`/`filter`, així que hi ha una segona còpia de la mateixa imatge
+   a sobre (.onirik-logo__wordmark-overlay), retallada amb clip-path
+   perquè només es vegi la seva meitat inferior ("BOARDS", filtrada a
+   blanc) i apareix/desapareix amb un fos (opacity), no amb filter — més
+   net i consistent amb la resta de transicions de la capçalera. */
+.onirik-logo__wordmark-box {
+  position: relative;
+  display: block;
+  height: 30px;
+}
+
+.onirik-logo__wordmark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: auto;
+  /* 35/58 ≈ el límit real entre "ONIRIK" i "BOARDS" dins del PNG. */
+  clip-path: inset(60% 0 0 0);
+  filter: brightness(0) invert(1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease-in-out;
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .onirik-logo__wordmark-overlay {
+  opacity: 1;
+}
+
+/* Amb el desplegable mòbil obert, la capçalera torna a fons blanc
+   encara que siguem a la Home sense fer scroll: si no, queda mig
+   transparent (es veu la foto del hero) i mig blanca (el desplegable
+   de sota), com dos blocs diferents en lloc d'un de sol. */
+body[data-page="home"].mobile-nav-open #site-header:not(.scrolled) {
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.08);
+}
+
+body[data-page="home"].mobile-nav-open #site-header:not(.scrolled) .main-nav a,
+body[data-page="home"].mobile-nav-open #site-header:not(.scrolled) .icon-btn {
+  color: var(--c-dark);
+}
+
+body[data-page="home"].mobile-nav-open #site-header:not(.scrolled) .onirik-logo__wordmark-overlay,
+body[data-page="home"].mobile-nav-open #site-header:not(.scrolled) .onirik-logo__favicon-overlay {
+  opacity: 0;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  max-width: 1152px;
+  margin: 0 auto;
+  min-height: var(--header-h);
+}
+
+main {
+  padding-top: var(--header-h);
+}
+
+/* A la Home el primer element de main és el hero a sang (veure més
+   avall): ell mateix s'encarrega del seu propi espai de dalt amb
+   padding-top perquè la capçalera transparent flota per sobre. Sense
+   aquest reset, main tornava a afegir el mateix espai per fora i
+   deixava una franja blanca (el fons de la pàgina) just darrere de la
+   capçalera, abans de la fotografia del hero. */
+body[data-page="home"] main {
+  padding-top: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  font-family: var(--f-heading);
+}
+
+/* ---- Logo animat de la capçalera --------------------------------------- */
+/* Es reprodueix una sola vegada en carregar la pàgina i es queda fix en
+   l'estat final (favicon aturat + wordmark visible). */
+
+.onirik-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.onirik-logo__icon-wrap {
+  position: relative;
+  width: 42px;
+  height: 37px;
+  flex: none;
+}
+
+.onirik-logo__favicon {
+  display: block;
+  width: 42px;
+  height: 37px;
+  transform-origin: 50% 50%;
+}
+
+/* La icona (ull: arcs negres + anell taronja) és massa fosca per
+   llegir-se sobre la foto del hero amb la capçalera transparent, però
+   volem conservar el taronja de l'anell (no blanquejar-ho tot). Com
+   amb el wordmark: una segona imatge a sobre (logo-icon-mono-white.png,
+   generada a partir de l'original deixant només les zones negres com a
+   silueta blanca, i la resta transparent) que apareix/desapareix amb un
+   fos. */
+.onirik-logo__favicon-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 37px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease-in-out;
+}
+
+body[data-page="home"] #site-header:not(.scrolled) .onirik-logo__favicon-overlay {
+  opacity: 1;
+}
+
+.onirik-logo__wordmark {
+  display: block;
+  height: 30px;
+  width: auto;
+  /* Per defecte (pàgines secundàries) el logo es mostra ja assentat,
+     sense animació — només s'anima a la Home (veure --animated). */
+  opacity: 1;
+}
+
+/* Modificador afegit per JS només quan és la Home: allà sí que es
+   reprodueix l'animació (icona girant + wordmark apareixent). */
+.onirik-logo--animated .onirik-logo__wordmark {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* L'overlay blanc (silueta de les zones negres) és una imatge a part
+     superposada a sobre: sense aquesta regla es quedava quieta mentre
+     la icona de sota girava per sota seu. */
+  .onirik-logo--animated .onirik-logo__favicon,
+  .onirik-logo--animated .onirik-logo__favicon-overlay {
+    animation: onirik-spin-settle 1.5s cubic-bezier(0.2, 0, 0, 1) 1 both;
+  }
+  .onirik-logo--animated .onirik-logo__wordmark {
+    animation: onirik-wordmark-reveal 0.6s ease-out 1.05s 1 both;
+  }
+}
+
+/* si l'usuari prefereix menys moviment, es mostra ja assentat */
+@media (prefers-reduced-motion: reduce) {
+  .onirik-logo--animated .onirik-logo__wordmark {
+    opacity: 1;
+  }
+}
+
+@keyframes onirik-spin-settle {
+  0% {
+    transform: rotate(0deg) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.12, 1);
+  }
+  72% {
+    transform: rotate(1080deg) scale(1);
+    animation-timing-function: ease-out;
+  }
+  82% {
+    transform: rotate(1080deg) scale(1.1);
+    animation-timing-function: ease-in-out;
+  }
+  91% {
+    transform: rotate(1080deg) scale(0.96);
+  }
+  100% {
+    transform: rotate(1080deg) scale(1);
+  }
+}
+
+@keyframes onirik-wordmark-reveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.main-nav {
+  display: none;
+  gap: var(--space-5);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.main-nav a.active,
+.mobile-nav a.active {
+  color: var(--c-orange-dark);
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-4) var(--space-3);
+  font-weight: 700;
+  background: var(--c-white);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0.12);
+}
+
+.mobile-nav[hidden] {
+  display: none;
+}
+
+.mobile-nav a {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* El CTA "Crea la teva taula" s'amaga a la capçalera en mòbil petit
+   (regla més amunt), però ha de seguir visible aquí dins del menú
+   desplegable — si no, en mòbil petit desapareixia del tot. */
+.mobile-nav .btn.btn-compra {
+  display: inline-flex;
+  width: 100%;
+  margin-top: var(--space-3);
+}
+
+@media (min-width: 860px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+/* Fons semitransparent darrere el menú mòbil desplegat, perquè no
+   quedi tallat directament sobre el contingut de la pàgina. */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(49, 48, 48, 0.32);
+  z-index: 90;
+}
+
+.mobile-nav-backdrop[hidden] {
+  display: none;
+}
+
+body.mobile-nav-open {
+  overflow: hidden;
+}
+
+@media (min-width: 860px) {
+  .mobile-nav-backdrop {
+    display: none !important;
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.icon-btn {
+  background: none;
+  padding: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-dark);
+}
+
+.cart-link {
+  position: relative;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.cart-badge[hidden] {
+  display: none;
+}
+
+.btn.btn-compra {
+  padding: 10px 20px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* "Crea la teva taula" no cap còmodament al costat del logo en mòbil
+   petit: s'amaga i es confia en el CTA de l'hero i el menú hamburguesa. */
+@media (max-width: 539px) {
+  .btn.btn-compra {
+    display: none;
+  }
+}
+
+.menu-btn {
+  display: inline-flex;
+}
+
+@media (min-width: 860px) {
+  .main-nav {
+    display: flex;
+  }
+  .menu-btn {
+    display: none;
+  }
+}
+
+/* En mòbil/tablet (sense el nav complet) la capçalera es veu petita:
+   agrandim el logo i el botó de menú perquè tinguin més presència i
+   una àrea de tap còmoda, i pugem l'alçada de la capçalera en
+   conseqüència perquè el contingut no quedi tallat. */
+@media (max-width: 859px) {
+  :root {
+    /* .site-header té padding var(--space-4)=24px dalt/baix (border-box):
+       48px de padding + els 48px del menu-btn = 96px. */
+    --header-h: 96px;
+  }
+
+  .onirik-logo__icon-wrap {
+    width: 50px;
+    height: 44px;
+  }
+
+  .onirik-logo__favicon,
+  .onirik-logo__favicon-overlay {
+    width: 50px;
+    height: 44px;
+  }
+
+  .onirik-logo__wordmark-box,
+  .onirik-logo__wordmark,
+  .onirik-logo__wordmark-overlay {
+    height: 34px;
+  }
+
+  .menu-btn {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    font-size: 32px;
+    line-height: 1;
+  }
+}
+
+/* ---- Hero (selector d'audiència: Particulars / Tallers / Espais) ------- */
+/* Targeta fosca autocontinguda amb pestanyes que canvien titular, text,
+   CTA, insígnia i taula il·lustrada segons qui visita la Home. */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, var(--c-dark) 0%, #262525 100%);
+  border-radius: 28px;
+  padding: var(--space-6) var(--space-5);
+  margin: var(--space-5) 0;
+}
+
+/* Hero de la Home a sang (ample complet de finestra, no limitat al
+   .container) i enganxat a dalt de tot, perquè hi hagi fotografia real
+   darrere de la capçalera transparent. El truc width:100vw +
+   margin de -50vw és l'idioma habitual per "escapar" d'un contenidor
+   centrat sense tocar l'HTML. */
+body[data-page="home"] .hero {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  background-image: linear-gradient(
+      165deg,
+      rgba(49, 48, 48, 0.88) 0%,
+      rgb(0 0 0 / 77%) 100%
+    ),
+    url("../images/hero-balance-board.jpg");
+  background-size: cover;
+  background-position: center;
+  padding-top: calc(var(--header-h) + var(--space-6));
+}
+
+@media (min-width: 860px) {
+  body[data-page="home"] .hero {
+    height: 72vh;
+  }
+}
+
+body[data-page="home"] .hero-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  /* "start" (no "center"): el titular/subtext canvia de llargada entre
+     pestanyes (Boards/Tallers/Col·labora), i amb align-items:center tot
+     el bloc "ballava" amunt i avall en recentrar-se cada cop. Alineat a
+     dalt, les pestanyes i el titular es queden fixos en el mateix lloc
+     sigui quin sigui el contingut. */
+  align-items: start;
+  padding-top: var(--space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-tabs {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: var(--r-pill);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-tabs button {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--c-muted);
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  transition: background 0.18s ease, color 0.18s ease;
+  white-space: nowrap;
+}
+
+.hero-tabs button:hover {
+  color: var(--c-white);
+}
+
+.hero-tabs button[aria-selected="true"] {
+  background: var(--c-orange);
+  color: #262525;
+}
+
+.hero-tabs button:focus-visible {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 2px;
+}
+
+.hero-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-orange);
+  margin: 0 0 12px;
+}
+
+.hero-copy h1 {
+  font-size: var(--fs-h1-hero);
+  line-height: 1.05;
+  color: var(--c-white);
+  margin: 0 0 var(--space-3);
+  max-width: 15ch;
+}
+
+.hero-subtext {
+  color: var(--c-muted);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0 0 var(--space-5);
+  max-width: 46ch;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--c-orange);
+  color: #262525;
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 26px;
+  border-radius: var(--r-pill);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.hero-cta-primary:hover {
+  background: var(--c-orange-dark);
+  transform: translateY(-1px);
+}
+
+.hero-cta-primary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hero-cta-secondary {
+  color: var(--c-muted);
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.hero-cta-secondary:hover {
+  color: var(--c-white);
+}
+
+.hero-swap {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.hero-swap.is-changing {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-swap,
+  .hero-cta-primary {
+    transition: none;
+  }
+}
+
+/* La taula il·lustrada (i el seu halo) ja no es mostra: només afegia
+   pes visual i, en mòbil, scroll de més, sense aportar res que el
+   text/CTA no digués ja. Es queda la insígnia (bossa/grup/edifici) com
+   a únic element d'art, enganxada a l'altra punta de les pestanyes. */
+.hero-art {
+  position: static;
+  min-height: 0;
+}
+
+.hero-blob,
+.hero-illustration {
+  display: none;
+}
+
+/* .hero-art ja no li serveix de referència (ha quedat a 0 d'alçada,
+   després del CTA): s'ancora a .hero-inner, que és qui conté també
+   les pestanyes Boards/Tallers/Col·labora. */
+.hero-badge {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.hero-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hero-badge-icon {
+  display: none;
+}
+
+.hero-badge-icon.is-active {
+  display: block;
+}
+
+/* Taula 3D del hero (<onirik-board-3d mode="hero">, carpeta 3d/).
+   A totes les mides va a dalt, centrada, abans de les pestanyes; a sota,
+   pestanyes, titular i CTA com sempre. La insígnia (bossa/grup/edifici)
+   està ancorada a .hero-inner i s'alinea amb les pestanyes, així que la
+   baixem l'alçada de la taula + l'espai entre files. */
+.hero-inner {
+  --hero-board-size: 260px;
+}
+
+.hero-art {
+  order: -1;
+}
+
+.hero-board {
+  width: min(100%, var(--hero-board-size));
+  margin: 0 auto;
+}
+
+.hero-badge {
+  top: calc(var(--hero-board-size) + var(--space-4) + 12px);
+}
+
+@media (min-width: 860px) {
+  .hero-inner {
+    --hero-board-size: 300px;
+  }
+
+  .hero-badge {
+    top: calc(var(--hero-board-size) + var(--space-5) + 12px);
+  }
+
+  /* Abans el hero feia 72vh exactes; amb la taula a sobre del text no hi
+     cabria: ara és l'alçada mínima i creix si cal. */
+  body[data-page="home"] .hero {
+    height: auto;
+    min-height: 72vh;
+  }
+}
+
+@media (max-width: 859px) {
+  .hero {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .hero-inner {
+    gap: var(--space-4);
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 16px 28px;
+  border-radius: var(--r-pill);
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 15px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--c-orange);
+  color: var(--c-dark);
+}
+
+.btn-primary:hover {
+  background: var(--c-orange-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--c-orange);
+  color: var(--c-white);
+}
+
+.btn-dark {
+  background: var(--c-dark);
+  color: var(--c-white);
+  width: 100%;
+}
+
+.btn-dark:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Cinta de valor de producte (no de col·laboradors): bucle sense fons
+   propi (flota sobre el fons blanc de la pàgina) just sota el hero de
+   la Home, amb les pills que abans eren una franja estàtica.
+   Reutilitza el truc de dues còpies del track del .partners-ribbon
+   (la segona és idèntica i aria-hidden, així el bucle és continu i
+   sense salt), però és una entitat pròpia. */
+.value-ribbon {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-bottom: var(--space-4);
+  overflow: hidden;
+  padding: var(--space-4) 0;
+  /* Esvaeix les pills a les vores en lloc de tallar-les en sec, perquè
+     el bucle continu es noti com un flux i no com una franja retallada. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 64px,
+    #000 calc(100% - 64px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 64px,
+    #000 calc(100% - 64px),
+    transparent
+  );
+}
+
+.value-ribbon-track {
+  display: flex;
+  width: max-content;
+  gap: 8px;
+  animation: value-ribbon-scroll 22s linear infinite;
+}
+
+.value-ribbon:hover .value-ribbon-track {
+  animation-play-state: paused;
+}
+
+.value-ribbon-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@keyframes value-ribbon-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value-ribbon-track {
+    animation: none;
+  }
+
+  .value-ribbon {
+    overflow-x: auto;
+  }
+}
+
+/* Resum "Tria la forma / el disseny / el color" just sota el hero, per
+   reforçar la proposta de valor (personalització en 3 passos) abans
+   d'arribar als productes. Ara són 3 targetes soltes: cadascuna es
+   queda enganxada (sticky) un pèl més avall que l'anterior, així que
+   en fer scroll s'apilen l'una sobre l'altra en comptes de desaparèixer. */
+.value-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.value-step {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.value-step.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.value-step:nth-child(1) {
+  top: calc(var(--header-h) + 16px);
+  z-index: 1;
+}
+
+.value-step:nth-child(2) {
+  top: calc(var(--header-h) + 32px);
+  z-index: 2;
+}
+
+.value-step:nth-child(3) {
+  top: calc(var(--header-h) + 48px);
+  z-index: 3;
+}
+
+/* A partir d'aquí ja hi ha prou amplada per llegir les 3 targetes en
+   fila sense apilar-les: l'efecte d'apilat sticky es queda només per
+   a mòbil/tablet, on sí that aporta (menys amplada, més scroll). */
+@media (min-width: 860px) {
+  .value-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .value-step {
+    position: static;
+    top: auto;
+  }
+}
+
+.value-steps-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value-step {
+    transition: none;
+  }
+}
+
+.value-step-num {
+  font-family: var(--f-heading);
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--c-orange-dark);
+  flex: none;
+}
+
+.value-step h3 {
+  font-size: 16px;
+}
+
+.value-step p {
+  font-size: 13px;
+  color: var(--c-muted-light);
+  margin-top: 4px;
+}
+
+@media (max-width: 639px) {
+  .value-step {
+    position: static;
+    padding: var(--space-4);
+  }
+
+  .value-steps-cta .link-pill {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.value-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: color-mix(in srgb, var(--c-orange) 20%, transparent);
+  color: var(--c-dark);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  padding: 10px 18px;
+  white-space: nowrap;
+}
+
+/* Franja de logos de col·laboradors, a l'estil "trusted by" (p.ex.
+   v7labs.com/pricing): etiqueta discreta + fila de marques en gris,
+   que es realcen una mica en passar-hi per sobre. */
+.partner-logos {
+  text-align: center;
+  padding-top: var(--space-5);
+}
+
+.partner-logos-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted-light);
+  margin: 0 0 var(--space-4);
+}
+
+.partner-logos-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5) var(--space-6);
+}
+
+.partner-logos-row img {
+  height: 26px;
+  width: auto;
+  max-width: 110px;
+  object-fit: contain;
+  opacity: 0.45;
+  transition: opacity 0.18s ease;
+}
+
+.partner-logos-row img:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 639px) {
+  .partner-logos-row {
+    gap: var(--space-4) var(--space-5);
+  }
+
+  .partner-logos-row img {
+    height: 22px;
+    max-width: 88px;
+  }
+}
+
+/* ---- Seccions genèriques ------------------------------------------------ */
+
+section {
+  padding: var(--space-6) 0;
+}
+
+/* Modificadors per escurçar el padding d'una secció puntual (p.ex. la
+   Tenda: entre el hero i la graella de productes hi havia dues seccions
+   amb el padding genèric de 48px cadascuna — massa desplaçament de
+   scroll abans d'arribar al contingut real de la pàgina). */
+.section-tight {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+}
+
+.section-tight-top {
+  padding-top: var(--space-4);
+}
+
+/* Quan la secció va enganxada just sota el .page-hero (que ja aporta el
+   seu propi padding-bottom de 24px), no cal cap padding-top addicional. */
+.section-no-top {
+  padding-top: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.section-head h2 {
+  font-size: var(--fs-h2);
+}
+
+.link-pill {
+  border: 1px solid var(--c-dark);
+  border-radius: var(--r-pill);
+  padding: 8px 18px;
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.link-underline {
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* ---- Targetes de producte ------------------------------------------------ */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 860px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.product-card {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  position: relative;
+  box-shadow: var(--shadow-card);
+  /* Les targetes són clicables (JS les porta al configurador): calia
+     cursor i un hover/focus perquè es llegissin com a interactives, no
+     només com a fitxes informatives. */
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(49, 48, 48, 0.16);
+}
+
+/* L'efecte hover només en dispositius amb ratolí real: al mòbil, en
+   tocar la targeta queda "enganxada" en estat hover (no hi ha manera
+   de treure el cursor de sobre) i es veu com si la targeta cresqués i
+   no tornés a l'estat normal fins que toques una altra targeta. */
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(49, 48, 48, 0.16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card {
+    transition: none;
+  }
+}
+
+.product-card .badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--r-pill);
+}
+
+.product-card .thumb {
+  aspect-ratio: 1 / 1.05;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+/* Totes les miniatures ocupen exactament el mateix espai, siguin SVG
+   generats (relació 200/300 ja pensada per encaixar-hi) o fotos reals
+   amb la seva pròpia relació d'aspecte (sovint molt més altes que
+   amples). Amb height:100% dins d'un flex, un <img> amb mida intrínseca
+   gran ignora el contenidor i desborda; position:absolute + inset:0 el
+   lliga sempre a la mida real de .thumb, vingui d'on vingui la imatge. */
+.product-card .thumb svg,
+.product-card .thumb .board-photo {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-card h3 {
+  font-size: 15px;
+}
+
+.product-card .p-type {
+  color: var(--c-muted-light);
+  font-size: 12px;
+}
+
+.product-card .p-price {
+  font-weight: 700;
+  font-size: 15px;
+  margin-top: auto;
+}
+
+/* ---- Tenda (llistat + filtres) ------------------------------------------- */
+
+.shop-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.shop-toolbar .filters {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.shop-toolbar select {
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid #ddd;
+  background: var(--c-white);
+}
+
+.shop-toolbar .shop-count {
+  font-size: 13px;
+  color: var(--c-muted-light);
+}
+
+/* ---- Packs i edicions especials ------------------------------------------ */
+
+.badge-pack {
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+.badge-edition {
+  background: var(--c-cork);
+  color: var(--c-white);
+}
+
+.pack-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.pack-thumb-board {
+  flex: 1 1 62%;
+  min-width: 0;
+}
+
+.pack-thumb-roller {
+  flex: 1 1 32%;
+  min-width: 0;
+  align-self: flex-end;
+}
+
+.pack-thumb-board svg,
+.pack-thumb-roller svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.roller-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.roller-thumb {
+  padding: var(--space-1);
+}
+
+.p-save {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-orange-dark);
+}
+
+.edition-card .p-type {
+  color: var(--c-dark);
+  opacity: 0.6;
+}
+
+/* ---- Per què un balance board (beneficis) ------------------------------- */
+
+.benefits {
+  background: var(--c-cream);
+  border-radius: var(--r-card);
+}
+
+.benefits-inner {
+  padding: var(--space-5);
+}
+
+.benefit-grid {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .benefit-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.benefit-item .b-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-dark);
+  flex: none;
+}
+
+.benefit-item h3 {
+  font-size: 16px;
+}
+
+.benefit-item p {
+  font-size: 14px;
+  color: var(--c-dark);
+  opacity: 0.75;
+}
+
+/* ---- Contacte / footer --------------------------------------------------- */
+
+.contact-band {
+  background: var(--c-orange);
+  border-radius: var(--r-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.contact-band h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.contact-band p {
+  font-size: 14px;
+  max-width: 60ch;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.contact-teaser {
+  background: var(--c-dark);
+  color: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.contact-teaser h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.contact-teaser p {
+  color: var(--c-muted);
+  font-size: 14px;
+  margin-top: var(--space-1);
+}
+
+/* ---- Pròxim esdeveniment (calendari de tallers) -------------------------- */
+
+.event-teaser {
+  background: var(--c-dark);
+  color: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.event-teaser-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 56ch;
+}
+
+.badge-open {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+}
+
+.event-date {
+  color: var(--c-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.event-teaser h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.event-desc {
+  color: var(--c-muted);
+  font-size: 14px;
+}
+
+.site-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  font-size: 13px;
+  color: var(--c-muted);
+  background: var(--c-dark);
+  overflow: hidden;
+}
+
+.footer-top {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  padding-bottom: var(--space-4);
+}
+
+/* Entre mòbil petit i el punt on hi caben les 3 columnes (640px), ja
+   hi ha prou amplada per aparellar Descobreix + Contacta'ns en una
+   fila; Segueix-nos (només la icona) ocupa tot l'ample a sota. */
+@media (min-width: 360px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-col--social {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 640px) {
+  .footer-top {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+
+  .footer-col--social {
+    grid-column: auto;
+  }
+}
+
+.footer-col-title {
+  font-family: var(--f-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-white);
+  margin-bottom: var(--space-3);
+}
+
+.footer-links,
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer-links a,
+.footer-contact a {
+  color: var(--c-white);
+  font-weight: 600;
+  opacity: 0.88;
+  transition: opacity 0.15s ease;
+}
+
+.footer-links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+  opacity: 1;
+}
+
+.footer-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--r-pill);
+  color: var(--c-white);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.footer-social-icon:hover {
+  border-color: var(--c-orange);
+  color: var(--c-orange);
+}
+
+.footer-hero {
+  position: relative;
+  /* Ha de coincidir exactament amb l'alçada real de .footer-hero-photo
+     (width: min(56vw, 800px) × la seva relació d'aspecte real un cop
+     retallat el marge transparent, ~0.406), no un clamp independent:
+     si no coincideixen, la foto (ancorada a bottom:0) sobresurt per
+     dalt del contenidor i es menja el .footer-top de sobre, deixant
+     alhora un buit buit sota seu dins d'aquesta caixa. */
+  min-height: min(23vw, 325px);
+  padding-top: var(--space-5);
+}
+
+.footer-wordmark-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-hero-logo {
+  height: clamp(77px, 13.2vw, 204px);
+  width: auto;
+  display: block;
+}
+
+/* La foto trenca el contenidor i "sagna" fins a la vora dreta del
+   footer (que ocupa tot l'ample de finestra), tal com al disseny de
+   referència — per això és un fill absolut de .footer-hero en lloc
+   d'anar dins .container com el bloc del logo. */
+.footer-hero-photo {
+  position: absolute;
+  right: -4%;
+  bottom: 0;
+  width: min(56vw, 800px);
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-claim {
+  color: var(--c-orange);
+  font-weight: 700;
+}
+
+.footer-tagline {
+  color: var(--c-muted);
+  font-size: 13px;
+  margin-bottom: var(--space-2);
+}
+
+.copyright {
+  color: var(--c-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 639px) {
+  .footer-hero {
+    min-height: auto;
+    padding-bottom: var(--space-4);
+  }
+
+  .footer-hero-photo {
+    position: static;
+    width: 86%;
+    max-width: 360px;
+    margin: var(--space-4) auto 0;
+  }
+}
+
+/* ---- Pàgines de contingut (Coneix-nos, Què fem, Família Onirik...) ------- */
+
+/* Cinta animada de col·laboradors (pàgina família-onirik): dues còpies
+   idèntiques del mateix grup de logos/enllaços una al costat de l'altra
+   dins una única pista que es desplaça -50% del seu propi ample —
+   com la segona còpia és idèntica a la primera, el bucle és continu i
+   sense salt. La segona còpia és aria-hidden i amb tabindex="-1" perquè
+   el teclat/lector de pantalla no la trobi duplicada. */
+.partners-ribbon {
+  height: 88px;
+  max-height: 88px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--c-white);
+  border-bottom: 1px solid rgba(49, 48, 48, 0.12);
+}
+
+.partners-ribbon-track {
+  display: flex;
+  width: max-content;
+  animation: partners-ribbon-scroll 24s linear infinite;
+}
+
+.partners-ribbon:hover .partners-ribbon-track {
+  animation-play-state: paused;
+}
+
+.partners-ribbon-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+  flex-shrink: 0;
+}
+
+.partners-ribbon-track a {
+  font-family: var(--f-heading);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--c-dark);
+  opacity: 0.72;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.partners-ribbon-track a:hover {
+  opacity: 1;
+  color: var(--c-orange-dark);
+}
+
+/* La majoria de col·laboradors ja tenen logo real: substitueix el
+   text per la imatge (mateixos fitxers que a la Home), mantenint la
+   mateixa alçada de línia i la mateixa opacitat/hover que els que
+   encara són només text (p.ex. Pyojany, sense logo). Es veuen amb el
+   seu color de marca real (majoritàriament negre/gris) sobre el fons
+   blanc, sense cap filtre. */
+.partners-ribbon-track img {
+  display: block;
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.72;
+  transition: opacity 0.15s ease;
+}
+
+.partners-ribbon-track a:hover img,
+.partners-ribbon-track img:hover {
+  opacity: 1;
+}
+
+.partners-ribbon-dot {
+  color: var(--c-orange);
+  font-size: 18px;
+}
+
+@keyframes partners-ribbon-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-ribbon-track {
+    animation: none;
+  }
+
+  .partners-ribbon {
+    overflow-x: auto;
+  }
+}
+
+.page-hero {
+  padding: var(--space-6) 0 var(--space-4);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+.page-hero .eyebrow {
+  color: var(--c-orange-dark);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.page-hero h1 {
+  font-size: var(--fs-h1);
+  margin-top: var(--space-2);
+}
+
+.page-hero .lede {
+  font-size: 16px;
+  color: var(--c-dark);
+  opacity: 0.8;
+  max-width: 60ch;
+  margin-top: var(--space-3);
+}
+
+/* A la Tenda el h1/lede es queden visually-hidden (text per a SEO/
+   lectors de pantalla, menys scroll per a qui compra): sense títol
+   visible, el padding del hero pensat per encaixar-lo queda com un
+   buit injustificat abans del contingut real. */
+body[data-page="tenda"] .page-hero {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-2);
+}
+
+/* Columna de text (.prose) + espais reservats per a fotografia real
+   (.prose-media, de moment gris) en pàgines de contingut llargues com
+   Coneix-nos. En mòbil els placeholders passen a sota del text en una
+   mini-graella de 2 columnes en lloc d'ocupar una columna sencera. */
+.prose-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 860px) {
+  .prose-layout {
+    grid-template-columns: minmax(0, 720px) 1fr;
+    align-items: start;
+  }
+}
+
+.prose-media {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  /* Per sota de 860px .prose-layout és d'una sola columna: sense això,
+     les imatges queden després de tot el text (card-row inclòs) i
+     semblen "amagades" al final en lloc de ser-hi, entre el títol i
+     el cos del text. */
+  order: -1;
+}
+
+@media (min-width: 860px) {
+  .prose-media {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-4));
+    order: 0;
+  }
+}
+
+.img-placeholder {
+  background: #e7e7e7;
+  border-radius: var(--r-card);
+  aspect-ratio: 4 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-muted-light);
+}
+
+/* Quan .prose-media només té un placeholder (p.ex. Què fem, a diferència
+   de Coneix-nos amb dos), que ocupi totes les columnes de la mini-graella
+   mòbil en lloc de quedar-se només a la primera meitat. */
+.prose-media .img-placeholder:only-child {
+  grid-column: 1 / -1;
+}
+
+.img-placeholder svg {
+  width: 28px;
+  height: 28px;
+}
+
+.prose {
+  max-width: 720px;
+  /* Sense això, el .card-row de 3 columnes de dins forçava aquest ítem
+     de grid (dins .prose-layout) a créixer per sobre del seu propi
+     max-width i se solapava amb .prose-media del costat. */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.prose h2 {
+  font-size: var(--fs-h2-sm);
+  margin-top: var(--space-2);
+}
+
+.prose a {
+  color: var(--c-orange-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+/* .info-card també és un <a>: quan està dins de .prose (Coneix-nos,
+   Què fem...) heretava el nowrap pensat per als enllaços de text
+   inline, i el seu paràgraf es desbordava fora de la targeta en lloc
+   de fer salt de línia. */
+.prose .info-card,
+.prose .contact-info-item {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.prose blockquote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--c-orange);
+  background: var(--c-cream-2);
+  border-radius: 0 var(--r-swatch) var(--r-swatch) 0;
+  font-style: italic;
+}
+
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  /* La secció que l'envolta ja aporta el seu propi padding superior
+     (regla genèrica `section`); un marge extra aquí duplicava l'espai
+     i deixava un buit excessiu sota el text d'introducció. */
+  margin: 0 0 var(--space-5);
+}
+
+.subnav a,
+.subnav button {
+  border: 1px solid var(--c-dark);
+  border-radius: var(--r-pill);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  background: none;
+  font-family: var(--f-body);
+  color: var(--c-dark);
+  cursor: pointer;
+}
+
+.subnav a.active,
+.subnav button.active {
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+.card-row {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .card-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.info-card {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* Com a ítem de la graella de .card-row: sense això no s'encongia per
+     sota de l'ample del seu text i es sortia de la seva columna. */
+  min-width: 0;
+}
+
+.info-card h3 {
+  font-size: 16px;
+}
+
+.info-card p {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+/* ---- Fitxa de producte ---------------------------------------------- */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-muted-light);
+}
+
+.back-link:hover {
+  color: var(--c-dark);
+}
+
+.fitxa-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  z-index: 1;
+}
+
+.fitxa-pack-thumb {
+  width: 100%;
+  height: 100%;
+}
+
+.fitxa-price {
+  font-family: var(--f-heading);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.fitxa-price s {
+  font-family: var(--f-body);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--c-muted-light);
+  margin-left: var(--space-2);
+}
+
+.fitxa-specs {
+  font-size: 13px;
+  color: var(--c-muted-light);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(49, 48, 48, 0.1);
+}
+
+.fitxa-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.fitxa-cta-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.fitxa-cart-confirm {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-orange-dark);
+}
+
+.shape-detail .option-head h1 {
+  font-size: var(--fs-h3-lg);
+}
+
+/* ---- Selector de quantitat (fitxa de producte i cistella) --------------- */
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1.5px solid rgba(49, 48, 48, 0.18);
+  border-radius: var(--r-pill);
+  padding: 4px 6px;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  color: var(--c-dark);
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.qty-btn:hover {
+  background: var(--c-orange);
+}
+
+.qty-value {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---- Cistella -------------------------------------------------------------- */
+
+.cart-empty {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+}
+
+.cart-empty p {
+  color: var(--c-muted-light);
+  margin-bottom: var(--space-3);
+}
+
+.cart-layout {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.cart-layout[hidden] {
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .cart-layout {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+}
+
+.cart-line-thumb {
+  width: 72px;
+  height: 90px;
+}
+
+.cart-line-thumb svg,
+.cart-line-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cart-line-info h3 {
+  font-size: 15px;
+}
+
+.cart-line-price {
+  font-size: 13px;
+  color: var(--c-muted-light);
+}
+
+.cart-line-subtotal {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cart-line-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--c-muted-light);
+  font-size: 14px;
+}
+
+.cart-line-remove:hover {
+  background: rgba(49, 48, 48, 0.08);
+  color: var(--c-dark);
+}
+
+.cart-summary {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-3);
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-3));
+}
+
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.cart-checkout-note {
+  font-size: 12px;
+  color: var(--c-muted-light);
+  text-align: center;
+  margin-top: -4px;
+}
+
+/* ---- Comanda (resum només lectura + formulari) --------------------------- */
+
+.order-layout {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .order-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.order-summary-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.order-summary-head h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.cart-line.order-line {
+  grid-template-columns: 72px 1fr auto;
+}
+
+.order-ref {
+  display: inline-block;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--c-cream);
+  color: var(--c-dark);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-right: var(--space-2);
+}
+
+.order-total-row {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+}
+
+.order-form h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+button.wizard-cta-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cart-clear {
+  align-self: center;
+  font-size: 13px;
+  color: var(--c-muted-light);
+  text-decoration: underline;
+}
+
+@media (max-width: 639px) {
+  .cart-line {
+    grid-template-columns: 56px 1fr auto;
+    grid-template-areas:
+      "thumb info remove"
+      "thumb qty subtotal";
+    row-gap: var(--space-2);
+  }
+
+  .cart-line-thumb {
+    grid-area: thumb;
+    width: 56px;
+    height: 70px;
+  }
+
+  .cart-line-info {
+    grid-area: info;
+  }
+
+  .cart-line-remove {
+    grid-area: remove;
+    justify-self: end;
+  }
+
+  .cart-line .qty-stepper {
+    grid-area: qty;
+  }
+
+  .cart-line-subtotal {
+    grid-area: subtotal;
+    justify-self: end;
+  }
+}
+
+/* ---- Contacte ------------------------------------------------------------ */
+
+.contact-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .contact-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+}
+
+.contact-info-item .ci-icon {
+  font-size: 20px;
+}
+
+.contact-info-item h3 {
+  font-size: 14px;
+}
+
+.contact-info-item p,
+.contact-info-item a {
+  font-size: 13px;
+  color: var(--c-dark);
+  opacity: 0.75;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+}
+
+.contact-form label {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: var(--f-body);
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  resize: vertical;
+}
+
+.contact-form .consent {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.contact-form .consent input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.form-success {
+  display: none;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  border-radius: var(--r-swatch);
+  padding: var(--space-3);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   Personalitza la teva taula — configurador
+   ========================================================================== */
+
+.wizard {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-6);
+}
+
+/* Barra única de progrés + resum: número, nom del pas i valor triat a
+   cada pas + preu a la dreta. Enganxada sota la capçalera fixa. */
+/* Barra a tot l'ample, enganxada just sota el navbar fix: margin-top
+   = alçada del navbar (ocupa el lloc del padding-top que abans tenia
+   .wizard) i sticky al mateix valor, així no hi ha cap salt en fer scroll. */
+.wizard-bar {
+  position: sticky;
+  top: var(--header-h);
+  margin-top: var(--header-h);
+  z-index: 90;
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+/* Contingut alineat amb la columna del wizard (1152px). El padding
+   esquerre resta els 8px de padding intern del primer pas, perquè el
+   cercle "1" caigui exactament a la vora del contingut de sota. */
+.wizard-bar-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4) var(--space-2) calc(var(--space-4) - 8px);
+}
+
+.wizard-steps {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.wizard-steps li {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Separador "›" entre passos: indica ordre sense necessitat de la línia
+   connectora posicionada amb percentatges. */
+.wizard-steps li + li::before {
+  content: "›";
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 18px;
+  margin-right: var(--space-1);
+}
+
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 8px 12px 8px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.wizard-step:not(:disabled):not(.is-current):hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wizard-step:disabled {
+  cursor: default;
+}
+
+.wizard-step:focus-visible {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 2px;
+}
+
+.wizard-step .num {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.wizard-step.is-current {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.wizard-step.is-current .num {
+  background: var(--c-orange);
+  border-color: var(--c-orange);
+  color: var(--c-dark);
+}
+
+/* Pas completat: el número es converteix en un check. */
+.wizard-step.is-done .num {
+  background: var(--c-white);
+  border-color: var(--c-white);
+  color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23313030' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+  background-size: 14px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wizard-step.is-skipped {
+  opacity: 0.45;
+}
+
+.wizard-step-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.wizard-step-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+}
+
+.wizard-step-value {
+  font-size: 14px;
+  color: var(--c-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Amplada fixa pensada pel nom més llarg possible de cada pas (forma,
+   disseny o color): si no, cada cop que es tria una opció més curta o
+   més llarga que l'anterior, tota la barra es reajusta i "balla". */
+.wizard-step[data-step="1"] .wizard-step-value {
+  min-width: 62px;
+}
+
+.wizard-step[data-step="2"] .wizard-step-value {
+  min-width: 100px;
+}
+
+.wizard-step[data-step="3"] .wizard-step-value {
+  min-width: 60px;
+}
+
+.wizard-step.is-pending .wizard-step-value {
+  color: var(--c-muted);
+  font-weight: 400;
+}
+
+/* Mòbil: 3 passos + preu no hi caben amb etiqueta i valor; es manté
+   el número + el valor triat (que és el que importa) i el preu. */
+@media (max-width: 639px) {
+  .wizard-bar-inner {
+    padding: 6px var(--space-4) 6px calc(var(--space-4) - 6px);
+    gap: var(--space-2);
+  }
+
+  .wizard-steps {
+    gap: 0;
+  }
+
+  .wizard-steps li + li::before {
+    margin-right: 0;
+    font-size: 14px;
+  }
+
+  .wizard-step {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .wizard-step .num {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  .wizard-step .wizard-step-label {
+    display: none;
+  }
+
+  .wizard-step-value {
+    font-size: 12px;
+    max-width: 64px;
+  }
+}
+
+.wizard-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .wizard-grid {
+    grid-template-columns: minmax(0, 480px) 1fr;
+    align-items: start;
+  }
+}
+
+.board-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.board-preview {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 320 / 420;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: var(--r-card);
+  /* Fons "spotlight" + ombra de terra (en lloc de fons pla): dona un aire
+     més de fotografia de producte a la vista prèvia de la taula. */
+  background: radial-gradient(
+    circle at 50% 38%,
+    var(--c-cream) 0%,
+    var(--c-cream-2) 55%,
+    var(--c-white) 100%
+  );
+}
+
+.board-preview::after {
+  content: "";
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  width: 55%;
+  height: 20px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(49, 48, 48, 0.18) 0%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.board-preview svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  filter: drop-shadow(0 16px 18px rgba(49, 48, 48, 0.14));
+}
+
+@media (min-width: 640px) {
+  .board-preview {
+    max-width: 320px;
+  }
+}
+
+.option-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  /* Sense min-width:0 un fill amb overflow-x:auto (el carousel mòbil de
+     .swatch-grid) fa que aquest ítem de grid/flex creixi fins al seu
+     contingut i empenyi tot el wizard fora de l'ample de la pantalla. */
+  min-width: 0;
+}
+
+/* Cada pas (forma/disseny/color/resum) és un sol fill visible de
+   .option-panel: sense aquest gap intern, la capçalera, la graella de
+   mostres i el botó d'acció quedaven enganxats entre ells. */
+.step-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.step-panel[hidden] {
+  display: none;
+}
+
+.option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option-head h2 {
+  font-size: var(--fs-h2-sm);
+}
+
+.tag {
+  background: var(--c-orange);
+  color: var(--c-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+}
+
+.activity-row {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--c-dark);
+  font-size: 13px;
+}
+
+.activity-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Capçalera "eyebrow + pregunta" de cada pas del wizard. Viu a fora de
+   .wizard-grid (a tot l'ample, abans de la columna taula/opcions) perquè
+   es llegeixi un sol cop abans de repartir la mirada entre les dues
+   columnes — veure el comentari a personalitza.html. */
+.step-intro {
+  margin-bottom: var(--space-5);
+}
+
+.step-intro .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-muted-light);
+  margin: 0 0 var(--space-2);
+}
+
+.step-intro h2 {
+  font-size: var(--fs-h2-lg);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.shape-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-4);
+}
+
+.shape-detail .option-head h3 {
+  font-size: var(--fs-h3-lg);
+}
+
+.shape-tagline {
+  font-weight: 700;
+  margin: 0;
+}
+
+.shape-description {
+  color: var(--c-muted-light);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.shape-activities-label {
+  font-size: 13px;
+  color: var(--c-muted-light);
+  margin: var(--space-1) 0 0;
+}
+
+.activity-chips {
+  align-items: flex-start;
+}
+
+.activity-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-4);
+  border-right: 1px solid rgba(49, 48, 48, 0.1);
+}
+
+.activity-chip:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.activity-chip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.activity-chip-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-muted-light);
+}
+
+/* Targetes d'opció (forma/disseny/color): imatge + nom a sota + marca
+   de selecció, en lloc d'un simple swatch sense etiquetar. Genèric per
+   als 3 passos del configurador, no només la forma. */
+.option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.option-card .swatch-shape,
+.option-card .swatch {
+  width: 100%;
+}
+
+.option-card.selected .swatch-shape,
+.option-card.selected .swatch {
+  border-color: var(--c-orange);
+}
+
+.option-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--c-muted-light);
+  text-align: center;
+}
+
+.option-card.selected .option-card-name {
+  color: var(--c-dark);
+}
+
+/* Preu de cada forma (pas 1): visible a totes les targetes, no només
+   després de triar-ne una, perquè es puguin comparar d'un cop d'ull. */
+.option-card-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-orange-dark);
+}
+
+.option-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-orange);
+  color: var(--c-dark);
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.option-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+.option-card.selected .option-check {
+  display: flex;
+}
+
+.btn-wizard-cta {
+  width: 100%;
+}
+
+.btn-wizard-cta svg {
+  width: 18px;
+  height: 18px;
+}
+
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+.swatch {
+  aspect-ratio: 1;
+  border-radius: var(--r-swatch);
+  border: 3px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.swatch.selected {
+  border-color: var(--c-orange);
+}
+
+.swatch-color {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Miniatures de forma (pas 1): mateixa graella que els dissenys/colors,
+   però amb una vista prèvia SVG real en comptes d'un simple color pla. */
+.swatch-shape {
+  background: var(--c-cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+}
+
+.swatch-shape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Miniatures de disseny: la mateixa taula de la forma triada, més
+   compactes que les de forma (hi ha 7 opcions, no 4). */
+.swatch-grid-designs .swatch-shape {
+  aspect-ratio: 3 / 4;
+  padding: 6px;
+}
+
+.option-card-meta {
+  font-size: 11px;
+  color: var(--c-muted-light);
+  margin-top: -4px;
+}
+
+/* Colors: mostres rodones i més petites. Un quadrat de 136px per a un
+   color pla era molt pes visual per a molt poca informació. */
+.swatch-grid-colors {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: var(--space-4) var(--space-3);
+}
+
+.swatch-grid-colors .swatch-color {
+  width: 56px;
+  height: 56px;
+  aspect-ratio: auto;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 0 0 0 var(--c-white);
+  transition: box-shadow 0.15s ease;
+}
+
+.swatch-grid-colors .option-card.selected .swatch-color {
+  border-color: var(--c-dark);
+  box-shadow: 0 0 0 3px var(--c-white), 0 0 0 5px var(--c-dark);
+}
+
+.swatch-grid-colors .option-check {
+  top: -4px;
+  right: -4px;
+}
+
+.option-card:focus-visible {
+  outline: none;
+}
+
+.option-card:focus-visible .swatch {
+  outline: 2px solid var(--c-dark);
+  outline-offset: 3px;
+}
+
+.step-intro h2:focus {
+  outline: none;
+}
+
+.summary-box {
+  background: var(--c-cream-2);
+  border-radius: var(--r-card);
+  padding: var(--space-2) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  margin: 0;
+}
+
+.summary-box .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(49, 48, 48, 0.08);
+}
+
+.summary-box .row:last-child {
+  border-bottom: none;
+}
+
+.summary-box dt {
+  color: var(--c-muted-light);
+}
+
+.summary-box dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.summary-box .price {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--f-heading);
+}
+
+.summary-box .price dt {
+  color: var(--c-dark);
+}
+
+.summary-edit,
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--c-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--c-orange);
+  text-decoration-thickness: 2px;
+  cursor: pointer;
+}
+
+.summary-edit {
+  font-size: 13px;
+}
+
+.summary-edit:hover,
+.link-btn:hover {
+  color: var(--c-orange-dark);
+}
+
+.summary-more {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-muted-light);
+  text-align: center;
+}
+
+/* Text d'ajuda contextual (pas 2): explica què vol dir la zona grisa
+   de la vista prèvia abans de triar el color. */
+.step-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-muted-light);
+}
+
+.step-hint[hidden] {
+  display: none;
+}
+
+.step-hint-dot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #cfcfcf;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Pas 3 (color): enllaç per descriure un color fora de la graella.
+   El valor triat es recull igual que un color normal (bar + resum
+   mostren "Personalitzat"). */
+.color-custom {
+  margin: var(--space-3) 0 0;
+}
+
+.color-custom-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.color-custom-field[hidden] {
+  display: none;
+}
+
+.color-custom-field input {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--c-dark);
+  padding: 10px 14px;
+  border: 1.5px solid rgba(49, 48, 48, 0.15);
+  border-radius: var(--r-swatch);
+}
+
+.color-custom-field input:focus {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 1px;
+}
+
+/* Navegació del wizard: Enrere (enllaç) + acció principal (botó),
+   idèntica a tots els passos. */
+.wizard-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.wizard-nav[hidden] {
+  display: none;
+}
+
+.wizard-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+.wizard-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.wizard-back[hidden] {
+  display: none;
+}
+
+.wizard-back svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wizard-nav .btn-wizard-cta {
+  width: auto;
+  min-width: 240px;
+}
+
+.wizard-nav-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #b3261e;
+  text-align: right;
+}
+
+.wizard-nav-error:empty {
+  display: none;
+}
+
+.btn-wizard-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+/* Popup "Personalitza la taula encara més" (des del resum del wizard) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(49, 48, 48, 0.45);
+  z-index: 200;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.custom-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 420px);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  z-index: 201;
+  box-shadow: 0 20px 60px rgba(49, 48, 48, 0.25);
+}
+
+.custom-modal[hidden] {
+  display: none;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--c-cream-2);
+  color: var(--c-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.custom-modal h3 {
+  font-size: 22px;
+  margin: 0 0 var(--space-2);
+  padding-right: var(--space-6);
+}
+
+.custom-modal-intro {
+  color: var(--c-muted-light);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+#custom-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.custom-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.custom-modal-field input,
+.custom-modal-field textarea {
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--c-dark);
+  padding: 10px 14px;
+  border: 1.5px solid rgba(49, 48, 48, 0.15);
+  border-radius: var(--r-swatch);
+  resize: vertical;
+}
+
+.custom-modal-field input:focus,
+.custom-modal-field textarea:focus {
+  outline: 2px solid var(--c-orange);
+  outline-offset: 1px;
+}
+
+#custom-modal-form .btn {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.custom-modal-success p {
+  font-size: 14px;
+  color: var(--c-muted-light);
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+.custom-modal-success .btn {
+  width: 100%;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Mòbil: apropem el CTA principal ("Escull forma"/"Tria disseny"/"Tria
+   el color") a la part visible sense scroll. Aquest bloc es col·loca
+   deliberadament al final del full (tot i que altres regles .step-panel/
+   .swatch-grid/.option-head estan definides sense media query més amunt)
+   perquè, en tenir la mateixa especificitat, guanyi sempre l'última regla
+   en ordre del document — si aquest bloc quedava abans, les regles base
+   el sobreescrivien igualment en mòbil i els ajustos no s'aplicaven. */
+@media (max-width: 639px) {
+  .wizard {
+    padding-top: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* L'espai entre step-indicator/wizard-grid ara el dona el gap de 16px
+     de .wizard: sense això, el margin-bottom d'escriptori (32px) s'hi
+     sumaria i tornaria a allunyar el CTA del plec. */
+  .hero-copy h1 {
+    font-size: var(--fs-h1-hero-mobile);
+  }
+
+
+  .wizard-grid {
+    gap: var(--space-1);
+  }
+
+  .board-stage {
+    gap: var(--space-2);
+  }
+
+  /* La taula es manté gran (com al disseny de referència): l'espai
+     vertical que abans li retallàvem ara es guanya convertint la
+     graella de mostres en un carousel d'una sola línia (vegeu
+     .swatch-grid més avall), que ocupa molta menys alçada que una
+     graella de 2 files quan hi ha 7-8 opcions (disseny/color). */
+  .board-preview {
+    max-width: 175px;
+  }
+
+  /* El pas 1 (forma) ja mostra la imatge de la taula a cada targeta i a
+     la fitxa de detall (nom, tagline, descripció, activitats...): amb
+     tot aquest contingut afegit, la vista prèvia gran de dalt (redundant
+     aquí) s'amaga per no tapar el CTA. Als altres passos (disseny/color)
+     segueix sent la única referència visual, així que hi queda gran. */
+  .wizard[data-step="1"] .board-stage {
+    display: none;
+  }
+
+  /* Cada pas del wizard apila 5-6 blocs (títol, graella, nom+tag,
+     "ideal per:", activitats, botó): amb el gap d'escriptori (24px)
+     entre cadascun, només aquests espais ja sumaven ~120px i tapaven
+     el CTA. En mòbil n'hi ha prou amb un gap més petit. */
+  .step-panel {
+    gap: var(--space-1);
+  }
+
+  /* En mòbil .step-intro és fill directe de .wizard (flex, gap:16px):
+     l'espai ja el dona aquest gap, igual que .step-indicator una mica
+     més amunt — sumar-hi el margin-bottom d'escriptori tornaria
+     a allunyar el CTA del plec. */
+  .step-intro {
+    margin-bottom: 0;
+  }
+
+  .step-intro .eyebrow {
+    margin-bottom: var(--space-1);
+  }
+
+  .step-intro h2 {
+    font-size: var(--fs-h2-lg-mobile);
+  }
+
+  .shape-detail {
+    gap: var(--space-1);
+  }
+
+  .shape-detail .option-head h3 {
+    font-size: var(--fs-h3-lg-mobile);
+  }
+
+  .shape-detail .option-head h1 {
+    font-size: var(--fs-h3-lg-mobile);
+  }
+
+  .fitxa-price {
+    font-size: 22px;
+  }
+
+  .shape-description {
+    font-size: 13px;
+  }
+
+  .activity-chip-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  /* Amb el gap de 16px afegit a .wizard, calia recuperar una mica més
+     d'espai vertical al pas 1: el separador entre activitats no cal
+     tan ample en mòbil. */
+  .activity-chip {
+    padding-right: var(--space-3);
+  }
+
+  /* CTA enganxat a baix de la pantalla: sempre visible, sense haver
+     de retallar la resta del contingut perquè "hi càpiga". */
+  .wizard-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin: var(--space-3) calc(-1 * var(--space-4)) 0;
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: var(--c-white);
+    box-shadow: 0 -8px 20px rgba(49, 48, 48, 0.08);
+  }
+
+  .wizard-nav .btn-wizard-cta {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .wizard-nav-error {
+    text-align: center;
+  }
+
+  .option-head h2 {
+    font-size: var(--fs-h2-sm-mobile);
+  }
+
+  /* Mostres com a carousel horitzontal d'una sola línia (en lloc de
+     graella de 4 columnes): així es veuen totes les opcions (fins a
+     7-8 a disseny/color) sense afegir files ni alçada extra, i la
+     següent mostra queda parcialment visible per suggerir que es pot
+     desplaçar, tal com al disseny de referència. */
+  .swatch-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: var(--space-3);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Amaguem la barra de desplaçament nativa (només visible en alguns
+       navegadors d'escriptori/emulació mòbil): sense això quedava com
+       una barra grisa enganxada al botó de sota. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .swatch-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .swatch-grid .swatch {
+    flex: 0 0 76px;
+    width: 76px;
+    scroll-snap-align: start;
+  }
+
+  /* Les targetes d'opció (.option-card: imatge+nom) tenen un fill extra
+     respecte un swatch sol: cal donar la mida de l'ítem del carousel a
+     la targeta, no al swatch intern. */
+  .swatch-grid > .option-card {
+    flex: 0 0 76px;
+    width: 76px;
+    scroll-snap-align: start;
+  }
+
+  .swatch-grid-colors > .option-card {
+    flex: 0 0 64px;
+    width: 64px;
+    padding-top: 6px;
+  }
+
+  .swatch-grid-colors .swatch-color {
+    width: 48px;
+    height: 48px;
+    flex: none;
+  }
+}
+
+/* Resum (pas final) en mòbil: el gap compacte dels altres passos deixava
+   el botó enganxat a la caixa del resum. */
+@media (max-width: 639px) {
+  #panel-summary {
+    gap: var(--space-3);
+  }
+}
+
+/* ---- Pàgina BOARD (boards.html) — Figma "Claude · Git", frame BOARD ----- */
+/* Composició del Figma (1440 × 1120) reproduïda en un llenç amb la mateixa
+   proporció: cada mida es dona en "píxels de disseny" (--u = 1/1440 de
+   l'ample del llenç), així es manté idèntica de 960 px fins a 1440 px.
+   Per sota de 960 px es reorganitza en columna (veure més avall). */
+
+body[data-page="boards"] {
+  /* PROVISIONAL: color mitjà de "textura-concreto-blando". Quan tinguem
+     la imatge exportada del Figma: background-image: url(...) cover. */
+  --boards-bg: #e2dcd4;
+  background: var(--boards-bg);
+}
+
+body[data-page="boards"] main {
+  padding-top: 0;
+}
+
+/* Capçalera transparent sobre la textura (com a la Home), però amb el
+   logo i els textos foscos de sempre perquè el fons és clar. */
+body[data-page="boards"] #site-header:not(.scrolled) {
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
+}
+
+/* El teaser de contacte i el peu queden per sobre dels arcs del fons,
+   que continuen per darrere del teaser com al disseny. */
+body[data-page="boards"] #site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="boards"] .site-footer {
+  margin-top: var(--space-6);
+}
+
+.boards-stage {
+  overflow-x: clip;
+  /* sense el padding general de <section>: el llenç comença a dalt de tot,
+     sota la capçalera transparent, com al Figma */
+  padding: 0;
+}
+
+.boards-canvas {
+  --u: calc(100cqw / 1440);
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 1440 / 1120;
+  margin: 0 auto;
+  color: var(--c-dark);
+}
+
+.boards-arcs {
+  position: absolute;
+  left: 0;
+  top: calc(105 * var(--u));
+  width: calc(1437 * var(--u));
+  max-width: none;
+  pointer-events: none;
+}
+
+.boards-ring {
+  position: absolute;
+  color: rgba(49, 48, 48, 0.3);
+  pointer-events: none;
+}
+
+.boards-ring--big {
+  left: calc(1129 * var(--u));
+  top: calc(-234 * var(--u));
+  width: calc(584 * var(--u));
+}
+
+.boards-ring--small {
+  left: calc(-156 * var(--u));
+  top: calc(24 * var(--u));
+  width: calc(200 * var(--u));
+}
+
+.boards-board {
+  position: absolute;
+  /* mateixa caixa que la imatge de la taula al Figma (313 × 830 centrada);
+     el component té proporció 2:5, així que fa 332 d'ample */
+  left: calc(554 * var(--u));
+  top: calc(150 * var(--u));
+  width: calc(332 * var(--u));
+}
+
+.boards-roller {
+  position: absolute;
+  left: calc(894 * var(--u));
+  top: calc(124 * var(--u));
+  width: calc(235 * var(--u));
+  height: auto;
+  max-width: none;
+}
+
+.boards-arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.boards-specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* "SF Compact Text Black" del Figma no es pot servir a la web (llicència
+   d'Apple): Onest 800, que ja és la font del lloc, és la més propera. */
+.boards-spec,
+.boards-all {
+  font-family: var(--f-body);
+  font-weight: 800;
+  line-height: 1.12;
+  text-align: center;
+  color: var(--c-dark);
+}
+
+.boards-spec {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: calc(37 * var(--u));
+}
+
+.boards-spec--grip {
+  left: calc(218 * var(--u));
+  top: calc(190 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-spec--ply {
+  left: calc(237 * var(--u));
+  top: calc(560 * var(--u));
+  width: calc(292 * var(--u));
+  font-size: calc(34 * var(--u));
+  text-wrap: balance;
+}
+
+.boards-spec--roller {
+  left: calc(1212 * var(--u));
+  top: calc(642 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-all {
+  position: absolute;
+  left: calc(568 * var(--u));
+  top: calc(987 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  margin: 0;
+  font-size: calc(27 * var(--u));
+  white-space: nowrap;
+}
+
+.boards-spark {
+  width: calc(51 * var(--u));
+  height: calc(51 * var(--u));
+  flex: none;
+}
+
+/* Tauleta i mòbil: la composició absoluta no hi cap. Taula + roller a
+   dalt, i a sota les tres característiques en llista, sense fletxes. */
+@media (max-width: 959px) {
+  .boards-canvas {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: end;
+    column-gap: var(--space-3);
+    row-gap: var(--space-4);
+    padding: calc(var(--header-h) + var(--space-4)) var(--space-4) var(--space-5);
+  }
+
+  .boards-arcs {
+    top: calc(var(--header-h) + 40px);
+    left: 50%;
+    width: 170%;
+    transform: translateX(-50%);
+  }
+
+  .boards-ring--big {
+    left: auto;
+    right: -120px;
+    top: calc(var(--header-h) + 8px);
+    width: 220px;
+  }
+
+  .boards-ring--small,
+  .boards-arrows {
+    display: none;
+  }
+
+  .boards-board {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(40vw, 200px);
+  }
+
+  .boards-roller {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(26vw, 120px);
+    /* la imatge té aire transparent a dalt: només en veiem el roller */
+    aspect-ratio: 236 / 838;
+    margin-bottom: 4%;
+  }
+
+  .boards-specs {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3);
+    position: relative;
+  }
+
+  .boards-spec,
+  .boards-spec--grip,
+  .boards-spec--ply,
+  .boards-spec--roller {
+    position: static;
+    transform: none;
+    width: auto;
+    font-size: 20px;
+    white-space: normal;
+  }
+
+  .boards-spec br {
+    display: none;
+  }
+
+  .boards-all {
+    grid-column: 1 / -1;
+    position: relative;
+    left: auto;
+    top: auto;
+    justify-content: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  .boards-spark {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ---- Tenda a escriptori (Figma "Claude · Git", frame TENDA 1440) ------- */
+/* Fons sorra a tota la pàgina (fins al peu) i targetes blanques a sobre.
+   Al Figma, la versió mòbil (375) manté fons blanc i targetes crema, així
+   que només s'aplica a partir de 860 px. */
+@media (min-width: 860px) {
+  body[data-page="tenda"] {
+    background: var(--c-sand);
+  }
+
+  body[data-page="tenda"] .product-card {
+    background: var(--c-white);
+  }
+}
