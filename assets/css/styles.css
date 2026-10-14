@@ -804,6 +804,25 @@ body.mobile-nav-open {
     width: min(44vw, 210px);
   }
 
+  .hero-board-3d-slot {
+    position: relative;
+  }
+
+  /* Fletxes de rotació al voltant de la taula, just per sobre del text
+     (la part baixa de la taula queda sota el titular). */
+  .hero-rotate-arrows {
+    position: absolute;
+    left: 50%;
+    bottom: 104px;
+    width: min(78vw, 320px);
+    transform: translateX(-50%);
+    stroke: var(--c-orange);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
   .hero-copy > :not(.hero-board-3d-slot) {
     position: relative;
     z-index: 1;
