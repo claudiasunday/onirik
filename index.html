@@ -21,51 +21,58 @@
         <section class="hero" data-audience="particulars">
           <div class="hero-inner">
             <div class="hero-copy">
-              <div class="hero-tabs" role="tablist" aria-label="Qui ets?">
-                <button type="button" role="tab" aria-selected="true" data-key="particulars">
-                  Boards
-                </button>
-                <button type="button" role="tab" aria-selected="false" data-key="tallers">
-                  Tallers
-                </button>
-                <button type="button" role="tab" aria-selected="false" data-key="espais">
-                  Col·labora
-                </button>
+              <!-- En mòbil/tablet la capçalera no té espai per al selector
+                   d'audiència: aquesta còpia només es veu per sota de 860px
+                   (la d'escriptori viu a la capçalera, veure layout.js). -->
+              <div class="hero-tabs hero-tabs--inline" role="group" aria-label="Qui ets?">
+                <button type="button" aria-pressed="true" data-key="particulars">Boards</button>
+                <button type="button" aria-pressed="false" data-key="tallers">Tallers</button>
+                <button type="button" aria-pressed="false" data-key="espais">Col·labora</button>
               </div>
 
               <div class="hero-swap" id="hero-swap">
                 <p class="hero-eyebrow" id="hero-eyebrow">Personalitza la teva taula</p>
-                <h1 id="hero-headline">Troba el teu equilibri, a la teva mida</h1>
+                <h1 id="hero-headline">Troba el teu equilibri, en 3 passos</h1>
                 <p class="hero-subtext" id="hero-subtext">
                   Balance boards fetes a mà, una a una. Tria la forma, el
                   disseny i el color en tres passos i emporta't una taula
                   única.
                 </p>
                 <div class="hero-cta-row">
-                  <a class="hero-cta-primary" id="hero-cta" href="personalitza.html">
-                    <span id="hero-cta-label">Personalitza la teva taula</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                  </a>
-                  <a class="hero-cta-secondary" id="hero-secondary" href="tenda.html">
-                    Veure totes les taules
-                  </a>
+                  <a class="hero-cta-primary" id="hero-cta" href="personalitza.html">Crea la teva taula</a>
                 </div>
               </div>
             </div>
 
-            <div class="hero-art">
-              <div class="hero-blob"></div>
-              <div class="hero-illustration" id="hero-illustration"></div>
-              <div class="hero-badge">
-                <svg class="hero-badge-icon is-active" data-icon="bag" viewBox="0 0 24 24" fill="none" stroke="#262525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>
-                </svg>
-                <svg class="hero-badge-icon" data-icon="group" viewBox="0 0 24 24" fill="none" stroke="#262525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-5.5 7-5.5s7 2.2 7 5.5"/><circle cx="18" cy="9" r="2.4"/><path d="M15.5 14.2c2.7.3 4.5 2 4.5 4.3"/>
-                </svg>
-                <svg class="hero-badge-icon" data-icon="building" viewBox="0 0 24 24" fill="none" stroke="#262525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/>
-                </svg>
+            <img
+              class="hero-board"
+              src="assets/images/hero-board-peix-negre.png"
+              width="236"
+              height="625"
+              alt=""
+            />
+
+            <div class="value-steps value-steps--hero">
+              <div class="value-step">
+                <span class="value-step-num">1</span>
+                <div>
+                  <h3>Tria la forma</h3>
+                  <p>Peix, Lasai, La Free o Keki — segons el teu nivell.</p>
+                </div>
+              </div>
+              <div class="value-step">
+                <span class="value-step-num">2</span>
+                <div>
+                  <h3>Tria el disseny</h3>
+                  <p>Fusta, fullcolor o franges — l'acabat que t'agradi.</p>
+                </div>
+              </div>
+              <div class="value-step">
+                <span class="value-step-num">3</span>
+                <div>
+                  <h3>Tria el color</h3>
+                  <p>8 colors per fer-la 100% teva.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -89,35 +96,6 @@
         </div>
       </div>
 
-      <section class="container section-no-top">
-        <div class="value-steps">
-          <div class="value-step">
-            <span class="value-step-num">1</span>
-            <div>
-              <h3>Tria la forma</h3>
-              <p>Peix, Lasai, La Free o Keki — segons el teu nivell.</p>
-            </div>
-          </div>
-          <div class="value-step">
-            <span class="value-step-num">2</span>
-            <div>
-              <h3>Tria el disseny</h3>
-              <p>Fusta, fullcolor o franges — l'acabat que t'agradi.</p>
-            </div>
-          </div>
-          <div class="value-step">
-            <span class="value-step-num">3</span>
-            <div>
-              <h3>Tria el color</h3>
-              <p>8 colors per fer-la 100% teva.</p>
-            </div>
-          </div>
-        </div>
-        <div class="value-steps-cta">
-          <a class="link-pill" href="que-fem.html">Saber més</a>
-        </div>
-      </section>
-
       <section class="container">
         <div class="section-head">
           <h2>Edició limitada</h2>
@@ -134,22 +112,30 @@
         <div class="product-grid" id="product-grid-2"></div>
       </section>
 
+      <!-- Logos reals de col·laboracions (onirikboards.com/familia-onirik),
+           retallats i en gris per a un acabat discret tipus "trusted by". -->
+      <section class="container">
+        <div class="partner-logos">
+          <p class="partner-logos-label">Col·laborem amb</p>
+          <div class="partner-logos-row">
+            <img src="assets/images/partners/fase-wind.png" alt="Fase Wind" />
+            <img src="assets/images/partners/cream.png" alt="Cream" />
+            <img src="assets/images/partners/push-forward-fest.png" alt="Push Forward Fest" />
+            <img src="assets/images/partners/dune.png" alt="Dune" />
+            <img src="assets/images/partners/la-la-ta.png" alt="La La Ta — estudi nòmada" />
+            <img src="assets/images/partners/vteam.png" alt="VTeam" />
+            <img src="assets/images/partners/ados.png" alt="Ados" />
+            <img src="assets/images/partners/apinyo-bicimissatgers.png" alt="Apinyó Bicimissatgers" />
+            <img src="assets/images/partners/yojani-perez.png" alt="Yojani Pérez" />
+          </div>
+        </div>
+      </section>
+
       <section class="container">
         <div class="benefits">
           <div class="benefits-inner">
             <h2>Per què un balance board?</h2>
             <div class="benefit-grid">
-              <div class="benefit-item">
-                <span class="b-icon">
-                  <img src="assets/images/logo-icon.png" width="26" height="23" alt="" />
-                </span>
-                <h3>Equilibri i coordinació</h3>
-                <p>
-                  Entrenes des dels turmells fins al cervell: oïda interna,
-                  cerebel i propioceptors treballen junts per mantenir-te
-                  dret.
-                </p>
-              </div>
               <div class="benefit-item">
                 <span class="b-icon">
                   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke-width="1.8" stroke-linecap="round">
@@ -161,6 +147,17 @@
                     </defs>
                     <path d="M5 16 A8 8 0 0 1 19 16" stroke="url(#b-icon-energia)" />
                   </svg>
+                </span>
+                <h3>Equilibri i coordinació</h3>
+                <p>
+                  Entrenes des dels turmells fins al cervell: oïda interna,
+                  cerebel i propioceptors treballen junts per mantenir-te
+                  dret.
+                </p>
+              </div>
+              <div class="benefit-item">
+                <span class="b-icon">
+                  <img src="assets/images/logo-icon.png" width="26" height="23" alt="" />
                 </span>
                 <h3>Tot el cos en moviment</h3>
                 <p>
@@ -184,25 +181,6 @@
                 >Per què el balanceboard és un estil de vida →</a
               >
             </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Logos reals de col·laboracions (onirikboards.com/familia-onirik),
-           retallats i en gris per a un acabat discret tipus "trusted by". -->
-      <section class="container">
-        <div class="partner-logos">
-          <p class="partner-logos-label">Col·laborem amb</p>
-          <div class="partner-logos-row">
-            <img src="assets/images/partners/fase-wind.png" alt="Fase Wind" />
-            <img src="assets/images/partners/cream.png" alt="Cream" />
-            <img src="assets/images/partners/push-forward-fest.png" alt="Push Forward Fest" />
-            <img src="assets/images/partners/dune.png" alt="Dune" />
-            <img src="assets/images/partners/la-la-ta.png" alt="La La Ta — estudi nòmada" />
-            <img src="assets/images/partners/vteam.png" alt="VTeam" />
-            <img src="assets/images/partners/ados.png" alt="Ados" />
-            <img src="assets/images/partners/apinyo-bicimissatgers.png" alt="Apinyó Bicimissatgers" />
-            <img src="assets/images/partners/yojani-perez.png" alt="Yojani Pérez" />
           </div>
         </div>
       </section>
