@@ -10,6 +10,8 @@
   --c-dark: #313030;
   --c-cream: #f2e5d5;
   --c-cream-2: #fbf3ea;
+  /* Fons de pàgina de la Home (beix sorra). */
+  --c-sand: #d9cfc2;
   --c-muted: #b1b2b4;
   /* Mateix rol de "text secundari" que --c-muted, però per a fons clars:
      b1b2b4 sobre blanc/crema només fa ~2.1:1 de contrast (il·legible per
@@ -273,6 +275,35 @@ main {
    capçalera, abans de la fotografia del hero. */
 body[data-page="home"] main {
   padding-top: 0;
+}
+
+/* La Home té fons sorra en lloc de blanc: les targetes de producte
+   passen a blanc i els blocs crema (beneficis, cinta) a crema clar
+   perquè continuïn destacant sobre el fons. */
+body[data-page="home"] {
+  background: var(--c-sand);
+}
+
+body[data-page="home"] .product-card {
+  background: var(--c-white);
+}
+
+body[data-page="home"] .benefits,
+body[data-page="home"] .value-pill {
+  background: var(--c-cream-2);
+}
+
+/* Capçalera de la Home: logo | selector d'audiència centrat | accions. */
+@media (min-width: 860px) {
+  body[data-page="home"] .site-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-4);
+  }
+
+  body[data-page="home"] .header-actions {
+    justify-self: end;
+  }
 }
 
 .logo {
@@ -569,80 +600,92 @@ body.mobile-nav-open {
   }
 }
 
-/* ---- Hero (selector d'audiència: Particulars / Tallers / Espais) ------- */
-/* Targeta fosca autocontinguda amb pestanyes que canvien titular, text,
-   CTA, insígnia i taula il·lustrada segons qui visita la Home. */
+/* ---- Hero (selector d'audiència: Boards / Tallers / Col·labora) -------- */
+/* Hero a sang (ample complet de finestra) amb foto de fons enfosquida,
+   en tres columnes a escriptori: text + CTA | taula | els 3 passos.
+   El selector d'audiència viu a la capçalera en escriptori i dins del
+   hero (.hero-tabs--inline) només en mòbil/tablet. */
 
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(165deg, var(--c-dark) 0%, #262525 100%);
-  border-radius: 28px;
-  padding: var(--space-6) var(--space-5);
-  margin: var(--space-5) 0;
-}
-
-/* Hero de la Home a sang (ample complet de finestra, no limitat al
-   .container) i enganxat a dalt de tot, perquè hi hagi fotografia real
-   darrere de la capçalera transparent. El truc width:100vw +
-   margin de -50vw és l'idioma habitual per "escapar" d'un contenidor
-   centrat sense tocar l'HTML. */
-body[data-page="home"] .hero {
+  /* El truc width:100vw + margin de -50vw "escapa" del .container
+     centrat sense tocar l'HTML. */
   width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  margin-top: 0;
-  margin-bottom: 0;
-  border-radius: 0;
-  background-image: linear-gradient(
-      165deg,
-      rgba(49, 48, 48, 0.88) 0%,
-      rgb(0 0 0 / 77%) 100%
-    ),
-    url("../images/hero-balance-board.jpg");
-  background-size: cover;
-  background-position: center;
-  padding-top: calc(var(--header-h) + var(--space-6));
-}
-
-@media (min-width: 860px) {
-  body[data-page="home"] .hero {
-    height: 72vh;
-  }
-}
-
-body[data-page="home"] .hero-inner {
-  max-width: 1152px;
-  margin: 0 auto;
+  margin: 0 calc(50% - 50vw);
+  /* La foto ja porta l'enfosquiment del Figma "cuit" (opacitat 51% +
+     degradat negre), així que no cal cap degradat a sobre. */
+  background: var(--c-dark) url("../images/hero-skater.jpg") center / cover no-repeat;
+  padding: calc(var(--header-h) + var(--space-5)) var(--space-4) var(--space-6);
 }
 
 .hero-inner {
+  max-width: 1104px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-5);
-  /* "start" (no "center"): el titular/subtext canvia de llargada entre
-     pestanyes (Boards/Tallers/Col·labora), i amb align-items:center tot
-     el bloc "ballava" amunt i avall en recentrar-se cada cop. Alineat a
-     dalt, les pestanyes i el titular es queden fixos en el mateix lloc
-     sigui quin sigui el contingut. */
+  /* "start": el titular/subtext canvia de llargada entre audiències i
+     així el text no "balla" amunt i avall en recentrar-se. */
   align-items: start;
-  padding-top: var(--space-2);
   position: relative;
   z-index: 1;
 }
 
+@media (min-width: 860px) {
+  .hero {
+    padding-top: 132px;
+    padding-bottom: 64px;
+  }
+
+  .hero-inner {
+    grid-template-columns: minmax(0, 377px) minmax(0, 413px);
+    justify-content: space-between;
+  }
+}
+
+/* Amb prou amplada hi cap la taula al mig, centrada respecte a la
+   pàgina (igual que al Figma), i els passos es centren en vertical
+   respecte a ella. */
+@media (min-width: 1100px) {
+  .hero-inner {
+    grid-template-columns: 377px 1fr 413px;
+  }
+
+  .value-steps.value-steps--hero {
+    align-self: center;
+  }
+}
+
+.hero-board {
+  display: none;
+  justify-self: center;
+  width: auto;
+  height: min(625px, 68vh);
+  pointer-events: none;
+}
+
+@media (min-width: 1100px) {
+  .hero-board {
+    display: block;
+  }
+}
+
+/* Selector d'audiència: pastilla translúcida amb pestanyes. */
 .hero-tabs {
   display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 4px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 5px;
   border-radius: var(--r-pill);
-  margin-bottom: var(--space-4);
-  flex-wrap: wrap;
+  transition: background-color 0.45s ease-in-out, border-color 0.45s ease-in-out;
 }
 
-.hero-tabs button {
+.hero-tabs > button,
+.hero-tabs > a {
   font-family: var(--f-body);
   font-size: 14px;
   font-weight: 600;
@@ -654,18 +697,65 @@ body[data-page="home"] .hero-inner {
   white-space: nowrap;
 }
 
-.hero-tabs button:hover {
+.hero-tabs > button:hover,
+.hero-tabs > a:hover {
   color: var(--c-white);
 }
 
-.hero-tabs button[aria-selected="true"] {
-  background: var(--c-orange);
-  color: #262525;
+/* Estat actiu discret (blanc translúcid, no taronja): a la capçalera el
+   taronja ja és del CTA "Crea la teva taula" i dues pastilles taronja
+   juntes competirien. */
+.hero-tabs > button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--c-white);
 }
 
-.hero-tabs button:focus-visible {
+.hero-tabs > button:focus-visible,
+.hero-tabs > a:focus-visible {
   outline: 2px solid var(--c-orange);
   outline-offset: 2px;
+}
+
+.hero-tabs--inline {
+  margin-bottom: var(--space-4);
+}
+
+@media (min-width: 860px) {
+  .hero-tabs--inline {
+    display: none;
+  }
+}
+
+.hero-tabs--header {
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .hero-tabs--header {
+    display: inline-flex;
+  }
+}
+
+/* Capçalera amb fons blanc (scroll): el selector passa a tons foscos. */
+#site-header.scrolled .hero-tabs--header,
+body.mobile-nav-open #site-header .hero-tabs--header {
+  background: rgba(49, 48, 48, 0.04);
+  border-color: rgba(49, 48, 48, 0.1);
+}
+
+#site-header.scrolled .hero-tabs--header > button,
+#site-header.scrolled .hero-tabs--header > a {
+  color: var(--c-muted-light);
+}
+
+#site-header.scrolled .hero-tabs--header > button:hover,
+#site-header.scrolled .hero-tabs--header > a:hover,
+#site-header.scrolled .hero-tabs--header > button[aria-pressed="true"] {
+  color: var(--c-dark);
+}
+
+#site-header.scrolled .hero-tabs--header > button[aria-pressed="true"] {
+  background: rgba(49, 48, 48, 0.08);
 }
 
 .hero-eyebrow {
@@ -677,11 +767,15 @@ body[data-page="home"] .hero-inner {
   margin: 0 0 12px;
 }
 
+.hero-copy {
+  padding-top: var(--space-2);
+}
+
 .hero-copy h1 {
   font-size: var(--fs-h1-hero);
   line-height: 1.05;
   color: var(--c-white);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 12px;
   max-width: 15ch;
 }
 
@@ -690,7 +784,7 @@ body[data-page="home"] .hero-inner {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.6;
-  margin: 0 0 var(--space-5);
+  margin: 0;
   max-width: 46ch;
 }
 
@@ -699,18 +793,18 @@ body[data-page="home"] .hero-inner {
   align-items: center;
   gap: var(--space-4);
   flex-wrap: wrap;
+  padding-top: var(--space-5);
 }
 
 .hero-cta-primary {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   background: var(--c-orange);
-  color: #262525;
+  color: var(--c-dark);
   font-family: var(--f-body);
   font-weight: 700;
-  font-size: 15px;
-  padding: 14px 26px;
+  font-size: 18px;
+  padding: 13px 26px;
   border-radius: var(--r-pill);
   transition: background 0.18s ease, transform 0.18s ease;
 }
@@ -718,24 +812,6 @@ body[data-page="home"] .hero-inner {
 .hero-cta-primary:hover {
   background: var(--c-orange-dark);
   transform: translateY(-1px);
-}
-
-.hero-cta-primary svg {
-  width: 16px;
-  height: 16px;
-}
-
-.hero-cta-secondary {
-  color: var(--c-muted);
-  font-family: var(--f-body);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.hero-cta-secondary:hover {
-  color: var(--c-white);
 }
 
 .hero-swap {
@@ -754,57 +830,27 @@ body[data-page="home"] .hero-inner {
   }
 }
 
-/* La taula il·lustrada (i el seu halo) ja no es mostra: només afegia
-   pes visual i, en mòbil, scroll de més, sense aportar res que el
-   text/CTA no digués ja. Es queda la insígnia (bossa/grup/edifici) com
-   a únic element d'art, enganxada a l'altra punta de les pestanyes. */
-.hero-art {
-  position: static;
-  min-height: 0;
-}
-
-.hero-blob,
-.hero-illustration {
-  display: none;
-}
-
-/* .hero-art ja no li serveix de referència (ha quedat a 0 d'alçada,
-   després del CTA): s'ancora a .hero-inner, que és qui conté també
-   les pestanyes Boards/Tallers/Col·labora. */
-.hero-badge {
-  position: absolute;
-  top: 12px;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--c-orange);
+/* Els 3 passos dins del hero: sempre en columna (no la graella de 3 de
+   .value-steps) i sense l'apilat sticky, que aquí no té sentit. */
+.value-steps.value-steps--hero {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
-.hero-badge svg {
-  width: 18px;
-  height: 18px;
+.value-steps--hero .value-step {
+  position: static;
+  padding: var(--space-5);
+  box-shadow: 0 8px 12px rgba(49, 48, 48, 0.08);
 }
 
-.hero-badge-icon {
-  display: none;
-}
-
-.hero-badge-icon.is-active {
-  display: block;
-}
-
-@media (max-width: 859px) {
-  .hero {
-    padding: var(--space-5) var(--space-4);
+@media (max-width: 639px) {
+  .value-steps.value-steps--hero {
+    gap: var(--space-3);
   }
 
-  .hero-inner {
-    gap: var(--space-4);
+  .value-steps--hero .value-step {
+    padding: var(--space-4);
   }
 }
 
@@ -1506,6 +1552,8 @@ section {
 }
 
 .footer-top {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--space-4);
   grid-template-columns: 1fr;
@@ -1587,39 +1635,37 @@ section {
 
 .footer-hero {
   position: relative;
-  /* Ha de coincidir exactament amb l'alçada real de .footer-hero-photo
-     (width: min(56vw, 800px) × la seva relació d'aspecte real un cop
-     retallat el marge transparent, ~0.406), no un clamp independent:
-     si no coincideixen, la foto (ancorada a bottom:0) sobresurt per
-     dalt del contenidor i es menja el .footer-top de sobre, deixant
-     alhora un buit buit sota seu dins d'aquesta caixa. */
-  min-height: min(23vw, 325px);
-  padding-top: var(--space-5);
+  padding: var(--space-5) 0 89px;
 }
 
+/* El wordmark es fon amb la foto de la taula que té just a sota
+   (color-burn, com al Figma): "BOARDS" agafa el to de la fusta i
+   "ONIRIK" (gris) s'enfosqueix on toca la taula. El mode de fusió va al
+   contenidor (que és qui crea el context d'apilament amb z-index). */
 .footer-wordmark-row {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   position: relative;
   z-index: 1;
+  mix-blend-mode: color-burn;
 }
 
 .footer-hero-logo {
-  height: clamp(77px, 13.2vw, 204px);
+  height: clamp(77px, 13.2vw, 208px);
   width: auto;
   display: block;
 }
 
-/* La foto trenca el contenidor i "sagna" fins a la vora dreta del
-   footer (que ocupa tot l'ample de finestra), tal com al disseny de
-   referència — per això és un fill absolut de .footer-hero en lloc
-   d'anar dins .container com el bloc del logo. */
+/* La foto, gran i centrada, queda per darrere de tot el footer: puja
+   per sota de les columnes d'enllaços i baixa per sota del claim. Les
+   mides surten del Figma (marges 6.72% / 5.02% de l'ample, i sobresurt
+   per baix un 11.2% del seu propi ample: 88.26vw × 0.112 ≈ 9.87vw). */
 .footer-hero-photo {
   position: absolute;
-  right: -4%;
-  bottom: 0;
-  width: min(56vw, 800px);
+  left: 6.72%;
+  width: 88.26%;
+  bottom: -9.87vw;
   max-width: none;
   height: auto;
   pointer-events: none;
@@ -1653,8 +1699,13 @@ section {
 
 @media (max-width: 639px) {
   .footer-hero {
-    min-height: auto;
     padding-bottom: var(--space-4);
+  }
+
+  /* En mòbil la foto va sota el wordmark (no hi ha superposició) i el
+     color-burn el faria desaparèixer sobre el fons fosc. */
+  .footer-wordmark-row {
+    mix-blend-mode: normal;
   }
 
   .footer-hero-photo {

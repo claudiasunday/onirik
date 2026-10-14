@@ -32,10 +32,12 @@ assets/
 
 ## Crèdits d'imatge
 
-- `assets/images/hero-balance-board.jpg` — foto de Gustavo Torres a Unsplash
-  (llicència Unsplash, ús lliure comercial):
-  https://unsplash.com/photos/rBLTWS3WsQ8. Substitueix-la per fotografia
-  pròpia de producte quan en tinguis.
+- `assets/images/hero-skater.jpg` — fons del hero de la Home, exportat del
+  Figma del projecte amb l'enfosquiment (opacitat + degradat) ja aplicat.
+- `assets/images/hero-board-peix-negre.png` — taula PEIX negra del hero,
+  exportada del mateix Figma (1x, 236×625).
+- `assets/images/logo-boards-footer.png` — variant del wordmark amb
+  "ONIRIK" en gris (#666), per al footer amb fusió color-burn.
 
 ## Marca
 

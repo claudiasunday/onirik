@@ -1,23 +1,19 @@
 /**
  * Hero de la Home — selector d'audiència (Boards / Tallers / Col·labora).
- * En triar una pestanya canvien el titular, el text,
- * el CTA, la insígnia i la taula il·lustrada, sense canviar l'estructura.
- * Depèn de board.js (renderBoardSVG), que ha d'anar carregat abans.
+ * En triar una opció canvien el titular, el text i el CTA, sense canviar
+ * l'estructura. El selector viu a la capçalera en escriptori (layout.js)
+ * i dins del hero en mòbil: hero.js els escolta tots dos i els manté
+ * sincronitzats (qualsevol `.hero-tabs button[data-key]` de la pàgina).
  */
 
 const HERO_DATA = {
   particulars: {
     eyebrow: "Personalitza la teva taula",
-    headline: "Troba el teu equilibri, a la teva mida",
+    headline: "Troba el teu equilibri, en 3 passos",
     subtext:
       "Balance boards fetes a mà, una a una. Tria la forma, el disseny i el color en tres passos i emporta't una taula única.",
-    cta: "Personalitza la teva taula",
+    cta: "Crea la teva taula",
     ctaHref: "personalitza.html",
-    secondary: "Veure totes les taules",
-    secondaryHref: "tenda.html",
-    icon: "bag",
-    blob: "var(--c-orange)",
-    board: { shapeId: "peix", designId: "franja-dreta", colorId: "taronja" },
   },
   tallers: {
     eyebrow: "Tu també ho pots fer.",
@@ -26,11 +22,6 @@ const HERO_DATA = {
       "Pensats per a totes les edats i tots els nivells, en format grupal o privat: aprèn a mantenir l'equilibri o construeix la teva pròpia taula, amb les nostres taules o amb la que ja tinguis a casa.",
     cta: "Descobreix els tallers",
     ctaHref: "que-fem.html",
-    secondary: "Parla'ns del teu grup",
-    secondaryHref: "contacte.html",
-    icon: "group",
-    blob: "var(--c-wood)",
-    board: { shapeId: "lasai", designId: "fusta-natural", colorId: null },
   },
   espais: {
     eyebrow: "Porta ONIRIK al teu espai",
@@ -39,11 +30,6 @@ const HERO_DATA = {
       "Estudis de ioga, gimnasos, hotels i espais de benestar: incorpora tallers o taules ONIRIK personalitzades per als vostres clients o equip.",
     cta: "Parla'ns del teu espai",
     ctaHref: "contacte.html",
-    secondary: "Veure col·laboracions",
-    secondaryHref: "familia-onirik.html",
-    icon: "building",
-    blob: "var(--c-muted)",
-    board: { shapeId: "keki", designId: "meitat", colorId: "negre" },
   },
 };
 
@@ -51,10 +37,8 @@ function initHero() {
   const hero = document.querySelector(".hero");
   if (!hero) return;
 
-  const tabs = hero.querySelectorAll(".hero-tabs button");
+  const tabs = document.querySelectorAll(".hero-tabs button[data-key]");
   const swap = document.getElementById("hero-swap");
-  const blob = hero.querySelector(".hero-blob");
-  const illustration = document.getElementById("hero-illustration");
   const reduceMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
@@ -65,22 +49,8 @@ function initHero() {
     document.getElementById("hero-subtext").textContent = d.subtext;
 
     const cta = document.getElementById("hero-cta");
-    document.getElementById("hero-cta-label").textContent = d.cta;
+    cta.textContent = d.cta;
     cta.setAttribute("href", d.ctaHref);
-
-    const secondary = document.getElementById("hero-secondary");
-    secondary.textContent = d.secondary;
-    secondary.setAttribute("href", d.secondaryHref);
-
-    hero.querySelectorAll(".hero-badge-icon").forEach((icon) => {
-      icon.classList.toggle(
-        "is-active",
-        icon.getAttribute("data-icon") === d.icon
-      );
-    });
-
-    blob.style.background = d.blob;
-    illustration.innerHTML = renderBoardSVG(d.board);
   }
 
   function selectAudience(key) {
@@ -89,7 +59,7 @@ function initHero() {
     hero.setAttribute("data-audience", key);
     tabs.forEach((btn) => {
       btn.setAttribute(
-        "aria-selected",
+        "aria-pressed",
         btn.getAttribute("data-key") === key ? "true" : "false"
       );
     });
@@ -110,9 +80,6 @@ function initHero() {
       selectAudience(btn.getAttribute("data-key"))
     );
   });
-
-  // La còpia de "particulars" ja és al HTML; només cal pintar la taula.
-  illustration.innerHTML = renderBoardSVG(HERO_DATA.particulars.board);
 }
 
 initHero();
