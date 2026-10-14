@@ -18,29 +18,18 @@
 
     <main>
       <div class="container">
-        <section class="hero" data-audience="particulars">
+        <section class="hero">
           <div class="hero-inner">
             <div class="hero-copy">
-              <!-- En mòbil/tablet la capçalera no té espai per al selector
-                   d'audiència: aquesta còpia només es veu per sota de 860px
-                   (la d'escriptori viu a la capçalera, veure layout.js). -->
-              <div class="hero-tabs hero-tabs--inline" role="group" aria-label="Qui ets?">
-                <button type="button" aria-pressed="true" data-key="particulars">Boards</button>
-                <button type="button" aria-pressed="false" data-key="tallers">Tallers</button>
-                <button type="button" aria-pressed="false" data-key="espais">Col·labora</button>
-              </div>
-
-              <div class="hero-swap" id="hero-swap">
-                <p class="hero-eyebrow" id="hero-eyebrow">Personalitza la teva taula</p>
-                <h1 id="hero-headline">Troba el teu equilibri, en 3 passos</h1>
-                <p class="hero-subtext" id="hero-subtext">
-                  Balance boards fetes a mà, una a una. Tria la forma, el
-                  disseny i el color en tres passos i emporta't una taula
-                  única.
-                </p>
-                <div class="hero-cta-row">
-                  <a class="hero-cta-primary" id="hero-cta" href="personalitza.html">Crea la teva taula</a>
-                </div>
+              <p class="hero-eyebrow">Personalitza la teva taula</p>
+              <h1>Troba el teu equilibri, en 3 passos</h1>
+              <p class="hero-subtext">
+                Balance boards fetes a mà, una a una. Tria la forma, el
+                disseny i el color en tres passos i emporta't una taula
+                única.
+              </p>
+              <div class="hero-cta-row">
+                <a class="hero-cta-primary" href="personalitza.html">Crea la teva taula</a>
               </div>
             </div>
 
@@ -191,7 +180,6 @@
     <script src="assets/js/board.js"></script>
     <script src="assets/js/layout.js"></script>
     <script src="assets/js/cart.js"></script>
-    <script src="assets/js/hero.js"></script>
     <script src="assets/js/home.js"></script>
   </body>
 </html>
