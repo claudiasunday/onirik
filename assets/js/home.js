@@ -32,14 +32,8 @@ function mountHeroBoard3D() {
   const slot = document.getElementById("hero-board-3d-slot");
   if (!slot || !window.matchMedia("(max-width: 859px)").matches) return;
   import("../../3d/dist/onirik-board.js").then(() => {
-    // Fletxes de rotació: indiquen que la taula gira (en mòbil gira sola).
     slot.innerHTML = `
-      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front"></onirik-board-3d>
-      <svg class="hero-rotate-arrows" viewBox="0 0 300 70" fill="none" aria-hidden="true">
-        <path d="M14 22 C 10 46, 70 62, 128 62" />
-        <path d="M172 62 C 236 62, 292 46, 286 20" />
-        <path d="M286 20 L 276 32 M286 20 L 294 34" />
-      </svg>`;
+      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front"></onirik-board-3d>`;
   });
 }
 
