@@ -33,9 +33,13 @@ const HOME_NAV_ITEMS = [
  */
 function renderHomeNav(extraClass = "") {
   const current = document.body.dataset.page || "";
+  // A la versió fixa (mòbil) no hi ha capçalera: el símbol del logo torna a l'inici.
+  const homeLink = extraClass.includes("home-nav--fixed")
+    ? `<a class="home-nav-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici"><img src="assets/images/logo-icon.png" width="26" height="23" alt="" /></a>`
+    : "";
   return `
       <nav class="home-nav${extraClass}" aria-label="Principal">
-        ${HOME_NAV_ITEMS.map(
+        ${homeLink}${HOME_NAV_ITEMS.map(
           (item) =>
             `<a href="${item.href}"${item.id === current ? ' class="active" aria-current="page"' : ""}>${item.label}</a>`
         ).join("")}

@@ -307,9 +307,21 @@ body[data-page="home"] .product-card {
   background: var(--c-white);
 }
 
-body[data-page="home"] .benefits,
 body[data-page="home"] .value-pill {
   background: var(--c-cream-2);
+}
+
+/* "Per què un balance board?" a la Home: bloc negre amb text blanc. */
+body[data-page="home"] .benefits {
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+body[data-page="home"] .benefits h2,
+body[data-page="home"] .benefits h3,
+body[data-page="home"] .benefits p,
+body[data-page="home"] .benefits .link-underline {
+  color: var(--c-white);
 }
 
 /* Capçalera (totes les pàgines): logo | pastilla de seccions centrada | accions. */
@@ -912,8 +924,33 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     color: var(--c-dark);
   }
 
+  /* Tot en em: si la pastilla no hi cap (mòbils estrets), es redueix
+     sencera escalant la mida de lletra amb l'ample de pantalla. */
+  .home-nav.home-nav--fixed {
+    font-size: clamp(10px, 3.4vw, 14px);
+    gap: 0.25em;
+    padding: 0.35em;
+  }
+
   .home-nav--fixed a {
-    padding: 9px 12px;
+    font-size: 1em;
+    padding: 0.65em 0.65em;
+  }
+
+  .home-nav--fixed .home-nav-logo {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.5em 0 0.65em;
+  }
+
+  /* Símbol del logo en blanc pla (el negre no es veuria sobre la pastilla fosca). */
+  .home-nav--fixed .home-nav-logo img {
+    display: block;
+    width: 1.85em;
+    min-width: 1.85em;
+    height: auto;
+    filter: brightness(0) invert(1);
   }
 
   .value-steps-section {
