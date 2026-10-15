@@ -23,26 +23,65 @@ function mountFeatured() {
 }
 
 /**
- * En mòbil, la taula del hero és el visor 3D (carpeta 3d/). Es crea i es
- * carrega només en mòbil: en mode hero el component es carrega sol encara
- * que estigui amagat, així que en escriptori (on hi ha la foto del Figma)
- * ni s'afegeix ni es baixa el mòdul.
+ * La taula del hero és el visor 3D (carpeta 3d/), girant 360°. En mòbil i
+ * tablet va a sobre del text (slot); en escriptori substitueix la foto de
+ * la columna del mig, que es queda com a reserva si el JS no carrega.
  */
 function mountHeroBoard3D() {
   const slot = document.getElementById("hero-board-3d-slot");
-  if (!slot || !window.matchMedia("(max-width: 859px)").matches) return;
+  if (!slot) return;
+  const board = '<onirik-board-3d mode="hero" pose="front" autorotate></onirik-board-3d>';
   import("../../3d/dist/onirik-board.js").then(() => {
-    // Fletxes de rotació: indiquen que la taula gira (en mòbil gira sola).
-    slot.innerHTML = `
-      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front"></onirik-board-3d>
-      <svg class="hero-rotate-arrows" viewBox="0 0 300 70" fill="none" aria-hidden="true">
-        <path d="M14 22 C 10 46, 70 62, 128 62" />
-        <path d="M172 62 C 236 62, 292 46, 286 20" />
-        <path d="M286 20 L 276 32 M286 20 L 294 34" />
-      </svg>`;
+    if (window.matchMedia("(max-width: 1099px)").matches) {
+      slot.innerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board-3d"');
+      return;
+    }
+    // Escriptori: la taula 3D ocupa el lloc de la foto, a la columna del mig.
+    const img = document.querySelector(".hero-board");
+    if (img) img.outerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board"');
   });
+}
+
+/**
+ * En mòbil, els 3 passos s'apilen com cartes (CSS sticky). Aquí només
+ * calculem quant ha tapat cada targeta la següent (--stack, de 0 a 1)
+ * perquè el CSS l'encongeixi i l'enfosqueixi de manera progressiva.
+ */
+function initValueStepsStack() {
+  const steps = [...document.querySelectorAll(".value-steps--mobile .value-step")];
+  const mq = window.matchMedia("(max-width: 859px) and (prefers-reduced-motion: no-preference)");
+  if (steps.length < 2) return;
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    if (!mq.matches) {
+      steps.forEach((el) => el.style.removeProperty("--stack"));
+      return;
+    }
+    steps.forEach((el, i) => {
+      let stack = 0;
+      // Cada targeta de sobre que ja s'hi acosta n'afegeix una part.
+      for (let j = i + 1; j < steps.length; j++) {
+        const gap = steps[j].getBoundingClientRect().top - el.getBoundingClientRect().top;
+        const h = el.offsetHeight;
+        stack += Math.min(1, Math.max(0, 1 - gap / h));
+      }
+      el.style.setProperty("--stack", Math.min(stack, 2).toFixed(3));
+    });
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
 }
 
 mountProducts();
 mountFeatured();
 mountHeroBoard3D();
+initValueStepsStack();

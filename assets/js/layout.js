@@ -21,16 +21,24 @@ const NAV_ITEMS = [
  * pròpia en format pastilla, diferent del menú de la resta de pàgines.
  */
 const HOME_NAV_ITEMS = [
-  { href: "boards.html", label: "Boards" },
-  { href: "tenda.html", label: "Tenda" },
-  { href: "que-fem.html", label: "Tallers" },
-  { href: "familia-onirik.html", label: "Col·labora" },
+  { id: "boards", href: "boards.html", label: "Boards" },
+  { id: "tenda", href: "tenda.html", label: "Tenda" },
+  { id: "que-fem", href: "que-fem.html", label: "Tallers" },
+  { id: "familia", href: "familia-onirik.html", label: "Col·labora" },
 ];
 
-function renderHomeNav() {
+/**
+ * Navegació en pastilla, la mateixa a totes les pàgines: al centre de la
+ * capçalera en escriptori i fixa a dalt (sense capçalera) en mòbil.
+ */
+function renderHomeNav(extraClass = "") {
+  const current = document.body.dataset.page || "";
   return `
-      <nav class="home-nav" aria-label="Principal">
-        ${HOME_NAV_ITEMS.map((item) => `<a href="${item.href}">${item.label}</a>`).join("")}
+      <nav class="home-nav${extraClass}" aria-label="Principal">
+        ${HOME_NAV_ITEMS.map(
+          (item) =>
+            `<a href="${item.href}"${item.id === current ? ' class="active" aria-current="page"' : ""}>${item.label}</a>`
+        ).join("")}
       </nav>`;
 }
 
@@ -50,29 +58,25 @@ function renderHeader() {
           <img class="onirik-logo__wordmark-overlay" src="assets/images/logo-wordmark.png" alt="" aria-hidden="true" />
         </span>
       </a>
-      ${current === "home" ? renderHomeNav() : `
-      <nav class="main-nav">
-        ${NAV_ITEMS.map(
-          (item) =>
-            `<a href="${item.href}"${item.id === current ? ' class="active"' : ""}>${item.label}</a>`
-        ).join("")}
-      </nav>`}
+      ${renderHomeNav()}
       <div class="header-actions">
         <a class="icon-btn cart-link" href="cistella.html" aria-label="Cistella">
-          🛒<span class="cart-badge" hidden>0</span>
+          <svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.1 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.3"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg><span class="cart-badge" hidden>0</span>
         </a>
         <a class="btn btn-primary btn-compra" href="personalitza.html">Crea la teva taula</a>
         <button class="icon-btn menu-btn" id="menu-toggle" aria-label="Menú">☰</button>
       </div>
     </header>
     <nav class="mobile-nav" id="mobile-nav" hidden>
-      ${(current === "home" ? HOME_NAV_ITEMS : NAV_ITEMS).map(
+      ${HOME_NAV_ITEMS.map(
         (item) =>
           `<a href="${item.href}"${item.id === current ? ' class="active"' : ""}>${item.label}</a>`
       ).join("")}
       <a class="btn btn-primary btn-compra mobile-nav-cta" href="personalitza.html">Crea la teva taula</a>
     </nav>
   `;
+  // Mòbil: la mateixa pastilla, fixa a dalt (la capçalera s'amaga per CSS).
+  mount.insertAdjacentHTML("afterend", renderHomeNav(" home-nav--fixed"));
   const toggle = document.getElementById("menu-toggle");
   const mobileNav = document.getElementById("mobile-nav");
   let backdrop = document.getElementById("mobile-nav-backdrop");
