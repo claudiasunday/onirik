@@ -33,7 +33,7 @@ function mountHeroBoard3D() {
   if (!slot || !window.matchMedia("(max-width: 1099px)").matches) return;
   import("../../3d/dist/onirik-board.js").then(() => {
     slot.innerHTML = `
-      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front"></onirik-board-3d>`;
+      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front" autorotate></onirik-board-3d>`;
   });
 }
 

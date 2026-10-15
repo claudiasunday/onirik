@@ -143,6 +143,8 @@ class OnirikBoard3D extends HTMLElement {
     const H = viewer.heroConfig;
     const ac = (this.#ac = new AbortController());
     const opt = { passive: true, signal: ac.signal };
+    // Atribut "autorotate": gira 360° sense parar també amb ratolí (el cursor només inclina).
+    const spin = this.hasAttribute('autorotate');
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
     let px = 0, py = 0, sp = 0;
 
@@ -151,7 +153,8 @@ class OnirikBoard3D extends HTMLElement {
       return Math.min(1, Math.max(0, scrollY / Math.max(1, r.bottom + scrollY)));
     };
     const push = () => {
-      if (fine) viewer.setPose({ yaw: px * H.pointerYawDeg + sp * H.scrollYawDeg, tilt: py * H.pointerTiltDeg + sp * H.scrollTiltDeg });
+      if (fine && !spin) viewer.setPose({ yaw: px * H.pointerYawDeg + sp * H.scrollYawDeg, tilt: py * H.pointerTiltDeg + sp * H.scrollTiltDeg });
+      else if (fine) viewer.setPose({ tilt: py * H.pointerTiltDeg + sp * H.scrollTiltDeg });
       else viewer.setPose({ tilt: sp * H.scrollTiltDeg });   // el yaw el porta l'autorotació
     };
     if (fine) {
@@ -161,9 +164,8 @@ class OnirikBoard3D extends HTMLElement {
         if (this.#onScreen) push();
       }, opt);
       document.documentElement.addEventListener('pointerleave', () => { px = 0; py = 0; push(); }, opt);
-    } else {
-      viewer.setAutoRotate(H.autoRotateDegPerSec);
     }
+    if (!fine || spin) viewer.setAutoRotate(H.autoRotateDegPerSec);
     addEventListener('scroll', () => { sp = scrollProgress(); if (this.#onScreen) push(); }, opt);
     sp = scrollProgress(); push();
 
