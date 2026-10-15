@@ -838,12 +838,12 @@ body.mobile-nav-open {
     display: none;
   }
 
-  /* Amplada "hug": la pastilla s'ajusta als enllaços, no a la columna. */
+  /* Amplada "hug" i centrada: la pastilla s'ajusta als enllaços, no a la columna. */
   .home-nav--hero {
     display: flex;
     width: fit-content;
     max-width: 100%;
-    margin-bottom: var(--space-5);
+    margin: 0 auto var(--space-5);
   }
 
   .home-nav--hero a {
