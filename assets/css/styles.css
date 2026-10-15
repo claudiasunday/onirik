@@ -838,6 +838,17 @@ body.mobile-nav-open {
     display: none;
   }
 
+  /* A la Home en mòbil no hi ha capçalera: la pastilla de seccions fa de
+     menú únic, així que el hero ja no reserva l'alçada del header. */
+  body[data-page="home"] #site-header,
+  body[data-page="home"] #mobile-nav-backdrop {
+    display: none;
+  }
+
+  body[data-page="home"] .hero {
+    padding-top: var(--space-5);
+  }
+
   /* Amplada "hug" i centrada: la pastilla s'ajusta als enllaços, no a la columna. */
   .home-nav--hero {
     display: flex;
