@@ -31,6 +31,9 @@ const HOME_NAV_ITEMS = [
  * Navegació en pastilla, la mateixa a totes les pàgines: al centre de la
  * capçalera en escriptori i fixa a dalt (sense capçalera) en mòbil.
  */
+// Variant plena (blanca) per a la pastilla fosca de mòbil.
+const CART_ICON_FILLED = `<svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M2.5 3.25h2.3a1 1 0 0 1 .97.76L6.3 6.2H21a.75.75 0 0 1 .73.92l-1.7 7.4a2 2 0 0 1-1.95 1.55H9.1a2 2 0 0 1-1.95-1.58L4.2 4.75H2.5a.75.75 0 0 1 0-1.5z"/><circle cx="9.5" cy="19.7" r="1.6"/><circle cx="17" cy="19.7" r="1.6"/></svg>`;
+
 const CART_ICON = `<svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.1 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.3"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>`;
 
 function renderHomeNav(extraClass = "") {
@@ -41,7 +44,7 @@ function renderHomeNav(extraClass = "") {
     : "";
   // ...i a l'altre extrem, la cistella (amb el comptador de cart.js).
   const cartLink = extraClass.includes("home-nav--fixed")
-    ? `<a class="home-nav-cart cart-link" href="cistella.html" aria-label="Cistella">${CART_ICON}<span class="cart-badge" hidden>0</span></a>`
+    ? `<a class="home-nav-cart cart-link" href="cistella.html" aria-label="Cistella">${CART_ICON_FILLED}<span class="cart-badge" hidden>0</span></a>`
     : "";
   return `
       <nav class="home-nav${extraClass}" aria-label="Principal">
