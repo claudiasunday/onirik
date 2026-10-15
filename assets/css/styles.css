@@ -3929,11 +3929,11 @@ body[data-page="boards"] .site-footer {
 /* Cada targeta es queda enganxada sota la pastilla fixa (un pèl més avall
    que l'anterior) i la següent hi passa per sobre; les de sota es
    redueixen i s'enfosqueixen (home.js hi posa --stack, de 0 a 1) com una
-   pila de cartes. El gap gran és el recorregut de scroll de cada targeta. */
+   pila de cartes. */
 @media (max-width: 859px) {
   body[data-page="home"] .value-steps--mobile {
-    gap: 28vh;
-    padding-bottom: 8vh;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
   }
 
   body[data-page="home"] .value-steps--mobile .value-step {
