@@ -307,9 +307,21 @@ body[data-page="home"] .product-card {
   background: var(--c-white);
 }
 
-body[data-page="home"] .benefits,
 body[data-page="home"] .value-pill {
   background: var(--c-cream-2);
+}
+
+/* "Per què un balance board?" a la Home: bloc negre amb text blanc. */
+body[data-page="home"] .benefits {
+  background: var(--c-dark);
+  color: var(--c-white);
+}
+
+body[data-page="home"] .benefits h2,
+body[data-page="home"] .benefits h3,
+body[data-page="home"] .benefits p,
+body[data-page="home"] .benefits .link-underline {
+  color: var(--c-white);
 }
 
 /* Capçalera (totes les pàgines): logo | pastilla de seccions centrada | accions. */
@@ -912,8 +924,33 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     color: var(--c-dark);
   }
 
+  /* Tot en em: si la pastilla no hi cap (mòbils estrets), es redueix
+     sencera escalant la mida de lletra amb l'ample de pantalla. */
+  .home-nav.home-nav--fixed {
+    font-size: clamp(10px, 3.4vw, 14px);
+    gap: 0.25em;
+    padding: 0.35em;
+  }
+
   .home-nav--fixed a {
-    padding: 9px 12px;
+    font-size: 1em;
+    padding: 0.65em 0.65em;
+  }
+
+  .home-nav--fixed .home-nav-logo {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.5em 0 0.65em;
+  }
+
+  /* Símbol del logo en blanc pla (el negre no es veuria sobre la pastilla fosca). */
+  .home-nav--fixed .home-nav-logo img {
+    display: block;
+    width: 1.85em;
+    min-width: 1.85em;
+    height: auto;
+    filter: brightness(0) invert(1);
   }
 
   .value-steps-section {
@@ -2611,6 +2648,16 @@ button.wizard-cta-link {
   align-items: center;
 }
 
+/* Els passos, centrats a la barra (en lloc d'alineats a l'esquerra). */
+.wizard-bar-inner {
+  justify-content: center;
+}
+
+.wizard-steps {
+  flex: 0 1 auto;
+  justify-content: center;
+}
+
 /* Separador "›" entre passos: indica ordre sense necessitat de la línia
    connectora posicionada amb percentatges. */
 .wizard-steps li + li::before {
@@ -3909,6 +3956,23 @@ body[data-page="boards"] .site-footer {
     display: none;
   }
 
+  /* Fletxa corba sobre cada característica, apuntant cap amunt a la peça:
+     les de la taula cap a l'esquerra, la del roller cap a la dreta. */
+  .boards-spec::before {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 34px;
+    margin: 0 auto 6px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .boards-spec--roller::before {
+    transform: scaleX(-1);
+  }
+
   .boards-all {
     grid-column: 1 / -1;
     position: relative;
@@ -3929,11 +3993,11 @@ body[data-page="boards"] .site-footer {
 /* Cada targeta es queda enganxada sota la pastilla fixa (un pèl més avall
    que l'anterior) i la següent hi passa per sobre; les de sota es
    redueixen i s'enfosqueixen (home.js hi posa --stack, de 0 a 1) com una
-   pila de cartes. El gap gran és el recorregut de scroll de cada targeta. */
+   pila de cartes. */
 @media (max-width: 859px) {
   body[data-page="home"] .value-steps--mobile {
-    gap: 28vh;
-    padding-bottom: 8vh;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
   }
 
   body[data-page="home"] .value-steps--mobile .value-step {
