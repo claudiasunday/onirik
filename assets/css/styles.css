@@ -909,7 +909,7 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     transform: translateX(-50%);
     z-index: 100;
     width: max-content;
-    max-width: calc(100vw - 2 * var(--space-4));
+    max-width: calc(100vw - 32px);
     background: rgba(49, 48, 48, 0.72);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
@@ -927,7 +927,10 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   /* Tot en em: si la pastilla no hi cap (mòbils estrets), es redueix
      sencera escalant la mida de lletra amb l'ample de pantalla. */
   .home-nav.home-nav--fixed {
-    font-size: clamp(9px, 3vw, 14px);
+    /* 5% més gran que abans (3vw → 3.15vw), però mai més ample que la
+       pantalla: el contingut fa ~28em, així que la lletra no passa mai de
+       (100vw - 32px) / 28. */
+    font-size: clamp(9px, min(3.15vw, (100vw - 32px) / 28), 14.7px);
     gap: 0.25em;
     padding: 0.35em;
   }
