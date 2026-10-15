@@ -59,7 +59,7 @@ function renderHeader() {
       </nav>`}
       <div class="header-actions">
         <a class="icon-btn cart-link" href="cistella.html" aria-label="Cistella">
-          🛒<span class="cart-badge" hidden>0</span>
+          <svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.1 10.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.3"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg><span class="cart-badge" hidden>0</span>
         </a>
         <a class="btn btn-primary btn-compra" href="personalitza.html">Crea la teva taula</a>
         <button class="icon-btn menu-btn" id="menu-toggle" aria-label="Menú">☰</button>

@@ -196,6 +196,21 @@ body[data-page="home"] #site-header:not(.scrolled) {
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
 }
 
+/* La capçalera de la Home es queda sempre transparent, també en fer
+   scroll: només hi floten el logo, la pastilla i les accions. */
+body[data-page="home"] #site-header.scrolled {
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
+}
+
+/* Sense fons a la capçalera, la pastilla porta el seu propi vel perquè
+   es llegeixi sobre el contingut que hi passa per sota. */
+body[data-page="home"] #site-header.scrolled .home-nav {
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
 body[data-page="home"] #site-header:not(.scrolled) .main-nav a,
 body[data-page="home"] #site-header:not(.scrolled) .icon-btn {
   color: var(--c-white);

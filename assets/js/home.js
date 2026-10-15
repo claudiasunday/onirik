@@ -23,17 +23,22 @@ function mountFeatured() {
 }
 
 /**
- * En mòbil i tablet, la taula del hero és el visor 3D (carpeta 3d/). Es
- * crea i es carrega només per sota de 1100px: en mode hero el component es
- * carrega sol encara que estigui amagat, així que en escriptori (on hi ha
- * la foto del Figma) ni s'afegeix ni es baixa el mòdul.
+ * La taula del hero és el visor 3D (carpeta 3d/), girant 360°. En mòbil i
+ * tablet va a sobre del text (slot); en escriptori substitueix la foto de
+ * la columna del mig, que es queda com a reserva si el JS no carrega.
  */
 function mountHeroBoard3D() {
   const slot = document.getElementById("hero-board-3d-slot");
-  if (!slot || !window.matchMedia("(max-width: 1099px)").matches) return;
+  if (!slot) return;
+  const board = '<onirik-board-3d mode="hero" pose="front" autorotate></onirik-board-3d>';
   import("../../3d/dist/onirik-board.js").then(() => {
-    slot.innerHTML = `
-      <onirik-board-3d class="hero-board-3d" mode="hero" pose="front" autorotate></onirik-board-3d>`;
+    if (window.matchMedia("(max-width: 1099px)").matches) {
+      slot.innerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board-3d"');
+      return;
+    }
+    // Escriptori: la taula 3D ocupa el lloc de la foto, a la columna del mig.
+    const img = document.querySelector(".hero-board");
+    if (img) img.outerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board"');
   });
 }
 
