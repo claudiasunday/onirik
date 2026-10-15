@@ -845,16 +845,36 @@ body.mobile-nav-open {
     display: none;
   }
 
+  /* La pastilla queda fixa a dalt: el hero li reserva l'alçada
+     (~50px de pastilla + l'aire de dalt i de sota). */
   body[data-page="home"] .hero {
-    padding-top: var(--space-5);
+    padding-top: calc(var(--space-5) * 2 + 50px);
   }
 
-  /* Amplada "hug" i centrada: la pastilla s'ajusta als enllaços, no a la columna. */
-  .home-nav--hero {
+  /* Sense aquest reset, el z-index del hero-inner tancaria la pastilla
+     fixa dins del hero i el contingut de més avall li passaria per sobre. */
+  body[data-page="home"] .hero-inner {
+    z-index: auto;
+  }
+
+  /* Amplada "hug", centrada i fixa a dalt. Fons fosc translúcid perquè es
+     llegeixi tant sobre la foto del hero com sobre el fons sorra. */
+  .hero-copy > .home-nav--hero {
     display: flex;
-    width: fit-content;
-    max-width: 100%;
-    margin: 0 auto var(--space-5);
+    position: fixed;
+    top: var(--space-5);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--space-4));
+    background: rgba(49, 48, 48, 0.72);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .hero-copy > .home-nav--hero a {
+    color: rgba(255, 255, 255, 0.86);
   }
 
   .home-nav--hero a {
