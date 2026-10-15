@@ -74,8 +74,12 @@ body {
      per sobre de l'ample visible real (p.ex. si el navegador compta la
      barra de scroll), i això filtrava com un petit scroll horitzontal de
      tota la pàgina. Cap element necessita scroll horitzontal a aquest
-     nivell, així que ho tallem aquí directament. */
+     nivell, així que ho tallem aquí directament. Amb "clip" (i no
+     "hidden") body no esdevé contenidor de scroll i els position:sticky
+     de la pàgina continuen funcionant; "hidden" queda de reserva per a
+     navegadors antics. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -3887,5 +3891,44 @@ body[data-page="boards"] .site-footer {
   .boards-spark {
     width: 28px;
     height: 28px;
+  }
+}
+
+/* ---- Home mòbil: els 3 passos s'apilen en fer scroll ------------------ */
+/* Cada targeta es queda enganxada sota la pastilla fixa (un pèl més avall
+   que l'anterior) i la següent hi passa per sobre; les de sota es
+   redueixen i s'enfosqueixen (home.js hi posa --stack, de 0 a 1) com una
+   pila de cartes. El gap gran és el recorregut de scroll de cada targeta. */
+@media (max-width: 859px) {
+  body[data-page="home"] .value-steps--mobile {
+    gap: 28vh;
+    padding-bottom: 8vh;
+  }
+
+  body[data-page="home"] .value-steps--mobile .value-step {
+    --stack: 0;
+    position: sticky;
+    scale: calc(1 - var(--stack) * 0.08);
+    filter: brightness(calc(1 - var(--stack) * 0.12));
+    transform-origin: 50% 0;
+    box-shadow: 0 -6px 24px rgba(49, 48, 48, 0.12);
+    will-change: scale;
+  }
+
+  body[data-page="home"] .value-steps--mobile .value-step:nth-child(1) { top: 104px; }
+  body[data-page="home"] .value-steps--mobile .value-step:nth-child(2) { top: 116px; }
+  body[data-page="home"] .value-steps--mobile .value-step:nth-child(3) { top: 128px; }
+}
+
+@media (max-width: 859px) and (prefers-reduced-motion: reduce) {
+  body[data-page="home"] .value-steps--mobile {
+    gap: var(--space-3);
+    padding-bottom: 0;
+  }
+
+  body[data-page="home"] .value-steps--mobile .value-step {
+    position: static;
+    scale: none;
+    filter: none;
   }
 }

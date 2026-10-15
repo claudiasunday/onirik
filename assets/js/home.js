@@ -37,6 +37,46 @@ function mountHeroBoard3D() {
   });
 }
 
+/**
+ * En mòbil, els 3 passos s'apilen com cartes (CSS sticky). Aquí només
+ * calculem quant ha tapat cada targeta la següent (--stack, de 0 a 1)
+ * perquè el CSS l'encongeixi i l'enfosqueixi de manera progressiva.
+ */
+function initValueStepsStack() {
+  const steps = [...document.querySelectorAll(".value-steps--mobile .value-step")];
+  const mq = window.matchMedia("(max-width: 859px) and (prefers-reduced-motion: no-preference)");
+  if (steps.length < 2) return;
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    if (!mq.matches) {
+      steps.forEach((el) => el.style.removeProperty("--stack"));
+      return;
+    }
+    steps.forEach((el, i) => {
+      let stack = 0;
+      // Cada targeta de sobre que ja s'hi acosta n'afegeix una part.
+      for (let j = i + 1; j < steps.length; j++) {
+        const gap = steps[j].getBoundingClientRect().top - el.getBoundingClientRect().top;
+        const h = el.offsetHeight;
+        stack += Math.min(1, Math.max(0, 1 - gap / h));
+      }
+      el.style.setProperty("--stack", Math.min(stack, 2).toFixed(3));
+    });
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+}
+
 mountProducts();
 mountFeatured();
 mountHeroBoard3D();
+initValueStepsStack();
