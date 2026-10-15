@@ -792,6 +792,27 @@ body.mobile-nav-open {
   display: none;
 }
 
+/* Tablet (860–1099px): la foto de la taula (escriptori) encara no hi cap,
+   així que fem servir la taula 3D de mòbil a sobre del text; la resta del
+   hero (passos a la dreta, navegació a la capçalera) és la d'escriptori. */
+@media (min-width: 860px) and (max-width: 1099px) {
+  .hero-board-3d-slot {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: -96px;
+  }
+
+  .hero-board-3d {
+    width: 210px;
+  }
+
+  .hero-copy > :not(.hero-board-3d-slot) {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 @media (max-width: 859px) {
   .hero-board-3d-slot {
     display: flex;
