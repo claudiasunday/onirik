@@ -799,6 +799,14 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   transform: translateY(-1px);
 }
 
+/* Mòbil i tablet: el CTA ocupa tot l'ample de la columna de text. */
+@media (max-width: 1099px) {
+  .hero-cta-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-cta-primary {
     transition: none;
