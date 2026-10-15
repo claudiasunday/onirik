@@ -2648,6 +2648,16 @@ button.wizard-cta-link {
   align-items: center;
 }
 
+/* Els passos, centrats a la barra (en lloc d'alineats a l'esquerra). */
+.wizard-bar-inner {
+  justify-content: center;
+}
+
+.wizard-steps {
+  flex: 0 1 auto;
+  justify-content: center;
+}
+
 /* Separador "›" entre passos: indica ordre sense necessitat de la línia
    connectora posicionada amb percentatges. */
 .wizard-steps li + li::before {
@@ -3944,6 +3954,23 @@ body[data-page="boards"] .site-footer {
 
   .boards-spec br {
     display: none;
+  }
+
+  /* Fletxa corba sobre cada característica, apuntant cap amunt a la peça:
+     les de la taula cap a l'esquerra, la del roller cap a la dreta. */
+  .boards-spec::before {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 34px;
+    margin: 0 auto 6px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .boards-spec--roller::before {
+    transform: scaleX(-1);
   }
 
   .boards-all {
