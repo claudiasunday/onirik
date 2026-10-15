@@ -927,14 +927,14 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   /* Tot en em: si la pastilla no hi cap (mòbils estrets), es redueix
      sencera escalant la mida de lletra amb l'ample de pantalla. */
   .home-nav.home-nav--fixed {
-    font-size: clamp(10px, 3.4vw, 14px);
+    font-size: clamp(9px, 3vw, 14px);
     gap: 0.25em;
     padding: 0.35em;
   }
 
   .home-nav--fixed a {
     font-size: 1em;
-    padding: 0.65em 0.65em;
+    padding: 0.65em 0.6em;
   }
 
   .home-nav--fixed .home-nav-logo {
@@ -942,6 +942,19 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     display: inline-flex;
     align-items: center;
     padding: 0 0.5em 0 0.65em;
+  }
+
+  .home-nav--fixed .home-nav-cart {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.65em 0 0.5em;
+    color: var(--c-white);
+  }
+
+  .home-nav--fixed .home-nav-cart .cart-icon {
+    width: 1.6em;
+    height: 1.6em;
   }
 
   /* Símbol del logo en blanc pla (el negre no es veuria sobre la pastilla fosca). */
