@@ -312,15 +312,15 @@ body[data-page="home"] .value-pill {
   background: var(--c-cream-2);
 }
 
-/* Capçalera de la Home: logo | selector d'audiència centrat | accions. */
+/* Capçalera (totes les pàgines): logo | pastilla de seccions centrada | accions. */
 @media (min-width: 860px) {
-  body[data-page="home"] .site-header {
+  .site-header {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     gap: var(--space-4);
   }
 
-  body[data-page="home"] .header-actions {
+  .header-actions {
     justify-self: end;
   }
 }
@@ -726,15 +726,18 @@ body.mobile-nav-open {
 }
 
 /* Capçalera amb fons blanc (scroll): la navegació passa a tons foscos. */
+body:not([data-page="home"]) #site-header .home-nav,
 #site-header.scrolled .home-nav {
   background: rgba(49, 48, 48, 0.04);
   border-color: rgba(49, 48, 48, 0.1);
 }
 
+body:not([data-page="home"]) #site-header .home-nav a,
 #site-header.scrolled .home-nav a {
   color: var(--c-muted-light);
 }
 
+body:not([data-page="home"]) #site-header .home-nav a:hover,
 #site-header.scrolled .home-nav a:hover {
   background: rgba(49, 48, 48, 0.08);
   color: var(--c-dark);
@@ -857,10 +860,10 @@ body.mobile-nav-open {
     display: none;
   }
 
-  /* A la Home en mòbil no hi ha capçalera: la pastilla de seccions fa de
-     menú únic, així que el hero ja no reserva l'alçada del header. */
-  body[data-page="home"] #site-header,
-  body[data-page="home"] #mobile-nav-backdrop {
+  /* En mòbil no hi ha capçalera a cap pàgina: la pastilla de seccions
+     (.home-nav--fixed, la injecta layout.js) fa de menú únic. */
+  #site-header,
+  #mobile-nav-backdrop {
     display: none;
   }
 
@@ -878,7 +881,7 @@ body.mobile-nav-open {
 
   /* Amplada "hug", centrada i fixa a dalt. Fons fosc translúcid perquè es
      llegeixi tant sobre la foto del hero com sobre el fons sorra. */
-  .hero-copy > .home-nav--hero {
+  .home-nav.home-nav--fixed {
     display: flex;
     position: fixed;
     top: var(--space-5);
@@ -892,11 +895,16 @@ body.mobile-nav-open {
     backdrop-filter: blur(12px);
   }
 
-  .hero-copy > .home-nav--hero a {
+  .home-nav--fixed a {
     color: rgba(255, 255, 255, 0.86);
   }
 
-  .home-nav--hero a {
+  .home-nav--fixed a.active {
+    background: var(--c-orange);
+    color: var(--c-dark);
+  }
+
+  .home-nav--fixed a {
     padding: 9px 12px;
   }
 
@@ -3946,4 +3954,10 @@ body[data-page="boards"] .site-footer {
     scale: none;
     filter: none;
   }
+}
+
+/* Secció activa a la pastilla (escriptori): pastilla taronja. */
+#site-header .home-nav a.active {
+  background: var(--c-orange);
+  color: var(--c-dark);
 }
