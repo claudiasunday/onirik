@@ -48,8 +48,10 @@ function addCustomToCart(customEntry, qty = 1) {
   return id;
 }
 
+// Treure una línia treu també les ofertes lligades a ella (el roller a
+// 10€ només val amb la taula personalitzada).
 function removeFromCart(id) {
-  saveCart(getCart().filter((l) => l.id !== id));
+  saveCart(getCart().filter((l) => l.id !== id && !(l.custom && l.custom.linkedId === id)));
 }
 
 function setCartQty(id, qty) {
@@ -61,6 +63,8 @@ function setCartQty(id, qty) {
   const line = cart.find((l) => l.id === id);
   if (line) {
     line.qty = qty;
+    // L'oferta lligada segueix la quantitat de la taula.
+    cart.forEach((l) => { if (l.custom && l.custom.linkedId === id) l.qty = qty; });
     saveCart(cart);
   }
 }

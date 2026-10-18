@@ -60,6 +60,9 @@ const els = {
   sumColorEdit: $("sum-color-edit"),
   sumPrice: $("sum-price"),
   btnAddCart: $("btn-add-cart"),
+  rollerAddon: $("roller-addon"),
+  rollerAddonPrice: $("roller-addon-price"),
+  rollerAddonWas: $("roller-addon-was"),
   cartConfirm: $("cart-confirm"),
   btnMoreCustom: $("btn-more-custom"),
   customModalBackdrop: $("custom-modal-backdrop"),
@@ -205,7 +208,14 @@ function renderSummary() {
   els.sumDesign.textContent = design.name;
   els.sumColor.textContent = !needsColor() ? "Sense color" : hasCustomColor() ? "Personalitzat" : color.name;
   els.sumColorEdit.hidden = !needsColor();
-  els.sumPrice.textContent = `${shape.price}€`;
+  els.rollerAddonPrice.textContent = `+${ROLLER_ADDON_PRICE}€`;
+  els.rollerAddonWas.textContent = `${ROLLER.price}€`;
+  els.sumPrice.textContent = `${totalPrice()}€`;
+}
+
+// Preu final: la forma + el roller en oferta si s'ha marcat.
+function totalPrice() {
+  return currentShape().price + (els.rollerAddon.checked ? ROLLER_ADDON_PRICE : 0);
 }
 
 // Barra de progrés + resum. El preu només depèn de la forma, així que és
@@ -378,10 +388,12 @@ els.colorCustomInput.addEventListener("input", (e) => {
   render();
 });
 
+els.rollerAddon.addEventListener("change", renderSummary);
+
 els.btnAddCart.addEventListener("click", () => {
   const shape = currentShape();
   const design = currentDesign();
-  addCustomToCart({
+  const boardId = addCustomToCart({
     kind: "custom",
     shapeId: shape.id,
     designId: design.id,
@@ -389,9 +401,12 @@ els.btnAddCart.addEventListener("click", () => {
     customColor: hasCustomColor() ? state.customColor : null,
     price: shape.price,
   });
-  els.btnAddCart.textContent = "Afegida a la cistella ✓";
-  els.btnAddCart.disabled = true;
-  els.cartConfirm.hidden = false;
+  // El roller en oferta, com a línia pròpia de la cistella lligada a la taula.
+  if (els.rollerAddon.checked) {
+    addCustomToCart({ kind: "roller-offer", linkedId: boardId, price: ROLLER_ADDON_PRICE, wasPrice: ROLLER.price });
+  }
+  // Directe a la cistella (el "tiquet"), on es veu la taula i el roller.
+  window.location.href = "cistella.html";
 });
 
 // --- Popup "Fem-la encara més teva" ------------------------------------

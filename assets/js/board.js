@@ -17,10 +17,16 @@ const SHAPES = [
     description:
       "Pensada per a qui ja domina l'equilibri i busca precisió: la cua notada dona un control extra en gir i frenada, tant a l'aigua com a la neu.",
     activities: ["surf", "snow", "skim"],
+    // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M100,6 C132,6 160,58 164,148 C167,206 158,244 142,272 " +
-      "L124,258 L100,286 L76,258 L58,272 " +
-      "C42,244 33,206 36,148 C40,58 68,6 100,6 Z",
+      "M96.4,6.0 L93.0,7.7 L87.4,12.2 L76.5,22.8 L69.0,32.3 L63.9,40.7 L59.2,50.5 L56.1,59.7 L52.5,73.7 " +
+      "L48.8,92.1 L46.6,110.6 L45.8,126.0 L46.6,182.7 L49.9,236.1 L55.3,279.5 L57.2,291.8 L59.5,294.0 " +
+      "L61.7,293.7 L91.3,276.4 L94.1,275.3 L99.7,274.7 L104.5,275.0 L108.7,276.4 L138.3,293.7 " +
+      "L140.5,294.0 L142.5,292.6 L147.8,256.8 L150.6,229.7 L152.8,195.6 L154.2,126.0 L153.4,110.6 " +
+      "L151.2,92.1 L147.5,73.7 L142.8,56.1 L138.9,46.0 L132.7,34.8 L123.5,22.8 L109.5,9.6 L103.6,6.0 " +
+      "L101.4,6.0 L100.0,7.1 L98.6,6.0 Z",
+    // Posició del disc amb el logo gravat (com a la foto)
+    disc: [100, 150],
   },
   {
     // Forma "ull"/fulla, punta al nas i a la cua (com al producte real:
@@ -35,9 +41,15 @@ const SHAPES = [
     description:
       "Base àmplia i estable, ideal per iniciar-se en l'equilibri, fer ioga o tonificar sense pressa. \"Lasai\" significa calma en euskera.",
     activities: ["yoga", "tonificacio"],
+    // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M100,6 C140,36 172,94 172,150 C172,206 140,262 100,294 " +
-      "C60,262 28,206 28,150 C28,94 60,36 100,6 Z",
+      "M98.1,6.0 L92.3,11.8 L85.3,20.9 L74.0,38.1 L63.8,57.7 L57.4,74.3 L51.6,94.0 L46.9,118.3 " +
+      "L45.2,138.5 L44.9,162.0 L46.6,180.0 L50.2,201.6 L54.9,219.3 L63.8,243.4 L70.1,256.4 L82.0,275.2 " +
+      "L95.3,291.0 L98.1,293.4 L100.8,294.0 L103.0,292.6 L112.7,282.1 L122.4,268.8 L129.9,256.4 " +
+      "L135.1,245.9 L140.9,231.5 L147.3,211.6 L152.0,189.7 L154.8,166.2 L155.1,145.2 L153.1,118.3 " +
+      "L150.6,103.7 L145.6,83.7 L137.6,61.1 L126.0,38.1 L114.7,20.9 L107.7,11.8 L102.5,6.3 Z",
+    // Posició del disc amb el logo gravat (com a la foto)
+    disc: [71, 187],
   },
   {
     // Nas apuntat + cantell pla/facetat (tall angular, no arrodonit), com
@@ -52,9 +64,15 @@ const SHAPES = [
     description:
       "Nas apuntat i cantells facetats per a qui busca maniobrabilitat i un toc freestyle, tant al surf com a l'skim.",
     activities: ["surf", "skim"],
+    // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M100,6 C130,6 155,48 158,118 L158,228 L134,268 L100,286 " +
-      "L66,268 L42,228 L42,118 C45,48 70,6 100,6 Z",
+      "M97.5,6.0 L91.8,9.2 L82.8,17.9 L77.6,24.8 L71.8,34.7 L65.7,46.8 L57.6,66.2 L53.3,78.9 L46.6,109.9 " +
+      "L44.6,129.3 L45.1,169.0 L48.6,210.9 L55.3,256.1 L61.6,282.1 L64.3,289.9 L65.7,292.3 L69.8,294.0 " +
+      "L130.2,294.0 L133.4,292.8 L135.2,291.1 L139.8,276.9 L145.0,254.6 L149.9,222.8 L153.1,193.6 " +
+      "L154.9,169.0 L155.4,129.3 L154.3,116.0 L150.8,96.0 L145.9,76.0 L136.6,52.0 L129.7,37.3 " +
+      "L121.9,23.9 L112.6,12.9 L104.2,6.6 Z",
+    // Posició del disc amb el logo gravat (com a la foto)
+    disc: [69, 236],
   },
   {
     // Forma arrodonida clàssica (encara no tenim foto real de la Keki:
@@ -69,10 +87,16 @@ const SHAPES = [
     description:
       "Perfecta per a qui busca una taula que s'adapta a diferents condicions i nivells. La seva forma arrodonida dona estabilitat sense renunciar a la diversió.",
     activities: ["skim", "tonificacio"],
+    // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M100,6 C136,6 160,58 162,148 C164,214 150,262 122,286 " +
-      "C112,292 88,292 78,286 C50,262 36,214 38,148 " +
-      "C40,58 64,6 100,6 Z",
+      "M98.7,6.0 L83.1,27.3 L70.8,47.1 L61.8,65.6 L56.1,81.8 L51.0,106.7 L47.4,134.9 L46.5,152.2 " +
+      "L46.8,184.9 L48.6,205.6 L53.7,234.1 L59.7,243.7 L66.0,260.7 L69.6,268.2 L82.2,290.1 L84.6,293.4 " +
+      "L86.1,294.0 L88.5,293.4 L99.3,277.5 L100.7,277.5 L111.5,293.4 L113.9,294.0 L115.4,293.4 " +
+      "L117.8,290.1 L130.4,268.2 L134.0,260.7 L140.3,243.7 L145.7,235.6 L146.9,232.3 L151.4,205.6 " +
+      "L152.9,190.0 L153.5,177.4 L153.2,144.5 L151.7,126.2 L147.5,97.7 L143.9,81.8 L139.4,68.6 " +
+      "L130.7,49.8 L122.3,35.4 L103.1,7.8 L101.3,6.0 Z",
+    // Posició del disc amb el logo gravat (com a la foto)
+    disc: [70, 236],
   },
 ];
 
@@ -129,6 +153,10 @@ const ROLLER = {
     "El complement natural de la teva balance board: suro massís, lleuger i amb el grip just per practicar a qualsevol superfície, dins o fora de casa.",
 };
 
+// Oferta del configurador: el roller afegit a una taula personalitzada
+// costa només això (en lloc del preu del roller sol).
+const ROLLER_ADDON_PRICE = 10;
+
 // Canal real de comandes: WhatsApp (no hi ha backend de veritat darrere
 // del formulari de contacte, així que qualsevol comanda amb dades ja
 // triades —cistella, fitxa— s'envia per aquí, on sí que arriba algú).
@@ -150,6 +178,7 @@ const REF_SHAPE_CODE = {
 
 function shortProductRef(entry) {
   if (entry.kind === "accessori") return "ROL";
+  if (entry.kind === "roller-offer") return "ROL-OF";
   const shapeCode = REF_SHAPE_CODE[entry.shapeId] || "XX";
   if (entry.kind === "custom") return `${shapeCode}-PER`;
   if (entry.kind === "pack") return `${shapeCode}-PACK`;
@@ -231,6 +260,13 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
       break;
   }
 
+  // Volum: el cantell de contraxapat (la mateixa silueta desplaçada cap
+  // avall), la cara de dalt amb el disseny, llum de dalt a baix, un bisell
+  // clar a la vora i el disc de fusta amb el logo gravat.
+  const [discX, discY] = shape.disc || [100, 190];
+  const shadeId = `shade-${uid}`;
+  const discId = `disc-${uid}`;
+  const shadowId = `shadow-${uid}`;
   return `
     <svg viewBox="0 0 200 300" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${shape.name}">
       <defs>
@@ -238,18 +274,40 @@ function renderBoardSVG({ shapeId, designId, colorId, showLogo = true }) {
           <stop offset="0%" stop-color="${woodA}" />
           <stop offset="100%" stop-color="${woodB}" />
         </linearGradient>
+        <linearGradient id="${shadeId}" x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.22" />
+          <stop offset="45%" stop-color="#fff" stop-opacity="0" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0.16" />
+        </linearGradient>
+        <radialGradient id="${discId}" cx="0.4" cy="0.35" r="0.75">
+          <stop offset="0%" stop-color="#e6cfa6" />
+          <stop offset="100%" stop-color="#c9a878" />
+        </radialGradient>
+        <filter id="${shadowId}" x="-20%" y="-10%" width="140%" height="125%">
+          <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#313030" flood-opacity="0.18" />
+        </filter>
         <clipPath id="${clipId}">
           <path d="${shape.path}" />
         </clipPath>
       </defs>
-      <g clip-path="url(#${clipId})">
-        ${layers}
+      <g filter="url(#${shadowId})">
+        <path d="${shape.path}" transform="translate(0 3.5)" fill="#b8955f" />
+        <path d="${shape.path}" transform="translate(0 3.5)" fill="none" stroke="#8c6b3e" stroke-width="1" />
+        <g clip-path="url(#${clipId})">
+          ${layers}
+          <rect x="0" y="0" width="200" height="300" fill="url(#${shadeId})" />
+        </g>
+        <path d="${shape.path}" fill="none" stroke="#f1dfbf" stroke-opacity="0.75" stroke-width="2.4" clip-path="url(#${clipId})" />
+        <path d="${shape.path}" fill="none" stroke="rgba(0,0,0,0.22)" stroke-width="0.8" />
       </g>
-      <path d="${shape.path}" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2" />
       ${
         showLogo
-          ? `<circle cx="100" cy="190" r="9" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="2" />
-             <circle cx="100" cy="190" r="3" fill="rgba(0,0,0,0.35)" />`
+          ? `<g transform="translate(${discX} ${discY})">
+               <circle r="12.5" fill="url(#${discId})" stroke="#a88456" stroke-width="0.8" />
+               <path d="M-8,1.5 A8,8 0 0 1 8,1.5" fill="none" stroke="#8c6b3e" stroke-width="1.6" stroke-linecap="round" />
+               <path d="M-5,1.5 A5,5 0 0 1 5,1.5" fill="none" stroke="#8c6b3e" stroke-width="1.6" stroke-linecap="round" />
+               <path d="M-3,4 Q0,7 3,4" fill="none" stroke="#8c6b3e" stroke-width="1.6" stroke-linecap="round" />
+             </g>`
           : ""
       }
     </svg>
@@ -395,6 +453,9 @@ function findCatalogEntry(id) {
  * la seva targeta pròpia — p. ex. la cistella.
  */
 function catalogEntryDisplay(entry) {
+  if (entry.kind === "roller-offer") {
+    return { title: `${ROLLER.name} (oferta)`, thumbHtml: renderRollerPhoto() };
+  }
   if (entry.kind === "custom") {
     const shape = SHAPES.find((s) => s.id === entry.shapeId);
     const design = DESIGNS.find((d) => d.id === entry.designId);
@@ -481,7 +542,7 @@ function buildProductCard(entry, { onClick } = {}) {
  * Preu efectiu d'una entrada del catàleg (taula normal, pack, edició o accessori).
  */
 function getEntryPrice(entry) {
-  if (entry.kind === "custom") return entry.price;
+  if (entry.kind === "custom" || entry.kind === "roller-offer") return entry.price;
   if (entry.kind === "pack") return entry.packPrice;
   if (entry.kind === "edition") return entry.price;
   if (entry.kind === "accessori") return entry.price;
