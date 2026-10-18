@@ -37,7 +37,7 @@
      Cada selector de títol hi apunta en lloc de portar un valor solt,
      perquè la jerarquia es pugui llegir i ajustar des d'un sol lloc. */
   --fs-h1-hero: 40px;                     /* Home: "Troba el teu equilibri..." (creix per breakpoint, més avall) */
-  --fs-h1-hero-mobile: 32px;
+  --fs-h1-hero-mobile: 28px;
   --fs-h1: 30px;                          /* Títol de pàgina (.page-hero h1) */
   --fs-h2-lg: 26px;                       /* Intro de pas al configurador */
   --fs-h2-lg-mobile: 21px;
@@ -958,6 +958,16 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   .hero-cta-primary {
     transition: none;
   }
+
+  .board-hint,
+  .board-hint-hand,
+  .board-hint-hand svg {
+    animation: none !important;
+  }
+
+  .board-hint-hand .is-closed {
+    opacity: 0;
+  }
 }
 
 /* ---- Hero de la Home en mòbil/tablet (< 860px) ----------------------- */
@@ -1043,6 +1053,87 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     width: auto;
     height: 100%;
     max-height: 525px;
+  }
+
+  /* Pista "Tap and hold" sobre la taula (només pantalles tàctils): una mà
+     que es tanca, i desapareix sola als 3 s o en tocar la taula. */
+  .board-hint {
+    position: absolute;
+    left: 50%;
+    top: 38%;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px 12px;
+    border-radius: 18px;
+    background: rgba(49, 48, 48, 0.62);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--c-white);
+    pointer-events: none;
+    animation: board-hint-in 0.35s ease both;
+    transition: opacity 0.4s ease;
+  }
+
+  .board-hint.is-out {
+    opacity: 0;
+  }
+
+  .board-hint-hand {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    animation: board-hint-press 1s ease-in-out infinite;
+  }
+
+  .board-hint-hand svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .board-hint-hand .is-closed {
+    animation: board-hint-close 1s ease-in-out infinite;
+  }
+
+  .board-hint-hand .is-open {
+    animation: board-hint-open 1s ease-in-out infinite;
+  }
+
+  .board-hint-text {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @keyframes board-hint-in {
+    from { opacity: 0; transform: translate(-50%, -40%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  /* Oberta -> es tanca (i "prem") -> s'obre, en bucle */
+  @keyframes board-hint-open {
+    0%, 30% { opacity: 1; }
+    45%, 80% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes board-hint-close {
+    0%, 30% { opacity: 0; }
+    45%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes board-hint-press {
+    0%, 30% { transform: scale(1); }
+    50%, 80% { transform: scale(0.88); }
+    100% { transform: scale(1); }
   }
 
   /* En mòbil no hi ha capçalera a cap pàgina: la pastilla de seccions

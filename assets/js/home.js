@@ -34,12 +34,43 @@ function mountHeroBoard3D() {
   import("../../3d/dist/onirik-board.js").then(() => {
     if (window.matchMedia("(max-width: 1099px)").matches) {
       slot.innerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board-3d"');
+      showBoardHint(slot);
       return;
     }
     // Escriptori: la taula 3D ocupa el lloc de la foto, a la columna del mig.
     const img = document.querySelector(".hero-board");
     if (img) img.outerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board"');
   });
+}
+
+/**
+ * Pista "Tap and hold" al mig de la taula 3D (només pantalles tàctils): una
+ * mà que es tanca. Surt quan la taula ja és 3D i desapareix als 3 segons o
+ * en tocar-la.
+ */
+const HAND_OPEN = '<path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>';
+const HAND_CLOSED = '<path d="M18 11.5V9a2 2 0 0 0-4 0v1.4"/><path d="M14 10V8a2 2 0 0 0-4 0v2"/><path d="M10 9.9V9a2 2 0 0 0-4 0v5"/><path d="M6 14a2 2 0 0 0-4 0"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8 2 2 0 1 1 4 0"/>';
+
+function showBoardHint(slot) {
+  if (!window.matchMedia("(hover: none) and (max-width: 859px)").matches) return;
+  const boardEl = slot.querySelector("onirik-board-3d");
+  if (!boardEl) return;
+  const svg = (cls, d) =>
+    `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const show = () => {
+    const hint = document.createElement("div");
+    hint.className = "board-hint";
+    hint.innerHTML = `<span class="board-hint-hand">${svg("is-open", HAND_OPEN)}${svg("is-closed", HAND_CLOSED)}</span><span class="board-hint-text">Tap and hold</span>`;
+    slot.appendChild(hint);
+    const hide = () => {
+      hint.classList.add("is-out");
+      setTimeout(() => hint.remove(), 450);
+    };
+    const timer = setTimeout(hide, 3000);
+    boardEl.addEventListener("touchstart", () => { clearTimeout(timer); hide(); }, { once: true, passive: true });
+  };
+  if (boardEl.dataset.state === "ready") show();
+  else boardEl.addEventListener("ready", show, { once: true });
 }
 
 /**
