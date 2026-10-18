@@ -1894,42 +1894,23 @@ section {
 
 .site-footer {
   margin-top: var(--space-6);
-  padding-top: var(--space-5);
+  padding: var(--space-6) 0 var(--space-5);
   font-size: 13px;
   color: var(--c-muted);
   background: var(--c-dark);
-  overflow: hidden;
 }
 
+/* Fila de dalt: Descobreix (enllaços en dues columnes) | Contacta'ns. */
 .footer-top {
-  position: relative;
-  z-index: 1;
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
   grid-template-columns: 1fr;
-  padding-bottom: var(--space-4);
-}
-
-/* Entre mòbil petit i el punt on hi caben les 3 columnes (640px), ja
-   hi ha prou amplada per aparellar Descobreix + Contacta'ns en una
-   fila; Segueix-nos (només la icona) ocupa tot l'ample a sota. */
-@media (min-width: 360px) {
-  .footer-top {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .footer-col--social {
-    grid-column: 1 / -1;
-  }
+  padding-bottom: var(--space-5);
 }
 
 @media (min-width: 640px) {
   .footer-top {
-    grid-template-columns: 1.2fr 1fr 1fr;
-  }
-
-  .footer-col--social {
-    grid-column: auto;
+    grid-template-columns: 2fr 1fr;
   }
 }
 
@@ -1938,10 +1919,22 @@ section {
   font-size: 15px;
   font-weight: 700;
   color: var(--c-white);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
-.footer-links,
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .footer-links {
+    column-gap: 120px;
+  }
+}
+
 .footer-contact {
   display: flex;
   flex-direction: column;
@@ -1970,8 +1963,9 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
+  margin-top: var(--space-3);
   border: 1.5px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--r-pill);
   color: var(--c-white);
@@ -1983,56 +1977,42 @@ section {
   color: var(--c-orange);
 }
 
-.footer-hero {
-  position: relative;
-  padding: var(--space-5) 0 89px;
-}
-
-/* El wordmark es fon amb la foto de la taula que té just a sota
-   (color-burn, com al Figma): "BOARDS" agafa el to de la fusta i
-   "ONIRIK" (gris) s'enfosqueix on toca la taula. El mode de fusió va al
-   contenidor (que és qui crea el context d'apilament amb z-index). */
-.footer-wordmark-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  position: relative;
-  z-index: 1;
-  mix-blend-mode: color-burn;
-}
-
-.footer-hero-logo {
-  height: clamp(77px, 13.2vw, 208px);
-  width: auto;
-  display: block;
-}
-
-/* La foto, gran i centrada, queda per darrere de tot el footer: puja
-   per sota de les columnes d'enllaços i baixa per sota del claim. Les
-   mides surten del Figma (marges 6.72% / 5.02% de l'ample, i sobresurt
-   per baix un 11.2% del seu propi ample: 88.26vw × 0.112 ≈ 9.87vw). */
-.footer-hero-photo {
-  position: absolute;
-  left: 6.72%;
-  width: 88.26%;
-  bottom: -9.87vw;
-  max-width: none;
-  height: auto;
-  pointer-events: none;
-}
-
+/* Fila de baix: logo complet (símbol + ONIRIK BOARDS) i, al costat, el
+   claim, la frase i el copyright. En mòbil s'apilen. */
 .footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.footer-logo-icon {
+  height: 65px;
+  width: auto;
+}
+
+.footer-logo-wordmark {
+  height: 60px;
+  width: auto;
+}
+
+.footer-bottom-text {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  margin-top: var(--space-4);
-  padding: var(--space-4) var(--space-4) var(--space-5);
-  position: relative;
-  z-index: 1;
 }
 
 .footer-claim {
   color: var(--c-orange);
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -2048,21 +2028,12 @@ section {
 }
 
 @media (max-width: 639px) {
-  .footer-hero {
-    padding-bottom: var(--space-4);
+  .footer-logo-icon {
+    height: 48px;
   }
 
-  /* En mòbil la foto va sota el wordmark (no hi ha superposició) i el
-     color-burn el faria desaparèixer sobre el fons fosc. */
-  .footer-wordmark-row {
-    mix-blend-mode: normal;
-  }
-
-  .footer-hero-photo {
-    position: static;
-    width: 86%;
-    max-width: 360px;
-    margin: var(--space-4) auto 0;
+  .footer-logo-wordmark {
+    height: 44px;
   }
 }
 
@@ -2090,10 +2061,6 @@ section {
   animation: partners-ribbon-scroll 24s linear infinite;
 }
 
-.partners-ribbon:hover .partners-ribbon-track {
-  animation-play-state: paused;
-}
-
 .partners-ribbon-group {
   display: flex;
   align-items: center;
@@ -2102,41 +2069,14 @@ section {
   flex-shrink: 0;
 }
 
-.partners-ribbon-track a {
-  font-family: var(--f-heading);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--c-dark);
-  opacity: 0.72;
-  white-space: nowrap;
-  transition: opacity 0.15s ease, color 0.15s ease;
-}
-
-.partners-ribbon-track a:hover {
-  opacity: 1;
-  color: var(--c-orange-dark);
-}
-
-/* La majoria de col·laboradors ja tenen logo real: substitueix el
-   text per la imatge (mateixos fitxers que a la Home), mantenint la
-   mateixa alçada de línia i la mateixa opacitat/hover que els que
-   encara són només text (p.ex. Pyojany, sense logo). Es veuen amb el
-   seu color de marca real (majoritàriament negre/gris) sobre el fons
-   blanc, sense cap filtre. */
+/* Logos dels col·laboradors (mateixos fitxers que a la Home): decoratius,
+   sense enllaç ni efecte en passar-hi el ratolí; la cinta no s'atura. */
 .partners-ribbon-track img {
   display: block;
   height: 34px;
   width: auto;
   object-fit: contain;
   opacity: 0.72;
-  transition: opacity 0.15s ease;
-}
-
-.partners-ribbon-track a:hover img,
-.partners-ribbon-track img:hover {
-  opacity: 1;
 }
 
 /* Logos que arriben en color (p. ex. Skatia, groc): els passem al mateix

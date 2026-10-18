@@ -198,9 +198,6 @@ ${current === "boards" ? CRAFT_CARDS : ""}
             <a href="https://wa.me/34625579914">💬 +34 625 57 99 14</a>
             <a href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener">📷 @onirikboards</a>
           </div>
-        </div>
-        <div class="footer-col footer-col--social">
-          <h3 class="footer-col-title">Segueix-nos</h3>
           <a class="footer-social-icon" href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener" aria-label="Instagram">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
               <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -210,20 +207,16 @@ ${current === "boards" ? CRAFT_CARDS : ""}
           </a>
         </div>
       </div>
-      <div class="footer-hero">
-        <div class="footer-wordmark-row container">
-          <picture>
-            <!-- En mòbil no hi ha foto a sota per fondre-s'hi: wordmark original (ONIRIK en blanc). -->
-            <source media="(max-width: 639px)" srcset="assets/images/logo-boards-orange.png" />
-            <img src="assets/images/logo-boards-footer.png" alt="ONIRIK Boards" class="footer-hero-logo" />
-          </picture>
-        </div>
-        <img src="assets/images/footer-board-roller.png" alt="Balance board ONIRIK amb roller de suro" class="footer-hero-photo" />
-      </div>
       <div class="footer-bottom container">
-        <p class="footer-claim">🤟🏾 Balance as an attitude</p>
-        <p class="footer-tagline">Balance boards fetes a mà, una a una.</p>
-        <p class="copyright">© <span id="year"></span> ONIRIK BOARDS — tots els drets reservats.</p>
+        <a class="footer-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici">
+          <img class="footer-logo-icon" src="assets/images/logo-icon-on-dark.png" width="73" height="65" alt="" />
+          <img class="footer-logo-wordmark" src="assets/images/logo-boards-orange.png" width="1707" height="556" alt="" />
+        </a>
+        <div class="footer-bottom-text">
+          <p class="footer-claim">🤟🏾 Balance as an attitude</p>
+          <p class="footer-tagline">Balance boards fetes a mà, una a una.</p>
+          <p class="copyright">© <span id="year"></span> ONIRIK BOARDS — tots els drets reservats.</p>
+        </div>
       </div>
     </footer>
   `;
