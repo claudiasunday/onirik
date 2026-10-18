@@ -8,6 +8,7 @@
 const QUE_FEM_TOPICS = {
   equilibri: {
     title: "Tallers d'equilibri",
+    image: "assets/images/equilibri-taller.webp",
     body: `
       <p>
         A ONIRIK BOARDS oferim també tallers d'equilibri, amb les nostres
@@ -38,6 +39,7 @@ const QUE_FEM_TOPICS = {
   },
   fabricacio: {
     title: "Tallers de fabricació artesanal",
+    image: "assets/images/fabricacio-taller.webp",
     body: `
       <p>
         Oferim tallers engrescadors de balanceboard artesanal i
@@ -69,7 +71,7 @@ const QUE_FEM_TOPICS = {
       </div>
     `,
   },
-  balanceboard: {
+  yoga: {
     title: "Balanceboard com a estil de vida",
     body: `
       <p>
@@ -106,10 +108,53 @@ const QUE_FEM_TOPICS = {
       </div>
     `,
   },
+  // Pestanya "Tricks & lifestyle" (l'URL es manté: que-fem-balanceboard.html):
+  // secció més de nínxol, per a la comunitat skater.
+  balanceboard: {
+    title: "Tricks & lifestyle",
+    image: "assets/images/tricks-lifestyle.webp",
+    body: `
+      <p>
+        El balanceboard també és cultura de taula. En aquesta secció parlem
+        de trucs, de sessions i de la gent que hi ha darrere de cada taula.
+      </p>
+      <p>
+        Venim del surf, de l'skate i del snow: busquem aquella sensació de
+        flow quan la taula respon i el cos va sol. Shuvits, 180s,
+        cross-steps, manuals sobre el roller… cada truc comença amb mil
+        intents.
+      </p>
+      <p>
+        Ens agrada compartir-ho: vídeos, reptes i sessions per aprendre
+        junts, des dels primers equilibris fins als trucs més tècnics.
+      </p>
+      <p>
+        Si patines, si surfeges o simplement t'agrada l'estil de vida de
+        taula, aquesta és la teva comunitat.
+      </p>
+    `,
+    cards: `
+      <div class="card-row">
+        <a class="info-card" href="https://www.instagram.com/onirikboards" target="_blank" rel="noopener">
+          <h3>Comparteix el teu truc</h3>
+          <p>Etiqueta'ns a Instagram: @onirikboards.</p>
+        </a>
+        <a class="info-card" href="familia-onirik.html">
+          <h3>Família ONIRIK</h3>
+          <p>Riders i projectes que ens acompanyen.</p>
+        </a>
+        <a class="info-card" href="personalitza.html">
+          <h3>Personalitza la teva</h3>
+          <p>Tria forma, disseny i color en 3 passos.</p>
+        </a>
+      </div>
+    `,
+  },
+
 };
 
 function topicFromHref(href) {
-  const match = href && href.match(/que-fem-(equilibri|fabricacio|balanceboard)\.html/);
+  const match = href && href.match(/que-fem-(equilibri|fabricacio|yoga|balanceboard)\.html/);
   return match ? match[1] : null;
 }
 
@@ -124,11 +169,22 @@ function initQueFemSubnav() {
     const data = QUE_FEM_TOPICS[topic];
     if (!data) return;
     prose.innerHTML = `<h2>${data.title}</h2>${data.body}${data.cards}`;
-    if (media) media.setAttribute("aria-label", data.title);
+    if (media) {
+      media.setAttribute("aria-label", data.title);
+      // Foto del taller si en tenim; si no, es queda el requadre gris.
+      if (!media.dataset.placeholder) media.dataset.placeholder = media.innerHTML;
+      media.classList.toggle("has-photo", Boolean(data.image));
+      media.innerHTML = data.image
+        ? `<img src="${data.image}" alt="${data.title}" loading="lazy" />`
+        : media.dataset.placeholder;
+    }
     links.forEach((a) =>
       a.classList.toggle("active", topicFromHref(a.getAttribute("href")) === topic)
     );
   }
+
+  const initial = links.find((a) => a.classList.contains("active"));
+  if (initial) applyTopic(topicFromHref(initial.getAttribute("href")));
 
   links.forEach((a) => {
     const topic = topicFromHref(a.getAttribute("href"));
