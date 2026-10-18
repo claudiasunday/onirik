@@ -30,16 +30,38 @@ function mountFeatured() {
 function mountHeroBoard3D() {
   const slot = document.getElementById("hero-board-3d-slot");
   if (!slot) return;
-  const board = '<onirik-board-3d mode="hero" pose="front" autorotate></onirik-board-3d>';
-  import("../../3d/dist/onirik-board.js").then(() => {
-    if (window.matchMedia("(max-width: 1099px)").matches) {
-      slot.innerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board-3d"');
-      showBoardHint(slot);
-      return;
+  const mq = window.matchMedia("(max-width: 859px)");
+  // La foto de la columna del mig queda com a reserva (si el JS no carrega).
+  const img = document.querySelector("img.hero-board");
+  let board = null;
+  let first = true;
+
+  // Si canvia el breakpoint (p. ex. en fer la finestra més estreta), la taula
+  // es torna a crear al lloc que toca: un component mogut de lloc no es
+  // tornaria a muntar (el visor es desmunta en treure'l del DOM).
+  const place = () => {
+    if (board) board.remove();
+    board = document.createElement("onirik-board-3d");
+    board.setAttribute("mode", "hero");
+    board.setAttribute("pose", "front");
+    board.setAttribute("autorotate", "");
+    if (mq.matches) {
+      // Mòbil: a sobre del text.
+      board.className = "hero-board-3d";
+      slot.appendChild(board);
+      if (first) showBoardHint(slot);
+    } else if (img) {
+      // Tauleta i escriptori: al lloc de la foto, a la dreta del text.
+      board.className = "hero-board";
+      img.after(board);
     }
-    // Escriptori: la taula 3D ocupa el lloc de la foto, a la columna del mig.
-    const img = document.querySelector(".hero-board");
-    if (img) img.outerHTML = board.replace("<onirik-board-3d", '<onirik-board-3d class="hero-board"');
+    if (img) img.hidden = !mq.matches && Boolean(board.isConnected);
+    first = false;
+  };
+
+  import("../../3d/dist/onirik-board.js").then(() => {
+    place();
+    mq.addEventListener("change", place);
   });
 }
 

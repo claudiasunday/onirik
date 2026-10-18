@@ -775,10 +775,10 @@ body.mobile-nav-open {
     padding-bottom: 64px;
   }
 
-  /* Tauleta: el text agafa tot l'espai que deixen els passos. */
+  /* A partir de tauleta: text a l'esquerra i la taula 3D a la dreta. */
   .hero-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 413px);
-    justify-content: space-between;
+    grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+    align-items: center;
     column-gap: var(--space-6);
   }
 }
@@ -786,14 +786,10 @@ body.mobile-nav-open {
 /* Amb prou amplada hi cap la taula al mig, centrada respecte a la
    pàgina (igual que al Figma), i els passos es centren en vertical
    respecte a ella. */
-@media (min-width: 1100px) {
-  .hero-inner {
-    grid-template-columns: minmax(0, 460px) 1fr 413px;
-  }
-
-  .value-steps.value-steps--hero {
-    align-self: center;
-  }
+/* Els 3 passos ja no van dins del hero: surten a la secció de sota
+   (.value-steps-section), també en escriptori. */
+.hero .value-steps.value-steps--hero {
+  display: none;
 }
 
 .hero-board {
@@ -804,10 +800,20 @@ body.mobile-nav-open {
   pointer-events: none;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 860px) {
   .hero-board {
     display: block;
   }
+}
+
+/* La foto queda de reserva (si el JS no carrega): amb la taula 3D posada,
+   s'amaga. I la taula 3D sí que rep el ratolí (es pot arrossegar). */
+.hero-board[hidden] {
+  display: none;
+}
+
+onirik-board-3d.hero-board {
+  pointer-events: auto;
 }
 
 /* Navegació de la capçalera de la Home: pastilla translúcida amb enllaços
@@ -898,9 +904,6 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     --fs-h1-hero: 56px;
   }
 
-  .hero-inner {
-    grid-template-columns: minmax(0, 520px) 1fr 413px;
-  }
 }
 
 .hero-copy h1 {
@@ -946,8 +949,8 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   transform: translateY(-1px);
 }
 
-/* Mòbil i tablet: el CTA ocupa tot l'ample de la columna de text. */
-@media (max-width: 1099px) {
+/* Mòbil: el CTA ocupa tot l'ample de la columna de text. */
+@media (max-width: 859px) {
   .hero-cta-primary {
     width: 100%;
     justify-content: center;
@@ -979,24 +982,16 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   display: none;
 }
 
-/* Tablet (860–1099px): la foto de la taula (escriptori) encara no hi cap,
-   així que fem servir la taula 3D de mòbil a sobre del text; la resta del
-   hero (passos a la dreta, navegació a la capçalera) és la d'escriptori. */
-@media (min-width: 860px) and (max-width: 1099px) {
-  .hero-board-3d-slot {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    margin-bottom: -96px;
+/* A partir de 860px els 3 passos es mostren sota el hero, en fila. */
+@media (min-width: 860px) {
+  .value-steps-section {
+    display: block;
+    padding-top: var(--space-6);
   }
 
-  .hero-board-3d {
-    width: 210px;
-  }
-
-  .hero-copy > :not(.hero-board-3d-slot) {
-    position: relative;
-    z-index: 1;
+  .value-steps-section .value-step {
+    opacity: 1;
+    transform: none;
   }
 }
 
