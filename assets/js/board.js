@@ -8,6 +8,8 @@ const SHAPES = [
   {
     // Cua notada/fishtail ("Peix — la que tiene cola" a les fotos reals).
     id: "peix",
+    // Foto real de la forma (selector de forma del configurador, com al Figma)
+    photo: "assets/images/board-peix-blau.png",
     name: "PEIX",
     tag: "PRO",
     price: 149,
@@ -24,6 +26,8 @@ const SHAPES = [
     // Forma "ull"/fulla, punta al nas i a la cua (com al producte real:
     // "Lasai significa Calma en Euskera").
     id: "lasai",
+    // Foto real de la forma (selector de forma del configurador, com al Figma)
+    photo: "assets/images/board-lasai-blau.png",
     name: "LASAI",
     tag: "INICIACIÓ",
     price: 129,
@@ -39,6 +43,8 @@ const SHAPES = [
     // Nas apuntat + cantell pla/facetat (tall angular, no arrodonit), com
     // a les fotos reals de "La free".
     id: "la-free",
+    // Foto real de la forma (selector de forma del configurador, com al Figma)
+    photo: "assets/images/board-keki-teca-blau.png",
     name: "LA FREE",
     tag: "FREESTYLE",
     price: 139,
@@ -54,6 +60,8 @@ const SHAPES = [
     // Forma arrodonida clàssica (encara no tenim foto real de la Keki:
     // es manté tal com estava).
     id: "keki",
+    // Foto real de la forma (selector de forma del configurador, com al Figma)
+    photo: "assets/images/board-peix-negre-mostassa.png",
     name: "KEKI",
     tag: "+KIDS",
     price: 119,

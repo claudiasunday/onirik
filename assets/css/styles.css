@@ -326,20 +326,26 @@ body[data-page="tenda"] .product-card {
 /* Fitxa de producte: la foto de la taula sobre el fons de la pàgina
    (sense requadre crema ni ombra), panell d'informació blanc i els 3
    passos en fosc amb el número en groc. */
-#fitxa-main .board-preview {
-  background: none;
-}
-
-#fitxa-main .board-preview::after {
-  display: none;
-}
-
 #fitxa-main .board-preview .board-photo {
   position: absolute;
-  inset: 0;
+  inset: 4% 0;
   width: 100%;
-  height: 100%;
+  height: 92%;
   object-fit: contain;
+}
+
+/* A partir de tauleta: columna de la imatge al 35% i panell a la resta.
+   La foto i el selector Davant/Darrere queden centrats a la columna. */
+@media (min-width: 640px) {
+  #fitxa-main {
+    align-items: start;
+    grid-template-columns: minmax(0, 35fr) minmax(0, 65fr);
+    gap: var(--space-5);
+  }
+
+  #fitxa-main .board-preview {
+    max-width: 100%;
+  }
 }
 
 /* Cara de davant / darrere de la taula: les dues fotos ocupen el mateix
@@ -2155,9 +2161,10 @@ body[data-page="tenda"] .page-hero {
   gap: var(--space-5);
 }
 
+/* Escriptori: text al 65% i imatges al 35% de l'ample. */
 @media (min-width: 860px) {
   .prose-layout {
-    grid-template-columns: minmax(0, 720px) 1fr;
+    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
     align-items: start;
   }
 }
@@ -2806,8 +2813,20 @@ button.wizard-cta-link {
   justify-content: center;
 }
 
+/* Les 3 tabs fan el mateix ample i el contingut de cadascuna va centrat:
+   així la barra no "balla" en canviar el text triat. */
 .wizard-steps {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
+  max-width: 720px;
+  justify-content: center;
+}
+
+.wizard-steps li {
+  flex: 1 1 0;
+}
+
+.wizard-steps .wizard-step {
+  flex: 1 1 auto;
   justify-content: center;
 }
 
@@ -2912,21 +2931,6 @@ button.wizard-cta-link {
   text-overflow: ellipsis;
 }
 
-/* Amplada fixa pensada pel nom més llarg possible de cada pas (forma,
-   disseny o color): si no, cada cop que es tria una opció més curta o
-   més llarga que l'anterior, tota la barra es reajusta i "balla". */
-.wizard-step[data-step="1"] .wizard-step-value {
-  min-width: 62px;
-}
-
-.wizard-step[data-step="2"] .wizard-step-value {
-  min-width: 100px;
-}
-
-.wizard-step[data-step="3"] .wizard-step-value {
-  min-width: 60px;
-}
-
 .wizard-step.is-pending .wizard-step-value {
   color: var(--c-muted);
   font-weight: 400;
@@ -2998,31 +3002,16 @@ button.wizard-cta-link {
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: var(--r-card);
-  /* Fons "spotlight" + ombra de terra (en lloc de fons pla): dona un aire
-     més de fotografia de producte a la vista prèvia de la taula. */
-  background: radial-gradient(
-    circle at 50% 38%,
-    var(--c-cream) 0%,
-    var(--c-cream-2) 55%,
-    var(--c-white) 100%
-  );
+  /* Sense fons: la taula queda directament sobre el fons de la pàgina. */
 }
 
-.board-preview::after {
-  content: "";
+.board-preview .shape-photo {
   position: absolute;
-  bottom: 12%;
-  left: 50%;
-  width: 55%;
-  height: 20px;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    ellipse at center,
-    rgba(49, 48, 48, 0.18) 0%,
-    transparent 72%
-  );
-  pointer-events: none;
+  inset: 4% 0;
+  width: 100%;
+  height: 92%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 18px rgba(49, 48, 48, 0.14));
 }
 
 .board-preview svg {
@@ -3302,6 +3291,19 @@ button.wizard-cta-link {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* Foto real de cada forma (fons transparent), centrada dins la mostra. */
+.swatch-shape {
+  position: relative;
+}
+
+.swatch-shape .shape-photo {
+  position: absolute;
+  inset: var(--space-2);
+  width: calc(100% - 2 * var(--space-2));
+  height: calc(100% - 2 * var(--space-2));
+  object-fit: contain;
 }
 
 /* Miniatures de disseny: la mateixa taula de la forma triada, més
@@ -3999,6 +4001,13 @@ body[data-page="boards"] .site-footer {
   font-size: calc(37 * var(--u));
 }
 
+/* Etiqueta petita de cada característica i números sobre les peces:
+   només a la versió de mòbil. */
+.boards-spec-kicker,
+.boards-pin {
+  display: none;
+}
+
 .boards-spec--grip {
   left: calc(218 * var(--u));
   top: calc(190 * var(--u));
@@ -4070,11 +4079,63 @@ body[data-page="boards"] .site-footer {
     display: none;
   }
 
+  .boards-canvas {
+    --bw: min(40vw, 200px);   /* ample de la taula */
+    --rw: min(26vw, 120px);   /* ample del roller */
+  }
+
   .boards-board {
     position: relative;
     left: auto;
     top: auto;
-    width: min(40vw, 200px);
+    width: var(--bw);
+    grid-area: 1 / 1;
+  }
+
+  .boards-roller {
+    grid-area: 1 / 2;
+  }
+
+  /* Números sobre les peces, a la mateixa cel·la de la graella que la
+     peça: 1 i 2 sobre l'eix de la taula (el grip a dalt, el taulell a
+     baix; l'eix sempre es veu encara que giri) i 3 sobre el roller. */
+  .boards-pin {
+    display: grid;
+    place-items: center;
+    position: relative;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--c-orange);
+    color: var(--c-dark);
+    font-family: var(--f-heading);
+    font-size: 13px;
+    font-weight: 900;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 4px 10px rgba(49, 48, 48, 0.25);
+    pointer-events: none;
+  }
+
+  .boards-pin--grip,
+  .boards-pin--ply {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: start;
+  }
+
+  .boards-pin--grip {
+    margin-top: calc(var(--bw) * 0.6);
+  }
+
+  .boards-pin--ply {
+    margin-top: calc(var(--bw) * 1.75);
+  }
+
+  .boards-pin--roller {
+    grid-area: 1 / 2;
+    justify-self: center;
+    align-self: end;
+    margin-bottom: calc(var(--rw) * 1.1);
   }
 
   .boards-roller {
@@ -4087,11 +4148,17 @@ body[data-page="boards"] .site-footer {
     margin-bottom: 4%;
   }
 
+  /* Les tres característiques: cards numerades amb una etiqueta petita
+     (a quina part de la taula correspon) i el nom en gran. */
   .boards-specs {
     grid-column: 1 / -1;
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-2);
     position: relative;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    counter-reset: boards-spec;
   }
 
   .boards-spec,
@@ -4101,29 +4168,50 @@ body[data-page="boards"] .site-footer {
     position: static;
     transform: none;
     width: auto;
-    font-size: 20px;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    column-gap: var(--space-3);
+    row-gap: 2px;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: var(--r-card);
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    font-size: 17px;
+    line-height: 1.25;
+    text-align: left;
     white-space: normal;
+    text-wrap: pretty;
   }
 
   .boards-spec br {
     display: none;
   }
 
-  /* Fletxa corba sobre cada característica, apuntant cap amunt a la peça:
-     les de la taula cap a l'esquerra, la del roller cap a la dreta. */
   .boards-spec::before {
-    content: "";
-    display: block;
-    width: 44px;
-    height: 34px;
-    margin: 0 auto 6px;
-    background: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 34' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 31C31 17 22 7 8 5'/%3E%3Cpath d='M8 5l8-4M8 5l6 7'/%3E%3C/svg%3E") center / contain no-repeat;
+    counter-increment: boards-spec;
+    content: counter(boards-spec);
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--c-orange);
+    color: var(--c-dark);
+    font-family: var(--f-heading);
+    font-size: 15px;
+    font-weight: 900;
   }
 
-  .boards-spec--roller::before {
-    transform: scaleX(-1);
+  .boards-spec-kicker {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted-light);
   }
 
   .boards-all {

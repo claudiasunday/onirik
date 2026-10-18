@@ -112,6 +112,13 @@ function isReachable(n) {
 // --- Render ------------------------------------------------------------
 
 function renderPreview() {
+  // Pas 1 (forma, encara sense disseny): la foto real de la forma triada.
+  // Als passos 2 i 3 el dibuix, que canvia amb el disseny i el color.
+  const shape = currentShape();
+  if (state.step === 1 && shape.photo) {
+    els.preview.innerHTML = `<img class="shape-photo" src="${shape.photo}" alt="${shape.name}" />`;
+    return;
+  }
   els.preview.innerHTML = renderBoardSVG({
     shapeId: currentShape().id,
     designId: state.designId || "fusta-natural",
@@ -146,7 +153,9 @@ function renderShapeStep() {
       selected: i === state.shapeIndex,
       attrs: `data-index="${i}"`,
       swatchClass: "swatch-shape",
-      inner: renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", showLogo: false }),
+      inner: s.photo
+        ? `<img class="shape-photo" src="${s.photo}" alt="" loading="lazy" />`
+        : renderBoardSVG({ shapeId: s.id, designId: "fusta-natural", showLogo: false }),
       name: s.name,
       meta: `<span class="option-card-price">${s.price}€</span>`,
     })
