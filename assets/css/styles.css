@@ -880,6 +880,36 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     display: none;
   }
 
+  /* El hero ocupa just una pantalla i el CTA hi és sempre visible: el text
+     queda a baix i la taula 3D pren l'alçada que sobra (es redueix en
+     pantalles baixes, sense passar dels 210px d'ample). */
+  body[data-page="home"] .hero {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  body[data-page="home"] .hero-inner,
+  body[data-page="home"] .hero-copy {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  body[data-page="home"] .hero-board-3d-slot {
+    flex: 1;
+    min-height: 0;
+  }
+
+  body[data-page="home"] .hero-board-3d {
+    width: auto;
+    height: 100%;
+    max-height: 525px;
+  }
+
   /* En mòbil no hi ha capçalera a cap pàgina: la pastilla de seccions
      (.home-nav--fixed, la injecta layout.js) fa de menú únic. */
   #site-header,
@@ -899,17 +929,19 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     z-index: auto;
   }
 
-  /* Amplada "hug", centrada i fixa a dalt. Fons fosc translúcid perquè es
-     llegeixi tant sobre la foto del hero com sobre el fons sorra. */
+  /* Ample complet amb 16px de marge a cada costat, fixa a dalt. Els
+     elements es reparteixen per tota la pastilla. Fons fosc translúcid
+     perquè es llegeixi tant sobre la foto del hero com sobre el fons sorra. */
   .home-nav.home-nav--fixed {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: fixed;
     top: var(--space-5);
-    left: 50%;
-    transform: translateX(-50%);
+    left: 16px;
+    right: 16px;
     z-index: 100;
-    width: max-content;
-    max-width: calc(100vw - 32px);
+    width: auto;
     background: rgba(49, 48, 48, 0.72);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
