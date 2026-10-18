@@ -40,7 +40,7 @@ function renderHomeNav(extraClass = "") {
   const current = document.body.dataset.page || "";
   // A la versió fixa (mòbil) no hi ha capçalera: el símbol del logo torna a l'inici.
   const homeLink = extraClass.includes("home-nav--fixed")
-    ? `<a class="home-nav-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici"><img src="assets/images/logo-icon.png" width="26" height="23" alt="" /></a>`
+    ? `<a class="home-nav-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici"${current === "home" ? ' aria-current="page"' : ""}><img src="assets/images/logo-icon.png" width="26" height="23" alt="" /></a>`
     : "";
   // ...i a l'altre extrem, la cistella (amb el comptador de cart.js).
   const cartLink = extraClass.includes("home-nav--fixed")
@@ -132,6 +132,36 @@ function initHeaderScroll() {
   window.addEventListener("scroll", onScroll, { passive: true });
 }
 
+// Cards de producte i ofici: només a la pàgina BOARD, sobre el teaser de contacte.
+const CRAFT_CARDS = `
+      <ul class="craft-cards" aria-label="Com fem les taules">
+        <li class="craft-card">
+          <h3>Fetes a mà a l'Empordà</h3>
+          <p>Dissenyem, tallem i acabem cada taula al nostre taller de l'Empordà, una a una.</p>
+        </li>
+        <li class="craft-card">
+          <h3>Fusta i acabats artesans</h3>
+          <p>Fusta seleccionada peça a peça i acabats fets a mà, pensats per a l'ús de cada dia.</p>
+        </li>
+        <li class="craft-card">
+          <h3>Única, com tu</h3>
+          <p>Quatre formes (Peix, Lasai, La Free i Keki), tres acabats i 8 colors: no en trobaràs dues d'iguals.</p>
+        </li>
+        <li class="craft-card">
+          <h3>Bedoll finlandès</h3>
+          <p>Taulell de contraxapat marí fenòlic de bedoll finlandès: resistent, estable i fet per durar.</p>
+        </li>
+        <li class="craft-card">
+          <h3>Cream Grip 4.0</h3>
+          <p>Una superfície amb grip perquè els peus no rellisquin a cada moviment.</p>
+        </li>
+        <li class="craft-card">
+          <h3>Roller de suro massís</h3>
+          <p>11 cm de diàmetre, lleuger i amb el grip just per practicar dins o fora de casa.</p>
+        </li>
+      </ul>
+`;
+
 function renderFooter() {
   const mount = document.getElementById("site-footer");
   if (!mount) return;
@@ -141,6 +171,7 @@ function renderFooter() {
       ? ""
       : `
     <section class="container">
+${current === "boards" ? CRAFT_CARDS : ""}
       <div class="contact-teaser">
         <div>
           <h2>Vols una taula personalitzada?</h2>

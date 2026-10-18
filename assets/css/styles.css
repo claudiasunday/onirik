@@ -12,6 +12,8 @@
   --c-cream-2: #fbf3ea;
   /* Fons de pàgina de la Home (beix sorra). */
   --c-sand: #d9cfc2;
+  /* Fons gris clar càlid de la Tenda i la Home (Figma). */
+  --c-page: #f2f1f0;
   --c-muted: #b1b2b4;
   /* Mateix rol de "text secundari" que --c-muted, però per a fons clars:
      b1b2b4 sobre blanc/crema només fa ~2.1:1 de contrast (il·legible per
@@ -300,7 +302,7 @@ body[data-page="home"] main {
    passen a blanc i els blocs crema (beneficis, cinta) a crema clar
    perquè continuïn destacant sobre el fons. */
 body[data-page="home"] {
-  background: var(--c-sand);
+  background: var(--c-page);
 }
 
 body[data-page="home"] .product-card {
@@ -308,7 +310,17 @@ body[data-page="home"] .product-card {
 }
 
 body[data-page="home"] .value-pill {
-  background: var(--c-cream-2);
+  background: var(--c-white);
+}
+
+/* Tenda (i fitxa, que comparteix data-page): fons gris clar càlid i
+   targetes blanques, com al Figma. */
+body[data-page="tenda"] {
+  background: var(--c-page);
+}
+
+body[data-page="tenda"] .product-card {
+  background: var(--c-white);
 }
 
 /* "Per què un balance board?" a la Home: bloc negre amb text blanc. */
@@ -1001,6 +1013,18 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     filter: brightness(0) invert(1);
   }
 
+  /* A l'inici, el símbol va en groc (com l'enllaç actiu): el pintem amb
+     una màscara del mateix PNG perquè el color sigui exacte. */
+  .home-nav--fixed .home-nav-logo[aria-current="page"] {
+    background: var(--c-orange);
+    -webkit-mask: url("../images/logo-icon.png") center / 1.85em auto no-repeat content-box;
+    mask: url("../images/logo-icon.png") center / 1.85em auto no-repeat content-box;
+  }
+
+  .home-nav--fixed .home-nav-logo[aria-current="page"] img {
+    visibility: hidden;
+  }
+
   .value-steps-section {
     display: block;
     padding-top: var(--space-5);
@@ -1687,6 +1711,47 @@ section {
   margin-top: var(--space-1);
 }
 
+/* Cards "fetes a mà a l'Empordà": sobre el contact-teaser, al peu de
+   totes les pàgines que el mostren. Mateix llenguatge que el teaser. */
+.craft-cards {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .craft-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 860px) {
+  .craft-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.craft-card {
+  background: var(--c-dark);
+  color: var(--c-white);
+  border-radius: var(--r-card);
+  padding: var(--space-4) var(--space-5);
+}
+
+.craft-card h3 {
+  font-size: 16px;
+  color: var(--c-orange);
+}
+
+.craft-card p {
+  color: var(--c-muted);
+  font-size: 14px;
+  margin-top: var(--space-1);
+}
+
 /* ---- Pròxim esdeveniment (calendari de tallers) -------------------------- */
 
 .event-teaser {
@@ -1983,6 +2048,12 @@ section {
 .partners-ribbon-track a:hover img,
 .partners-ribbon-track img:hover {
   opacity: 1;
+}
+
+/* Logos que arriben en color (p. ex. Skatia, groc): els passem al mateix
+   gris que la resta perquè la cinta es vegi uniforme. */
+.partners-ribbon-track img.partner-logo--mono {
+  filter: brightness(0) invert(0.35);
 }
 
 .partners-ribbon-dot {

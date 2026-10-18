@@ -239,6 +239,21 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
   function resize(uiSafe = !hero) {
     const w = container.clientWidth, h = container.clientHeight;
     if (!w || !h) return;
+    if (hero) {
+      // Hero: el canvas sobresurt del component (CSS) perquè la taula no es retalli en girar-la.
+      // L'encaix es calcula amb la mida del component i després s'obre el camp de visió fins a la
+      // mida del canvas: la taula es veu igual de gran i centrada, però amb aire al voltant.
+      const cw = canvas.clientWidth || w, ch = canvas.clientHeight || h;
+      renderer.setSize(cw, ch, false);
+      camera.clearViewOffset();
+      camera.fov = cam.fov; camera.aspect = w / h;
+      placeCamera();
+      camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(deg(cam.fov) / 2) * ch / h));
+      camera.aspect = cw / ch;
+      camera.updateProjectionMatrix();
+      requestRender();
+      return;
+    }
     renderer.setSize(w, h, false);
     const safe = uiSafe ? h * cam.uiSafeFrac : 0;           // proporcional: el pòster encaixa igual a qualsevol mida
     camera.aspect = w / (h - safe);
@@ -270,6 +285,8 @@ export async function createViewer({ canvas, container, D, tex, cfg = CONFIG, re
     heroConfig: H,
     /** Hero: pose objectiu en graus, relativa a la pose base (yaw = eix vertical, tilt = inclinació) */
     setPose({ yaw = poseTarget.yaw, tilt = poseTarget.tilt } = {}) { poseTarget.yaw = yaw; poseTarget.tilt = tilt; requestRender(); },
+    /** Hero: pose objectiu actual en graus ({ yaw, tilt }) */
+    get pose() { return { yaw: poseTarget.yaw, tilt: poseTarget.tilt }; },
     /** Hero: rotació contínua en graus/segon (0 = parada) */
     setAutoRotate(degPerSec) { autoRotate = degPerSec; lastT = 0; requestRender(); },
     /** Pausa el bucle (fora de pantalla o pestanya amagada) */

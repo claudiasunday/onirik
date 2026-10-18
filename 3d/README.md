@@ -26,6 +26,7 @@ els fitxers de `dist/` i `assets/` ja estan generats.
 ```
 
 - Escriptori (ratolí): la taula segueix el cursor i gira una mica en fer scroll.
+- Arrossegar la gira i n'inclina l'eix: amb el ratolí de seguida; amb el dit, mantenint-lo premut ~0,25 s (un lliscament normal fa scroll). En deixar-la, torna a la pose i continua girant.
 - Pantalles tàctils: gira sola (una volta cada ~22 s). No captura el dit: l'scroll de la pàgina funciona igual.
 - Fora de pantalla o amb la pestanya amagada, s'atura (0 fotogrames). Amb "reduir moviment" es queda quieta.
 - Pòster propi (`assets/poster-hero.webp`, fons transparent) amb la mateixa pose, perquè el pas a 3D no salti.

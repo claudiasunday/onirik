@@ -39,7 +39,12 @@ canvas:active { cursor: grabbing; }
 .toggle button[aria-pressed="true"] { background: var(--ob-active-bg); color: var(--ob-active-fg); }
 .toggle button:focus-visible { outline: 2px solid var(--ob-focus); outline-offset: 2px; }
 :host([mode="hero"]) { aspect-ratio: var(--ob-aspect, 1 / 1); }
-:host([mode="hero"]) canvas { pointer-events: none; touch-action: auto; cursor: auto; }
+:host([mode="hero"]) { contain: layout style; }
+/* El canvas sobresurt del component perquè la taula no es retalli en girar-la o inclinar-la */
+:host([mode="hero"]) canvas { pointer-events: none; touch-action: auto; cursor: auto; left: -20%; top: -20%; width: 140%; height: 140%; }
+:host([mode="hero"][pose="front"]) canvas { left: -100%; width: 300%; top: -8%; height: 116%; }
+:host([mode="hero"]) { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+:host([mode="hero"][data-dragging]) { cursor: grabbing; }
 @media (prefers-reduced-motion: reduce) { .poster, canvas, .toggle { transition: none; } }
 `;
 
@@ -147,6 +152,7 @@ class OnirikBoard3D extends HTMLElement {
     const spin = this.hasAttribute('autorotate');
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
     let px = 0, py = 0, sp = 0;
+    let drag = null, hold = null;                   // arrossegament (més avall)
 
     const scrollProgress = () => {                  // 0 a dalt de tot · 1 quan el hero ja ha sortit per dalt
       const r = this.getBoundingClientRect();
@@ -161,13 +167,55 @@ class OnirikBoard3D extends HTMLElement {
       addEventListener('pointermove', (e) => {
         px = (e.clientX / innerWidth) * 2 - 1;
         py = (e.clientY / innerHeight) * 2 - 1;
-        if (this.#onScreen) push();
+        if (this.#onScreen && !drag) push();
       }, opt);
-      document.documentElement.addEventListener('pointerleave', () => { px = 0; py = 0; push(); }, opt);
+      document.documentElement.addEventListener('pointerleave', () => { px = 0; py = 0; if (!drag) push(); }, opt);
     }
-    if (!fine || spin) viewer.setAutoRotate(H.autoRotateDegPerSec);
-    addEventListener('scroll', () => { sp = scrollProgress(); if (this.#onScreen) push(); }, opt);
+    const autoRotate = () => { if (!fine || spin) viewer.setAutoRotate(H.autoRotateDegPerSec); };
+    autoRotate();
+    addEventListener('scroll', () => { sp = scrollProgress(); if (this.#onScreen && !drag) push(); }, opt);
     sp = scrollProgress(); push();
+
+    // Arrossegar per girar la taula (yaw) i inclinar-ne l'eix (tilt). Amb el ratolí, de seguida;
+    // amb el dit, després de mantenir-lo premut un moment: un lliscament normal continua fent scroll.
+    const DEG_PER_PX = 0.5, MAX_TILT = 75, HOLD_MS = 250;
+    const grab = (id, x, y) => {
+      hold = null;
+      drag = { id, x, y, ...viewer.pose };
+      viewer.setAutoRotate(0);
+      try { this.setPointerCapture(id); } catch {}
+      this.dataset.dragging = '';
+    };
+    const release = () => {
+      if (hold) { clearTimeout(hold.timer); hold = null; }
+      if (!drag) return;
+      drag = null;
+      delete this.dataset.dragging;
+      push();                                         // l'eix torna a la pose base, suau
+      autoRotate();
+    };
+    const sig = { signal: ac.signal };
+    this.addEventListener('pointerdown', (e) => {
+      if (e.button || drag) return;
+      if (e.pointerType === 'mouse') { e.preventDefault(); grab(e.pointerId, e.clientX, e.clientY); return; }
+      release();
+      const { pointerId: id, clientX: x, clientY: y } = e;
+      hold = { id, x, y, timer: setTimeout(() => grab(id, x, y), HOLD_MS) };
+    }, sig);
+    this.addEventListener('pointermove', (e) => {
+      if (hold && e.pointerId === hold.id && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) release();
+      if (!drag || e.pointerId !== drag.id) return;
+      const yaw = drag.yaw + (e.clientX - drag.x) * DEG_PER_PX;
+      const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, drag.tilt + (e.clientY - drag.y) * DEG_PER_PX));
+      viewer.setPose({ yaw, tilt });
+      viewer.snapPose();
+    }, sig);
+    this.addEventListener('pointerup', release, sig);
+    this.addEventListener('pointercancel', release, sig);
+    this.addEventListener('lostpointercapture', release, sig);
+    // Amb el dit agafat, la pàgina no fa scroll ni surt el menú contextual
+    this.addEventListener('touchmove', (e) => { if (drag) e.preventDefault(); }, { passive: false, signal: ac.signal });
+    this.addEventListener('contextmenu', (e) => { if (drag || hold) e.preventDefault(); }, sig);
 
     const sync = () => viewer.setRunning(this.#onScreen && !document.hidden);
     document.addEventListener('visibilitychange', sync, { signal: ac.signal });
