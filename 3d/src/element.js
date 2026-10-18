@@ -178,13 +178,21 @@ class OnirikBoard3D extends HTMLElement {
 
     // Arrossegar per girar la taula (yaw) i inclinar-ne l'eix (tilt). Amb el ratolí, de seguida;
     // amb el dit, després de mantenir-lo premut un moment: un lliscament normal continua fent scroll.
-    const DEG_PER_PX = 0.5, MAX_TILT = 75, HOLD_MS = 250;
+    // El dit va amb touch events: el preventDefault del touchmove és el que bloqueja l'scroll de
+    // manera fiable a iOS i Android (amb pointer events el navegador cancel·la el gest per fer scroll).
+    const DEG_PER_PX = 0.5, MAX_TILT = 75, HOLD_MS = 250, SLOP_PX = 10;
     const grab = (id, x, y) => {
       hold = null;
       drag = { id, x, y, ...viewer.pose };
       viewer.setAutoRotate(0);
-      try { this.setPointerCapture(id); } catch {}
+      if (typeof id === 'number') { try { this.setPointerCapture(id); } catch {} }
       this.dataset.dragging = '';
+    };
+    const moveTo = (x, y) => {
+      const yaw = drag.yaw + (x - drag.x) * DEG_PER_PX;
+      const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, drag.tilt + (y - drag.y) * DEG_PER_PX));
+      viewer.setPose({ yaw, tilt });
+      viewer.snapPose();
     };
     const release = () => {
       if (hold) { clearTimeout(hold.timer); hold = null; }
@@ -195,26 +203,33 @@ class OnirikBoard3D extends HTMLElement {
       autoRotate();
     };
     const sig = { signal: ac.signal };
+    // Ratolí (i llapis)
     this.addEventListener('pointerdown', (e) => {
-      if (e.button || drag) return;
-      if (e.pointerType === 'mouse') { e.preventDefault(); grab(e.pointerId, e.clientX, e.clientY); return; }
+      if (e.pointerType === 'touch' || e.button || drag) return;
+      e.preventDefault();
+      grab(e.pointerId, e.clientX, e.clientY);
+    }, sig);
+    this.addEventListener('pointermove', (e) => { if (drag && drag.id === e.pointerId) moveTo(e.clientX, e.clientY); }, sig);
+    const endPointer = (e) => { if (drag && drag.id === e.pointerId) release(); };
+    this.addEventListener('pointerup', endPointer, sig);
+    this.addEventListener('pointercancel', endPointer, sig);
+    this.addEventListener('lostpointercapture', endPointer, sig);
+    // Dit
+    this.addEventListener('touchstart', (e) => {
       release();
-      const { pointerId: id, clientX: x, clientY: y } = e;
-      hold = { id, x, y, timer: setTimeout(() => grab(id, x, y), HOLD_MS) };
-    }, sig);
-    this.addEventListener('pointermove', (e) => {
-      if (hold && e.pointerId === hold.id && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) release();
-      if (!drag || e.pointerId !== drag.id) return;
-      const yaw = drag.yaw + (e.clientX - drag.x) * DEG_PER_PX;
-      const tilt = Math.max(-MAX_TILT, Math.min(MAX_TILT, drag.tilt + (e.clientY - drag.y) * DEG_PER_PX));
-      viewer.setPose({ yaw, tilt });
-      viewer.snapPose();
-    }, sig);
-    this.addEventListener('pointerup', release, sig);
-    this.addEventListener('pointercancel', release, sig);
-    this.addEventListener('lostpointercapture', release, sig);
-    // Amb el dit agafat, la pàgina no fa scroll ni surt el menú contextual
-    this.addEventListener('touchmove', (e) => { if (drag) e.preventDefault(); }, { passive: false, signal: ac.signal });
+      if (e.touches.length !== 1) return;            // dos dits: pessic/zoom del navegador
+      const { clientX: x, clientY: y } = e.touches[0];
+      hold = { x, y, timer: setTimeout(() => grab('touch', x, y), HOLD_MS) };
+    }, { passive: true, signal: ac.signal });
+    this.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (hold && Math.hypot(t.clientX - hold.x, t.clientY - hold.y) > SLOP_PX) { release(); return; }
+      if (!drag || drag.id !== 'touch') return;
+      if (e.cancelable) e.preventDefault();          // amb la taula agafada, la pàgina no fa scroll
+      moveTo(t.clientX, t.clientY);
+    }, { passive: false, signal: ac.signal });
+    this.addEventListener('touchend', release, sig);
+    this.addEventListener('touchcancel', release, sig);
     this.addEventListener('contextmenu', (e) => { if (drag || hold) e.preventDefault(); }, sig);
 
     const sync = () => viewer.setRunning(this.#onScreen && !document.hidden);
