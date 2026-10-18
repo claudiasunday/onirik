@@ -77,19 +77,19 @@ function wireFitxaCta(entryId) {
   if (!qtyValue || !addBtn) return;
 
   let qty = 1;
-  minusBtn.addEventListener("click", () => {
-    qty = Math.max(1, qty - 1);
+  // El mínim és 1: a 1 el botó de treure queda desactivat.
+  const setQty = (n) => {
+    qty = Math.max(1, n);
     qtyValue.textContent = qty;
-  });
-  plusBtn.addEventListener("click", () => {
-    qty += 1;
-    qtyValue.textContent = qty;
-  });
+    minusBtn.disabled = qty <= 1;
+  };
+  setQty(1);
+  minusBtn.addEventListener("click", () => setQty(qty - 1));
+  plusBtn.addEventListener("click", () => setQty(qty + 1));
   addBtn.addEventListener("click", () => {
     addToCart(entryId, qty);
     confirm.hidden = false;
-    qty = 1;
-    qtyValue.textContent = qty;
+    setQty(1);
   });
   buyNowBtn.addEventListener("click", () => {
     addToCart(entryId, qty);
@@ -97,9 +97,13 @@ function wireFitxaCta(entryId) {
   });
 }
 
-function setFitxa({ previewHtml, title, badge, tagline, priceHtml, extra = "", description, activitiesHtml = "", specs, ctaTitle, entryId }) {
+function setFitxa({ previewHtml, backHtml = "", title, badge, tagline, priceHtml, extra = "", description, activitiesHtml = "", specs, ctaTitle, entryId }) {
   document.title = `${title} — ONIRIK BOARDS`;
-  document.getElementById("fitxa-preview").innerHTML = previewHtml;
+  const preview = document.getElementById("fitxa-preview");
+  preview.innerHTML = backHtml
+    ? `<div class="fitxa-face" data-face="front">${previewHtml}</div><div class="fitxa-face" data-face="back" hidden>${backHtml}</div>`
+    : previewHtml;
+  wireFaceToggle(preview, Boolean(backHtml));
   document.getElementById("fitxa-detail").innerHTML = `
     <div class="option-head">
       <h1>${title}</h1>
@@ -116,6 +120,21 @@ function setFitxa({ previewHtml, title, badge, tagline, priceHtml, extra = "", d
   wireFitxaCta(entryId);
 }
 
+/** Selector Davant / Darrere de la foto (només a les taules, que tenen foto de la cara de sota). */
+function wireFaceToggle(preview, enabled) {
+  const toggle = document.getElementById("fitxa-face-toggle");
+  if (!toggle) return;
+  toggle.hidden = !enabled;
+  if (!enabled) return;
+  const buttons = [...toggle.querySelectorAll("button")];
+  const show = (face) => {
+    preview.querySelectorAll(".fitxa-face").forEach((el) => { el.hidden = el.dataset.face !== face; });
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.face === face)));
+  };
+  buttons.forEach((b) => { b.onclick = () => show(b.dataset.face); });
+  show("front");
+}
+
 function renderBoardFitxa(entry) {
   const shape = SHAPES.find((s) => s.id === entry.shapeId);
   const design = DESIGNS.find((d) => d.id === entry.designId);
@@ -125,6 +144,7 @@ function renderBoardFitxa(entry) {
 
   setFitxa({
     previewHtml: `${entry.discount ? `<span class="fitxa-badge">-${entry.discount}%</span>` : ""}${renderBoardThumb(entry)}`,
+    backHtml: `<img class="board-photo" src="assets/images/board-back-${shape.id}.png" alt="${shape.name}, cara de sota" loading="lazy" />`,
     title,
     badge: { label: shape.tag },
     tagline: shape.tagline,
