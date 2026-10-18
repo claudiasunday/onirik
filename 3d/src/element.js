@@ -43,8 +43,8 @@ canvas:active { cursor: grabbing; }
 /* El canvas sobresurt del component perquè la taula no es retalli en girar-la o inclinar-la */
 :host([mode="hero"]) canvas { pointer-events: none; touch-action: auto; cursor: auto; left: -20%; top: -20%; width: 140%; height: 140%; }
 :host([mode="hero"][pose="front"]) canvas { left: -100%; width: 300%; top: -8%; height: 116%; }
-:host([mode="hero"]) { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-:host([mode="hero"][data-dragging]) { cursor: grabbing; }
+:host([mode="hero"]) { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: pan-y pinch-zoom; transition: transform .2s ease; }
+:host([mode="hero"][data-dragging]) { cursor: grabbing; transform: scale(1.04); }
 @media (prefers-reduced-motion: reduce) { .poster, canvas, .toggle { transition: none; } }
 `;
 
@@ -180,7 +180,7 @@ class OnirikBoard3D extends HTMLElement {
     // amb el dit, després de mantenir-lo premut un moment: un lliscament normal continua fent scroll.
     // El dit va amb touch events: el preventDefault del touchmove és el que bloqueja l'scroll de
     // manera fiable a iOS i Android (amb pointer events el navegador cancel·la el gest per fer scroll).
-    const DEG_PER_PX = 0.5, MAX_TILT = 75, HOLD_MS = 250, SLOP_PX = 10;
+    const DEG_PER_PX = 0.5, MAX_TILT = 75, HOLD_MS = 150, SLOP_PX = 8;
     const grab = (id, x, y) => {
       hold = null;
       drag = { id, x, y, ...viewer.pose };
@@ -223,7 +223,13 @@ class OnirikBoard3D extends HTMLElement {
     }, { passive: true, signal: ac.signal });
     this.addEventListener('touchmove', (e) => {
       const t = e.touches[0];
-      if (hold && Math.hypot(t.clientX - hold.x, t.clientY - hold.y) > SLOP_PX) { release(); return; }
+      if (hold) {
+        const dx = t.clientX - hold.x, dy = t.clientY - hold.y;
+        // Lliscar en horitzontal la gira de seguida (no competeix amb l'scroll, que és vertical);
+        // en vertical, sense haver-la mantingut premuda, és scroll de la pàgina.
+        if (Math.abs(dx) > SLOP_PX && Math.abs(dx) > Math.abs(dy)) { const { x, y } = hold; clearTimeout(hold.timer); grab('touch', x, y); }
+        else if (Math.hypot(dx, dy) > SLOP_PX) { release(); return; }
+      }
       if (!drag || drag.id !== 'touch') return;
       if (e.cancelable) e.preventDefault();          // amb la taula agafada, la pàgina no fa scroll
       moveTo(t.clientX, t.clientY);
