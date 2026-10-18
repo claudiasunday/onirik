@@ -9,7 +9,7 @@ const SHAPES = [
     // Cua notada/fishtail ("Peix — la que tiene cola" a les fotos reals).
     id: "peix",
     // Foto real de la forma (selector de forma del configurador, com al Figma)
-    photo: "assets/images/board-peix-blau.png",
+    photo: "assets/images/board-peix-negre-mostassa.png",
     name: "PEIX",
     tag: "PRO",
     price: 149,
@@ -19,14 +19,14 @@ const SHAPES = [
     activities: ["surf", "snow", "skim"],
     // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M96.4,6.0 L93.0,7.7 L87.4,12.2 L76.5,22.8 L69.0,32.3 L63.9,40.7 L59.2,50.5 L56.1,59.7 L52.5,73.7 " +
-      "L48.8,92.1 L46.6,110.6 L45.8,126.0 L46.6,182.7 L49.9,236.1 L55.3,279.5 L57.2,291.8 L59.5,294.0 " +
-      "L61.7,293.7 L91.3,276.4 L94.1,275.3 L99.7,274.7 L104.5,275.0 L108.7,276.4 L138.3,293.7 " +
-      "L140.5,294.0 L142.5,292.6 L147.8,256.8 L150.6,229.7 L152.8,195.6 L154.2,126.0 L153.4,110.6 " +
-      "L151.2,92.1 L147.5,73.7 L142.8,56.1 L138.9,46.0 L132.7,34.8 L123.5,22.8 L109.5,9.6 L103.6,6.0 " +
-      "L101.4,6.0 L100.0,7.1 L98.6,6.0 Z",
+      "M98.7,6.0 L83.1,27.3 L70.8,47.1 L61.8,65.6 L56.1,81.8 L51.0,106.7 L47.4,134.9 L46.5,152.2 " +
+      "L46.8,184.9 L48.6,205.6 L53.7,234.1 L59.7,243.7 L66.0,260.7 L69.6,268.2 L82.2,290.1 L84.6,293.4 " +
+      "L86.1,294.0 L88.5,293.4 L99.3,277.5 L100.7,277.5 L111.5,293.4 L113.9,294.0 L115.4,293.4 " +
+      "L117.8,290.1 L130.4,268.2 L134.0,260.7 L140.3,243.7 L145.7,235.6 L146.9,232.3 L151.4,205.6 " +
+      "L152.9,190.0 L153.5,177.4 L153.2,144.5 L151.7,126.2 L147.5,97.7 L143.9,81.8 L139.4,68.6 " +
+      "L130.7,49.8 L122.3,35.4 L103.1,7.8 L101.3,6.0 Z",
     // Posició del disc amb el logo gravat (com a la foto)
-    disc: [100, 150],
+    disc: [68, 231],
   },
   {
     // Forma "ull"/fulla, punta al nas i a la cua (com al producte real:
@@ -56,7 +56,7 @@ const SHAPES = [
     // a les fotos reals de "La free".
     id: "la-free",
     // Foto real de la forma (selector de forma del configurador, com al Figma)
-    photo: "assets/images/board-keki-teca-blau.png",
+    photo: "assets/images/board-keki-negre.png",
     name: "LA FREE",
     tag: "FREESTYLE",
     price: 139,
@@ -66,20 +66,20 @@ const SHAPES = [
     activities: ["surf", "skim"],
     // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M97.5,6.0 L91.8,9.2 L82.8,17.9 L77.6,24.8 L71.8,34.7 L65.7,46.8 L57.6,66.2 L53.3,78.9 L46.6,109.9 " +
-      "L44.6,129.3 L45.1,169.0 L48.6,210.9 L55.3,256.1 L61.6,282.1 L64.3,289.9 L65.7,292.3 L69.8,294.0 " +
-      "L130.2,294.0 L133.4,292.8 L135.2,291.1 L139.8,276.9 L145.0,254.6 L149.9,222.8 L153.1,193.6 " +
-      "L154.9,169.0 L155.4,129.3 L154.3,116.0 L150.8,96.0 L145.9,76.0 L136.6,52.0 L129.7,37.3 " +
-      "L121.9,23.9 L112.6,12.9 L104.2,6.6 Z",
+      "M98.8,6.0 L95.8,7.2 L89.6,12.0 L83.0,18.8 L76.4,28.1 L64.2,51.7 L58.5,65.4 L52.8,82.4 L46.9,109.9 " +
+      "L44.5,134.3 L45.1,170.1 L48.4,207.5 L51.7,232.2 L55.8,256.4 L60.6,277.0 L64.2,288.3 L66.3,292.8 " +
+      "L67.8,294.0 L132.2,294.0 L134.3,291.9 L139.4,277.0 L142.7,263.3 L146.6,243.6 L151.0,212.5 " +
+      "L154.3,179.1 L155.2,163.0 L155.5,134.3 L154.6,120.9 L151.9,103.0 L147.2,82.4 L141.5,65.4 " +
+      "L133.4,46.6 L123.6,28.1 L115.5,17.0 L110.4,12.0 L104.2,7.2 L101.2,6.0 Z",
     // Posició del disc amb el logo gravat (com a la foto)
-    disc: [69, 236],
+    disc: [100, 150],
   },
   {
     // Forma arrodonida clàssica (encara no tenim foto real de la Keki:
     // es manté tal com estava).
     id: "keki",
     // Foto real de la forma (selector de forma del configurador, com al Figma)
-    photo: "assets/images/board-peix-negre-mostassa.png",
+    photo: "assets/images/board-peix-blau.png",
     name: "KEKI",
     tag: "+KIDS",
     price: 119,
@@ -89,14 +89,14 @@ const SHAPES = [
     activities: ["skim", "tonificacio"],
     // Silueta traçada de la foto real (simètrica), viewBox 200x300
     path:
-      "M98.7,6.0 L83.1,27.3 L70.8,47.1 L61.8,65.6 L56.1,81.8 L51.0,106.7 L47.4,134.9 L46.5,152.2 " +
-      "L46.8,184.9 L48.6,205.6 L53.7,234.1 L59.7,243.7 L66.0,260.7 L69.6,268.2 L82.2,290.1 L84.6,293.4 " +
-      "L86.1,294.0 L88.5,293.4 L99.3,277.5 L100.7,277.5 L111.5,293.4 L113.9,294.0 L115.4,293.4 " +
-      "L117.8,290.1 L130.4,268.2 L134.0,260.7 L140.3,243.7 L145.7,235.6 L146.9,232.3 L151.4,205.6 " +
-      "L152.9,190.0 L153.5,177.4 L153.2,144.5 L151.7,126.2 L147.5,97.7 L143.9,81.8 L139.4,68.6 " +
-      "L130.7,49.8 L122.3,35.4 L103.1,7.8 L101.3,6.0 Z",
+      "M96.4,6.0 L93.0,7.7 L87.4,12.2 L76.5,22.8 L69.0,32.3 L63.9,40.7 L59.2,50.5 L56.1,59.7 L52.5,73.7 " +
+      "L48.8,92.1 L46.6,110.6 L45.8,126.0 L46.6,182.7 L49.9,236.1 L55.3,279.5 L57.2,291.8 L59.5,294.0 " +
+      "L61.7,293.7 L91.3,276.4 L94.1,275.3 L99.7,274.7 L104.5,275.0 L108.7,276.4 L138.3,293.7 " +
+      "L140.5,294.0 L142.5,292.6 L147.8,256.8 L150.6,229.7 L152.8,195.6 L154.2,126.0 L153.4,110.6 " +
+      "L151.2,92.1 L147.5,73.7 L142.8,56.1 L138.9,46.0 L132.7,34.8 L123.5,22.8 L109.5,9.6 L103.6,6.0 " +
+      "L101.4,6.0 L100.0,7.1 L98.6,6.0 Z",
     // Posició del disc amb el logo gravat (com a la foto)
-    disc: [70, 236],
+    disc: [100, 150],
   },
 ];
 
@@ -348,10 +348,24 @@ function renderRollerPhoto() {
  * quan n'hi ha (camp `photo` a l'entrada), i si no cau al render SVG
  * dinàmic (necessari per a packs/edicions on el color es tria en viu).
  */
-function renderBoardThumb(entry) {
+/**
+ * Foto de l'altra cara d'una taula amb foto: si la foto és la cara amb grip,
+ * la de sota (fusta); si és la cara del dibuix, la mateixa forma amb grip.
+ */
+function entryAltPhoto(entry) {
+  if (!entry.photo) return null;
+  // Les imatges de reverse/ tenen la mateixa silueta que cada foto (en mirall):
+  // fusta per a les fotos amb grip, i grip per a la que es presenta pel dibuix.
+  return `assets/images/reverse/${entry.photo.split("/").pop().replace(".png", ".webp")}`;
+}
+
+function renderBoardThumb(entry, { withAlt = false } = {}) {
   if (entry.photo) {
     const shape = SHAPES.find((s) => s.id === entry.shapeId);
-    return `<img class="board-photo" src="${entry.photo}" alt="${shape ? shape.name : ""}" loading="lazy" />`;
+    const alt = withAlt ? entryAltPhoto(entry) : null;
+    return `<img class="board-photo" src="${entry.photo}" alt="${shape ? shape.name : ""}" loading="lazy" />${
+      alt ? `<img class="board-photo board-photo--alt" src="${alt}" alt="" loading="lazy" aria-hidden="true" />` : ""
+    }`;
   }
   return renderBoardSVG({
     shapeId: entry.shapeId,
@@ -362,16 +376,18 @@ function renderBoardThumb(entry) {
 
 // Catàleg de mostra usat tant a la Home ("Edició limitada") com a la Tenda.
 const CATALOG = [
-  { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null, photo: "assets/images/board-peix-diagonal-verd.png" },
+  // face: "design" = la foto mostra la cara del dibuix (la de sota, descoberta); la
+  // cara amb grip és l'altra. Per defecte les fotos mostren la cara amb grip.
+  { id: "p1", shapeId: "peix", designId: "diagonal", colorId: "taronja", discount: null, photo: "assets/images/board-peix-diagonal-verd.png", face: "design" },
   { id: "p2", shapeId: "lasai", designId: "fusta-natural", colorId: null, discount: null },
   { id: "p3", shapeId: "keki", designId: "franja-dreta", colorId: "negre", discount: 20 },
   { id: "p4", shapeId: "peix", designId: "franja-dreta", colorId: "taronja", discount: null },
   { id: "p5", shapeId: "lasai", designId: "fusta-teca", colorId: null, discount: null },
-  { id: "p6", shapeId: "keki", designId: "solid", colorId: "negre", discount: 15, photo: "assets/images/board-keki-negre.png" },
+  { id: "p6", shapeId: "la-free", designId: "solid", colorId: "negre", discount: 15, photo: "assets/images/board-keki-negre.png" },
   { id: "p7", shapeId: "la-free", designId: "meitat", colorId: "taronja", discount: null },
   { id: "p8", shapeId: "lasai", designId: "franges-centre", colorId: "teal", discount: null },
   { id: "p9", shapeId: "la-free", designId: "fusta-natural", colorId: null, discount: null },
-  { id: "p10", shapeId: "peix", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-peix-blau.png" },
+  { id: "p10", shapeId: "keki", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-peix-blau.png" },
   { id: "p11", shapeId: "peix", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-peix-negre-mostassa.png" },
   { id: "p12", shapeId: "lasai", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-lasai-blau.png" },
   { id: "p13", shapeId: "la-free", designId: "solid", colorId: null, discount: null, photo: "assets/images/board-keki-teca-blau.png" },
@@ -524,7 +540,7 @@ function buildProductCard(entry, { onClick } = {}) {
   card.className = "product-card";
   card.innerHTML = `
     ${entry.discount ? `<span class="badge">-${entry.discount}%</span>` : ""}
-    <div class="thumb">${renderBoardThumb(entry)}</div>
+    <div class="thumb">${renderBoardThumb(entry, { withAlt: true })}</div>
     <h3>${shape.name}</h3>
     <p class="p-type">Board tipo ${SHAPE_TYPE_LABEL[entry.shapeId]}</p>
     <p class="p-price">${price}€${

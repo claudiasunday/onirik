@@ -1585,6 +1585,31 @@ section {
    amples). Amb height:100% dins d'un flex, un <img> amb mida intrínseca
    gran ignora el contenidor i desborda; position:absolute + inset:0 el
    lliga sempre a la mida real de .thumb, vingui d'on vingui la imatge. */
+/* En passar-hi el ratolí, la foto canvia a l'altra cara de la taula. */
+.product-card .thumb .board-photo {
+  transition: opacity 0.3s ease;
+}
+
+.product-card .thumb .board-photo--alt {
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover .thumb .board-photo:has(+ .board-photo--alt) {
+    opacity: 0;
+  }
+
+  .product-card:hover .thumb .board-photo--alt {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card .thumb .board-photo {
+    transition: none;
+  }
+}
+
 .product-card .thumb svg,
 .product-card .thumb .board-photo {
   display: block;
@@ -1611,6 +1636,18 @@ section {
 }
 
 /* ---- Tenda (llistat + filtres) ------------------------------------------- */
+
+/* Tenda: sense títol visible, els filtres són el primer que es veu; aire a
+   dalt perquè no quedin enganxats a la capçalera (o a la pastilla mòbil). */
+.shop-top {
+  padding-top: var(--space-5);
+}
+
+@media (max-width: 859px) {
+  .shop-top {
+    padding-top: var(--space-6);
+  }
+}
 
 .shop-toolbar {
   display: flex;
@@ -4145,10 +4182,8 @@ body[data-page="boards"] .site-footer {
   font-size: calc(37 * var(--u));
 }
 
-/* Etiqueta petita de cada característica i números sobre les peces:
-   només a la versió de mòbil. */
-.boards-spec-kicker,
-.boards-pin {
+/* Etiqueta petita de cada característica: només a la llista de mòbil. */
+.boards-spec-kicker {
   display: none;
 }
 
@@ -4225,7 +4260,6 @@ body[data-page="boards"] .site-footer {
 
   .boards-canvas {
     --bw: min(40vw, 200px);   /* ample de la taula */
-    --rw: min(26vw, 120px);   /* ample del roller */
   }
 
   .boards-board {
@@ -4240,47 +4274,6 @@ body[data-page="boards"] .site-footer {
     grid-area: 1 / 2;
   }
 
-  /* Números sobre les peces, a la mateixa cel·la de la graella que la
-     peça: 1 i 2 sobre l'eix de la taula (el grip a dalt, el taulell a
-     baix; l'eix sempre es veu encara que giri) i 3 sobre el roller. */
-  .boards-pin {
-    display: grid;
-    place-items: center;
-    position: relative;
-    z-index: 2;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--c-orange);
-    color: var(--c-dark);
-    font-family: var(--f-heading);
-    font-size: 13px;
-    font-weight: 900;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 4px 10px rgba(49, 48, 48, 0.25);
-    pointer-events: none;
-  }
-
-  .boards-pin--grip,
-  .boards-pin--ply {
-    grid-area: 1 / 1;
-    justify-self: center;
-    align-self: start;
-  }
-
-  .boards-pin--grip {
-    margin-top: calc(var(--bw) * 0.6);
-  }
-
-  .boards-pin--ply {
-    margin-top: calc(var(--bw) * 1.75);
-  }
-
-  .boards-pin--roller {
-    grid-area: 1 / 2;
-    justify-self: center;
-    align-self: end;
-    margin-bottom: calc(var(--rw) * 1.1);
-  }
 
   .boards-roller {
     position: relative;

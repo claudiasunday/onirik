@@ -144,7 +144,9 @@ function renderBoardFitxa(entry) {
 
   setFitxa({
     previewHtml: `${entry.discount ? `<span class="fitxa-badge">-${entry.discount}%</span>` : ""}${renderBoardThumb(entry)}`,
-    backHtml: `<img class="board-photo" src="assets/images/board-back-${shape.id}.png" alt="${shape.name}, cara de sota" loading="lazy" />`,
+    backHtml: entryAltPhoto(entry)
+      ? `<img class="board-photo" src="${entryAltPhoto(entry)}" alt="${shape.name}, ${entry.face === "design" ? "cara amb grip" : "cara de sota"}" loading="lazy" />`
+      : "",
     title,
     badge: { label: shape.tag },
     tagline: shape.tagline,
