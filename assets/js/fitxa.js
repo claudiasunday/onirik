@@ -233,7 +233,7 @@ function renderNotFoundFitxa() {
         <h1>Producte no trobat</h1>
         <p class="shape-description">Aquesta peça ja no està disponible o l'enllaç no és correcte.</p>
         <div class="fitxa-cta">
-          <a class="btn btn-primary" href="tenda.html">Tornar a la tenda</a>
+          <a class="btn btn-primary" href="tenda.html">Tornar a les taules</a>
         </div>
       </div>
     </div>

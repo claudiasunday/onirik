@@ -318,7 +318,8 @@ body[data-page="home"] .value-pill {
 
 /* Tenda (i fitxa, que comparteix data-page): fons gris clar càlid i
    targetes blanques, com al Figma. */
-body[data-page="tenda"] {
+body[data-page="tenda"],
+body[data-page="experiencies"] {
   background: var(--c-page);
 }
 
@@ -999,8 +1000,6 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   .hero-board-3d-slot {
     display: flex;
     justify-content: center;
-    /* el titular puja per sobre de la part baixa de la taula */
-    margin-bottom: -96px;
   }
 
   .hero-board-3d {
@@ -1039,15 +1038,30 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     min-height: 0;
   }
 
+  /* La taula ja no comparteix l'alçada amb el text per flex (li deixava
+     només les engrunes que sobraven del titular+CTA): ara ocupa tot el
+     .hero-copy, de dalt a baix del CTA, i el text hi queda per sobre
+     (z-index, regla de sota) com una capa superposada. */
+  body[data-page="home"] .hero-copy {
+    position: relative;
+  }
+
   body[data-page="home"] .hero-board-3d-slot {
-    flex: 1;
-    min-height: 0;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
   }
 
   body[data-page="home"] .hero-board-3d {
     width: auto;
     height: 100%;
-    max-height: 525px;
+  }
+
+  /* El subtítol i el CTA baixen a la zona de pantalla còmoda per al polze
+     (regla del "thumb rule"), en lloc de quedar enganxats a dalt. */
+  body[data-page="home"] .hero-subtext {
+    margin-top: auto;
   }
 
   /* Pista "Tap and hold" sobre la taula (només pantalles tàctils): una mà
@@ -1191,6 +1205,11 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   .home-nav--fixed a {
     font-size: 1em;
     padding: 0.65em 0.6em;
+    /* Mateixa família que el logo "ONIRIK" (Unbounded) i en bold, en lloc
+       de l'Onest 600 de la navegació d'escriptori: a la pastilla mòbil
+       contrastava massa amb el pes del logo del costat. */
+    font-family: var(--f-heading);
+    font-weight: 700;
   }
 
   .home-nav--fixed .home-nav-logo {
@@ -1213,25 +1232,34 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
     height: 1.6em;
   }
 
-  /* Símbol del logo en blanc pla (el negre no es veuria sobre la pastilla fosca). */
-  .home-nav--fixed .home-nav-logo img {
+  /* Logo: símbol + "ONIRIK", en blanc sobre la pastilla fosca. El símbol es
+     pinta amb una màscara del PNG, així el color és exacte. A l'inici, tot
+     en groc (com l'enllaç actiu). */
+  .home-nav--fixed .home-nav-logo {
+    gap: 0.4em;
+    color: var(--c-white);
+  }
+
+  .home-nav--fixed .home-nav-logo-icon {
     display: block;
     width: 1.85em;
-    min-width: 1.85em;
-    height: auto;
-    filter: brightness(0) invert(1);
+    height: 1.64em;
+    flex: none;
+    background: currentColor;
+    -webkit-mask: url("../images/logo-icon.png") center / contain no-repeat;
+    mask: url("../images/logo-icon.png") center / contain no-repeat;
   }
 
-  /* A l'inici, el símbol va en groc (com l'enllaç actiu): el pintem amb
-     una màscara del mateix PNG perquè el color sigui exacte. */
+  .home-nav--fixed .home-nav-logo-word {
+    font-family: var(--f-heading);
+    font-weight: 900;
+    font-size: 1.15em;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
   .home-nav--fixed .home-nav-logo[aria-current="page"] {
-    background: var(--c-orange);
-    -webkit-mask: url("../images/logo-icon.png") center / 1.85em auto no-repeat content-box;
-    mask: url("../images/logo-icon.png") center / 1.85em auto no-repeat content-box;
-  }
-
-  .home-nav--fixed .home-nav-logo[aria-current="page"] img {
-    visibility: hidden;
+    color: var(--c-orange);
   }
 
   .value-steps-section {
@@ -1548,6 +1576,11 @@ body:not([data-page="home"]) #site-header .home-nav a:hover,
   opacity: 0.85;
 }
 
+/* Logos que arriben en color (Skatia, groc): al mateix gris que la resta. */
+.partner-logos-row img.partner-logo--mono {
+  filter: brightness(0) invert(0.35);
+}
+
 @media (max-width: 639px) {
   .partner-logos-row {
     gap: var(--space-4) var(--space-5);
@@ -1747,6 +1780,114 @@ section {
 }
 
 /* ---- Tenda (llistat + filtres) ------------------------------------------- */
+
+/* ---- Taules: bloc de dalt (abans la pàgina BOARD), compacte -------------- */
+.taules-intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.taules-intro-copy h1 {
+  font-size: clamp(26px, 3.4vw, 40px);
+  line-height: 1.08;
+  margin: var(--space-1) 0 var(--space-4);
+  max-width: 18ch;
+}
+
+.taules-specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.taules-specs li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(49, 48, 48, 0.1);
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.taules-spec-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted-light);
+}
+
+.taules-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-3) 0 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.taules-jump {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-weight: 700;
+  color: var(--c-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--c-orange);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+#taules-cataleg {
+  padding-top: var(--space-3);
+  scroll-margin-top: calc(var(--header-h) + var(--space-3));
+}
+
+.taules-intro {
+  padding-bottom: 0;
+}
+
+.taules-intro .eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-orange-dark);
+}
+
+/* Mòbil: tot més compacte perquè els productes comencin aviat. */
+@media (max-width: 859px) {
+  .taules-intro {
+    gap: var(--space-3);
+  }
+
+  .taules-intro-copy h1 {
+    font-size: 22px;
+    margin-bottom: var(--space-2);
+  }
+
+  .taules-specs li {
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  .taules-spec-kicker {
+    font-size: 10px;
+  }
+
+  .taules-all {
+    margin-top: var(--space-2);
+    font-size: 13px;
+  }
+
+  .taules-jump {
+    margin-top: var(--space-3);
+  }
+}
 
 /* Tenda: sense títol visible, els filtres són el primer que es veu; aire a
    dalt perquè no quedin enganxats a la capçalera (o a la pastilla mòbil). */
@@ -2502,6 +2643,190 @@ body[data-page="tenda"] .page-hero {
 
 .back-link:hover {
   color: var(--c-dark);
+}
+
+/* Subpàgines d'Experiències (Tallers, Col·laboracions): tornar a la portada. */
+.xp-back {
+  display: flex;
+  width: max-content;
+  margin-bottom: var(--space-4);
+}
+
+/* ---- Experiències (portada: tallers + col·laboracions) ------------------- */
+
+.xp-hero h1 {
+  font-size: clamp(34px, 6vw, 56px);
+  line-height: 1.05;
+}
+
+.xp-hero .lede {
+  max-width: 42ch;
+}
+
+.xp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 860px) {
+  .xp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.xp-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-white);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.xp-card-media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.xp-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* fotos verticals: enquadrem la part de dalt (cares i mans) */
+  object-position: 50% 18%;
+  transition: transform 0.4s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xp-card:hover .xp-card-media img {
+    transform: scale(1.03);
+  }
+}
+
+.xp-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.xp-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.xp-card-head h2 {
+  font-size: var(--fs-h2);
+  margin: 0;
+}
+
+.xp-arrow {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  color: var(--c-orange-dark);
+}
+
+.xp-card-lede {
+  margin: 0;
+  font-weight: 600;
+  color: var(--c-dark);
+}
+
+.xp-card-eyebrow {
+  margin-top: var(--space-3);
+}
+
+.xp-card h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.xp-card-text {
+  margin: 0;
+  color: var(--c-muted-light);
+  line-height: 1.55;
+}
+
+/* Tallers principals: llista amb punt groc; cada un porta a la seva pàgina. */
+.xp-card-list {
+  list-style: none;
+  margin: var(--space-1) 0 var(--space-3);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.xp-card-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.xp-card-list li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--c-orange);
+}
+
+.xp-card-list a {
+  color: var(--c-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(249, 181, 79, 0.7);
+  text-underline-offset: 4px;
+}
+
+.xp-card-list a:hover {
+  text-decoration-color: var(--c-orange-dark);
+}
+
+/* El botó queda a baix de tot de la card, alineat entre les dues (el text
+   de sobre li deixa un mínim d'aire). */
+.xp-card-text {
+  margin-bottom: var(--space-3);
+}
+
+.xp-card .xp-card-cta {
+  margin-top: auto;
+  align-self: stretch;
+  gap: var(--space-2);
+}
+
+.xp-idea {
+  margin-top: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  border-radius: 24px;
+  background: var(--c-dark);
+  color: var(--c-white);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.xp-idea h2 {
+  font-size: var(--fs-h2-lg);
+  color: var(--c-white);
+  margin: 0;
+}
+
+.xp-idea p {
+  margin: 0 0 var(--space-3);
+  color: var(--c-muted);
+}
+
+.xp-idea .btn {
+  gap: var(--space-2);
 }
 
 .fitxa-badge {
@@ -3500,6 +3825,24 @@ button.wizard-cta-link {
   padding: 6px;
 }
 
+/* Escriptori: les 7 opcions en una sola fila, perquè hi càpiguen totes
+   sobre el botó (que queda enganxat a baix de la pantalla). */
+@media (min-width: 860px) {
+  .swatch-grid-designs {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .swatch-grid-designs .swatch-shape {
+    padding: 3px;
+  }
+
+  .swatch-grid-designs .option-card-name {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+}
+
 .option-card-meta {
   font-size: 11px;
   color: var(--c-muted-light);
@@ -4259,10 +4602,12 @@ body[data-page="boards"] .site-footer {
 .boards-board {
   position: absolute;
   /* mateixa caixa que la imatge de la taula al Figma (313 × 830 centrada);
-     el component té proporció 2:5, així que fa 332 d'ample */
+     la imatge (render de la taula, 800×2000) té proporció 2:5: 332 d'ample */
   left: calc(554 * var(--u));
   top: calc(150 * var(--u));
   width: calc(332 * var(--u));
+  height: auto;
+  max-width: none;
 }
 
 .boards-roller {
@@ -4494,42 +4839,14 @@ body[data-page="boards"] .site-footer {
   }
 }
 
-/* ---- Home mòbil: els 3 passos s'apilen en fer scroll ------------------ */
-/* Cada targeta es queda enganxada sota la pastilla fixa (un pèl més avall
-   que l'anterior) i la següent hi passa per sobre; les de sota es
-   redueixen i s'enfosqueixen (home.js hi posa --stack, de 0 a 1) com una
-   pila de cartes. */
+/* ---- Home mòbil: els 3 passos, en llista (sense efecte d'apilat) ------- */
 @media (max-width: 859px) {
   body[data-page="home"] .value-steps--mobile {
-    gap: var(--space-4);
-    padding-bottom: var(--space-5);
-  }
-
-  body[data-page="home"] .value-steps--mobile .value-step {
-    --stack: 0;
-    position: sticky;
-    scale: calc(1 - var(--stack) * 0.08);
-    filter: brightness(calc(1 - var(--stack) * 0.12));
-    transform-origin: 50% 0;
-    box-shadow: 0 -6px 24px rgba(49, 48, 48, 0.12);
-    will-change: scale;
-  }
-
-  body[data-page="home"] .value-steps--mobile .value-step:nth-child(1) { top: 104px; }
-  body[data-page="home"] .value-steps--mobile .value-step:nth-child(2) { top: 116px; }
-  body[data-page="home"] .value-steps--mobile .value-step:nth-child(3) { top: 128px; }
-}
-
-@media (max-width: 859px) and (prefers-reduced-motion: reduce) {
-  body[data-page="home"] .value-steps--mobile {
     gap: var(--space-3);
-    padding-bottom: 0;
   }
 
   body[data-page="home"] .value-steps--mobile .value-step {
     position: static;
-    scale: none;
-    filter: none;
   }
 }
 

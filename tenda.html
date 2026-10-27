@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tenda — ONIRIK BOARDS</title>
+    <title>Taules — ONIRIK BOARDS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,9 +17,26 @@
     <div id="site-header"></div>
 
     <main>
-      <section class="container section-tight-top shop-top">
-        <h1 class="visually-hidden">Taules, packs i edicions especials</h1>
-        <p class="lede visually-hidden">
+      <!-- De què estan fetes (abans la pàgina BOARD), en compacte -->
+      <section class="container shop-top taules-intro" aria-labelledby="taules-title">
+        <div class="taules-intro-copy">
+          <span class="eyebrow">Taules</span>
+          <h1 id="taules-title">Balance boards fetes a mà, una a una.</h1>
+          <ul class="taules-specs">
+            <li><span class="taules-spec-kicker">Superfície</span>Cream Grip 4.0</li>
+            <li><span class="taules-spec-kicker">Fusta</span>Contraxapat marí fenòlic de bedoll finlandès</li>
+            <li><span class="taules-spec-kicker">Rodet</span>Roller de suro d'11 cm</li>
+          </ul>
+          <p class="taules-all">
+            <svg viewBox="0 0 52 52" width="18" height="18" aria-hidden="true"><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M26 3v46M3 26h46M9.7 9.7l32.6 32.6M42.3 9.7 9.7 42.3M14.5 4.3l23 43.4M37.5 4.3l-23 43.4M4.3 14.5l43.4 23M4.3 37.5l43.4-23" /></g></svg>
+            a totes les nostres taules
+          </p>
+          <a class="taules-jump" href="#taules-cataleg">Veure les taules ↓</a>
+        </div>
+      </section>
+
+      <section class="container section-tight-top" id="taules-cataleg">
+        <p class="visually-hidden">
           Edicions limitades ja acabades, packs amb roller de suro inclòs i
           peces d'edició especial. Si prefereixes triar tu la forma, el
           disseny i el color, millor

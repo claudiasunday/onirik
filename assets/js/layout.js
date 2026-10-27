@@ -11,7 +11,7 @@
 const NAV_ITEMS = [
   { id: "coneix-nos", href: "coneix-nos.html", label: "Coneix-nos" },
   { id: "que-fem", href: "que-fem.html", label: "Què fem" },
-  { id: "tenda", href: "tenda.html", label: "Tenda" },
+  { id: "tenda", href: "tenda.html", label: "Taules" },
   { id: "familia", href: "familia-onirik.html", label: "Família ONIRIK" },
   { id: "contacte", href: "contacte.html", label: "Contacta'm" },
 ];
@@ -21,10 +21,11 @@ const NAV_ITEMS = [
  * pròpia en format pastilla, diferent del menú de la resta de pàgines.
  */
 const HOME_NAV_ITEMS = [
-  { id: "boards", href: "boards.html", label: "Boards" },
-  { id: "tenda", href: "tenda.html", label: "Tenda" },
-  { id: "que-fem", href: "que-fem.html", label: "Tallers" },
-  { id: "familia", href: "familia-onirik.html", label: "Col·labora" },
+  // Taules: la Tenda amb el que abans era la pàgina BOARD a dalt.
+  { id: "tenda", href: "tenda.html", label: "Taules" },
+  // Experiències: portada (experiencies.html) amb dues subpàgines, Tallers
+  // (que-fem*) i Col·laboracions (familia-onirik); activa a totes tres.
+  { id: "experiencies", href: "experiencies.html", label: "Experiències", also: ["que-fem", "familia"] },
 ];
 
 /**
@@ -40,7 +41,7 @@ function renderHomeNav(extraClass = "") {
   const current = document.body.dataset.page || "";
   // A la versió fixa (mòbil) no hi ha capçalera: el símbol del logo torna a l'inici.
   const homeLink = extraClass.includes("home-nav--fixed")
-    ? `<a class="home-nav-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici"${current === "home" ? ' aria-current="page"' : ""}><img src="assets/images/logo-icon.png" width="26" height="23" alt="" /></a>`
+    ? `<a class="home-nav-logo" href="index.html" aria-label="ONIRIK BOARDS — Inici"${current === "home" ? ' aria-current="page"' : ""}><span class="home-nav-logo-icon" aria-hidden="true"></span><span class="home-nav-logo-word" aria-hidden="true">ONIRIK</span></a>`
     : "";
   // ...i a l'altre extrem, la cistella (amb el comptador de cart.js).
   const cartLink = extraClass.includes("home-nav--fixed")
@@ -50,7 +51,9 @@ function renderHomeNav(extraClass = "") {
       <nav class="home-nav${extraClass}" aria-label="Principal">
         ${homeLink}${HOME_NAV_ITEMS.map(
           (item) =>
-            `<a href="${item.href}"${item.id === current ? ' class="active" aria-current="page"' : ""}>${item.label}</a>`
+            `<a href="${item.href}"${
+              item.id === current ? ' class="active" aria-current="page"' : (item.also || []).includes(current) ? ' class="active"' : ""
+            }>${item.label}</a>`
         ).join("")}${cartLink}
       </nav>`;
 }
@@ -132,7 +135,7 @@ function initHeaderScroll() {
   window.addEventListener("scroll", onScroll, { passive: true });
 }
 
-// Cards de producte i ofici: només a la pàgina BOARD, sobre el teaser de contacte.
+// Cards de producte i ofici: només a la pàgina Taules, sobre el teaser de contacte.
 const CRAFT_CARDS = `
       <ul class="craft-cards" aria-label="Com fem les taules">
         <li class="craft-card">
@@ -167,11 +170,11 @@ function renderFooter() {
   if (!mount) return;
   const current = document.body.dataset.page || "";
   const teaser =
-    current === "contacte" || current === "personalitza" || current === "cistella" || current === "comanda"
+    current === "contacte" || current === "personalitza" || current === "cistella" || current === "comanda" || current === "experiencies"
       ? ""
       : `
     <section class="container">
-${current === "boards" ? CRAFT_CARDS : ""}
+${document.getElementById("shop-grid") ? CRAFT_CARDS : ""}
       <div class="contact-teaser">
         <div>
           <h2>Vols una taula personalitzada?</h2>
