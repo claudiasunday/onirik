@@ -169,8 +169,9 @@ button {
 }
 
 /* ---- Header ------------------------------------------------------------- */
-/* Navbar fixa, sempre amb fons blanc; l'ombra apareix en fer scroll
-   (mateix comportament que claudiasunday.com, però sense transparència). */
+/* Navbar fixa i igual a totes les pàgines: vel blanc translúcid amb
+   desenfocament del contingut que hi passa per sota; l'ombra s'accentua
+   en fer scroll. */
 
 #site-header {
   position: fixed;
@@ -178,9 +179,12 @@ button {
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--c-white);
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0.08);
-  transition: background-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
+  transition: background-color 0.45s ease-in-out, box-shadow 0.45s ease-in-out,
+    -webkit-backdrop-filter 0.45s ease-in-out, backdrop-filter 0.45s ease-in-out;
 }
 
 #site-header.scrolled {
@@ -198,22 +202,9 @@ button {
    només canvia l'opacitat — l'equivalent a un "smart animate" de Figma). */
 body[data-page="home"] #site-header:not(.scrolled) {
   background: rgba(255, 255, 255, 0);
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
   box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
-}
-
-/* La capçalera de la Home es queda sempre transparent, també en fer
-   scroll: només hi floten el logo, la pastilla i les accions. */
-body[data-page="home"] #site-header.scrolled {
-  background: rgba(255, 255, 255, 0);
-  box-shadow: 0 1px 0 rgba(49, 48, 48, 0);
-}
-
-/* Sense fons a la capçalera, la pastilla porta el seu propi vel perquè
-   es llegeixi sobre el contingut que hi passa per sota. */
-body[data-page="home"] #site-header.scrolled .home-nav {
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
 }
 
 body[data-page="home"] #site-header:not(.scrolled) .main-nav a,
@@ -2665,29 +2656,78 @@ body[data-page="tenda"] .page-hero {
 
 /* Accés ràpid: botons-pastilla que salten a cada bloc de la pàgina. */
 .xp-quick {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-2);
-  flex-wrap: wrap;
   margin-bottom: var(--space-5);
 }
 
+/* Accés ràpid en format card clicable (no pastilla): icona, títol,
+   una línia de context i una fletxa cap a la secció. */
 .xp-quick-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 18px;
-  border-radius: var(--r-pill);
+  gap: var(--space-2);
+  padding: 20px 22px;
+  border-radius: 16px;
   background: var(--c-white);
-  border: 1px solid rgba(49, 48, 48, 0.12);
+  border: 1px solid rgba(49, 48, 48, 0.08);
+  box-shadow: 0 2px 8px rgba(49, 48, 48, 0.04);
   color: var(--c-dark);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.xp-quick-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(49, 48, 48, 0.05);
+  font-size: 24px;
+  transition: background 0.18s ease;
+}
+
+.xp-quick-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.xp-quick-text strong {
+  font-size: 18px;
   font-weight: 700;
-  font-size: 15px;
-  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.xp-quick-text span {
+  font-size: 14px;
+  color: var(--c-muted-light);
+}
+
+.xp-quick-arrow {
+  flex: none;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-muted-light);
+  transition: transform 0.18s ease, color 0.18s ease;
 }
 
 .xp-quick-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(49, 48, 48, 0.14);
+  box-shadow: 0 8px 24px rgba(49, 48, 48, 0.08);
+}
+
+.xp-quick-btn:hover .xp-quick-icon {
   background: var(--c-orange);
-  border-color: var(--c-orange);
+}
+
+.xp-quick-btn:hover .xp-quick-arrow {
+  color: var(--c-dark);
+  transform: translateY(2px);
 }
 
 .xp-section {
