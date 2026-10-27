@@ -847,11 +847,13 @@ onirik-board-3d.hero-board {
   outline-offset: 2px;
 }
 
-/* Capçalera amb fons blanc (scroll): la navegació passa a tons foscos. */
+/* Capçalera amb fons blanc (scroll): la navegació passa a tons foscos i
+   la pastilla perd el fons i el contorn — ja la separa el vel de la
+   capçalera. */
 body:not([data-page="home"]) #site-header .home-nav,
 #site-header.scrolled .home-nav {
-  background: rgba(49, 48, 48, 0.04);
-  border-color: rgba(49, 48, 48, 0.1);
+  background: transparent;
+  border-color: transparent;
 }
 
 body:not([data-page="home"]) #site-header .home-nav a,
@@ -2813,6 +2815,30 @@ body[data-page="tenda"] .page-hero {
   align-items: center;
   justify-content: center;
   font-size: 56px;
+}
+
+.xp-tile-media--logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.xp-tile-media--logo img {
+  width: auto;
+  height: auto;
+  max-width: 70%;
+  max-height: 60%;
+  object-fit: contain;
+}
+
+.xp-tile-media--logo img.partner-logo--mono {
+  filter: brightness(0) invert(0.35);
+}
+
+/* Última tile del carrusel de col·laboracions: invitació a proposar-ne. */
+.xp-tile--cta .xp-tile-media {
+  background: var(--c-orange);
 }
 
 .xp-tile-body {
