@@ -2663,15 +2663,160 @@ body[data-page="tenda"] .page-hero {
   max-width: 42ch;
 }
 
+/* Accés ràpid: botons-pastilla que salten a cada bloc de la pàgina. */
+.xp-quick {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+}
+
+.xp-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
+  background: var(--c-white);
+  border: 1px solid rgba(49, 48, 48, 0.12);
+  color: var(--c-dark);
+  font-weight: 700;
+  font-size: 15px;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.xp-quick-btn:hover {
+  background: var(--c-orange);
+  border-color: var(--c-orange);
+}
+
+.xp-section {
+  scroll-margin-top: calc(var(--header-h) + var(--space-3));
+}
+
+.xp-section--carousel {
+  padding-bottom: 0;
+}
+
+.xp-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.xp-section-head h2 {
+  font-size: var(--fs-h2);
+  margin: 0;
+}
+
+.xp-section-head p {
+  margin: 0;
+  color: var(--c-muted-light);
+  font-weight: 600;
+}
+
+/* Carrusel de tallers: lliscament horitzontal amb snap. Surt del
+   .container però alinea la primera card amb el text de sobre. */
+.xp-carousel {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: max(var(--space-4), calc((100vw - 1152px) / 2 + var(--space-4)));
+  padding: var(--space-1) max(var(--space-4), calc((100vw - 1152px) / 2 + var(--space-4))) var(--space-4);
+  margin-bottom: var(--space-5);
+  scrollbar-width: none;
+}
+
+.xp-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.xp-tile {
+  flex: 0 0 min(78vw, 300px);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  color: var(--c-dark);
+  transition: transform 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xp-tile:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.xp-tile-media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--c-cream);
+}
+
+.xp-tile-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+
+.xp-tile-media--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+}
+
+.xp-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.xp-tile-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-orange-dark);
+}
+
+.xp-tile strong {
+  font-family: var(--f-heading);
+  font-size: 18px;
+}
+
+.xp-tile-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-muted-light);
+}
+
 .xp-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
 }
 
+/* Col·laboracions: una sola card, en horitzontal a escriptori. */
 @media (min-width: 860px) {
-  .xp-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .xp-card--wide {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .xp-card--wide .xp-card-media {
+    aspect-ratio: auto;
+    min-height: 100%;
   }
 }
 

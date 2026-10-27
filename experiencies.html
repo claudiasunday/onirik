@@ -26,29 +26,56 @@
         </p>
       </section>
 
-      <section class="container section-no-top">
-        <div class="xp-grid">
-          <article class="xp-card">
-            <a class="xp-card-media" href="que-fem.html" tabindex="-1" aria-hidden="true">
-              <img src="assets/images/equilibri-taller.webp" alt="" loading="lazy" />
-            </a>
-            <div class="xp-card-body">
-              <div class="xp-card-head">
-                <h2>Tallers i experiències</h2>
-                <svg class="xp-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 9v8H9"/></svg>
-              </div>
-              <p class="xp-card-lede">Aprèn, experimenta i comparteix.</p>
-              <ul class="xp-card-list">
-                <li><a href="que-fem-equilibri.html">Equilibri</a></li>
-                <li><a href="que-fem-fabricacio.html">Fabricació artesanal</a></li>
-                <li><a href="que-fem-yoga.html">Yoga</a></li>
-                <li><a href="que-fem-balanceboard.html">Tricks &amp; lifestyle</a></li>
-              </ul>
-              <a class="btn btn-dark xp-card-cta" href="que-fem.html">Descobreix els tallers <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-            </div>
-          </article>
+      <nav class="container xp-quick" aria-label="Accés ràpid">
+        <a class="xp-quick-btn" href="#tallers">🎓 Tallers</a>
+        <a class="xp-quick-btn" href="#collaboracions">🤙 Col·laboracions</a>
+      </nav>
 
-          <article class="xp-card">
+      <section class="container section-no-top xp-section xp-section--carousel" id="tallers" aria-labelledby="tallers-title">
+        <div class="xp-section-head">
+          <h2 id="tallers-title">Tallers</h2>
+          <p>Aprèn, experimenta i comparteix.</p>
+        </div>
+      </section>
+
+      <div class="xp-carousel" role="list">
+        <a class="xp-tile" role="listitem" href="que-fem-equilibri.html">
+          <span class="xp-tile-media"><img src="assets/images/equilibri-taller.webp" alt="" loading="lazy" /></span>
+          <span class="xp-tile-body">
+            <span class="xp-tile-tag">Escoles · Grups</span>
+            <strong>Equilibri</strong>
+            <span class="xp-tile-text">Tallers grupals i classes privades, amb la teva taula o la nostra.</span>
+          </span>
+        </a>
+        <a class="xp-tile" role="listitem" href="que-fem-fabricacio.html">
+          <span class="xp-tile-media"><img src="assets/images/fabricacio-taller.webp" alt="" loading="lazy" /></span>
+          <span class="xp-tile-body">
+            <span class="xp-tile-tag">Fet a mà</span>
+            <strong>Fabricació artesanal</strong>
+            <span class="xp-tile-text">Construeix la teva pròpia balance board al taller.</span>
+          </span>
+        </a>
+        <a class="xp-tile" role="listitem" href="que-fem-yoga.html">
+          <span class="xp-tile-media xp-tile-media--empty" aria-hidden="true">🧘</span>
+          <span class="xp-tile-body">
+            <span class="xp-tile-tag">Cos i ment</span>
+            <strong>Yoga</strong>
+            <span class="xp-tile-text">El balanceboard com a eina per treballar l'equilibri interior.</span>
+          </span>
+        </a>
+        <a class="xp-tile" role="listitem" href="que-fem-balanceboard.html">
+          <span class="xp-tile-media"><img src="assets/images/tricks-lifestyle.webp" alt="" loading="lazy" /></span>
+          <span class="xp-tile-body">
+            <span class="xp-tile-tag">Comunitat</span>
+            <strong>Tricks &amp; lifestyle</strong>
+            <span class="xp-tile-text">Trucs, reptes i la vida sobre la taula.</span>
+          </span>
+        </a>
+      </div>
+
+      <section class="container section-no-top xp-section" id="collaboracions">
+        <div class="xp-grid">
+          <article class="xp-card xp-card--wide">
             <a class="xp-card-media" href="familia-onirik.html" tabindex="-1" aria-hidden="true">
               <img src="assets/images/fabricacio-taller.webp" alt="" loading="lazy" />
             </a>
